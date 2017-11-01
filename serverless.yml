@@ -21,11 +21,11 @@ plugins:
   - serverless-plugin-stage-variables
 
 custom:
-  storageName: ${self:service}-storage-${opt:stage}
+  TABLE_PREFIX: ${self:provider.stage}_
+  storageName: ${self:service}-storage-${self:provider.stage}
   stageVariables:
-    AccessControlAllowOrigin: "http://"
-    ProfileServiceRoot: "https://"
-    Stage: ${opt:stage}
+    AccessControlAllowOrigin: ${file(AccessControlAllowOrigin)}
+    ProfileServiceRoot: ${file(ProfileServiceRoot)}
 
 provider:
   name: aws
@@ -36,6 +36,10 @@ provider:
 # you can overwrite defaults here
   stage: ${opt:stage}
   region: ap-northeast-1
+
+# you can add environment variables
+  environment:
+    TABLE_PREFIX: ${self:custom.TABLE_PREFIX}
 
 # you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
@@ -65,14 +69,14 @@ package:
 functions:
   authorizer:
     handler: functions/authorizer/index.handler
-    name: ${self:service}-${opt:stage}-authorizer
+    name: ${self:service}-${self:provider.stage}-authorizer
     package:
       include:
         - functions/authorizer/**
         - sourceIp.yaml
   batchAddCompressedObj:
     handler: functions/batchAddCompressedObj/index.handler
-    name: ${self:service}-${opt:stage}-batchAddCompressedObj
+    name: ${self:service}-${self:provider.stage}-batchAddCompressedObj
     environment:
       STORAGE_NAME: ${self:custom.storageName}
     memorySize: 1024
@@ -92,21 +96,21 @@ functions:
         enabled: true
   batchDeleteUnusedData:
     handler: functions/batchDeleteUnusedData/index.handler
-    name: ${self:service}-${opt:stage}-batchDeleteUnusedData
+    name: ${self:service}-${self:provider.stage}-batchDeleteUnusedData
     package:
       include:
         - functions/batchDeleteUnusedData/**
         - common/**
   batchDeleteUnusedImages:
     handler: functions/batchDeleteUnusedImages/index.handler
-    name: ${self:service}-${opt:stage}-batchDeleteUnusedImages
+    name: ${self:service}-${self:provider.stage}-batchDeleteUnusedImages
     package:
       include:
         - functions/batchDeleteUnusedImages/**
         - common/**
   deleteFloorsFloorIdEdit:
     handler: functions/deleteFloorsFloorIdEdit/index.handler
-    name: ${self:service}-${opt:stage}-deleteFloorsFloorIdEdit
+    name: ${self:service}-${self:provider.stage}-deleteFloorsFloorIdEdit
     package:
       include:
         - functions/deleteFloorsFloorIdEdit/**
@@ -116,7 +120,19 @@ functions:
           path: /floors/{floorId}/edit
           method: delete
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -129,7 +145,7 @@ functions:
                 floorId: true
   getColors:
     handler: functions/getColors/index.handler
-    name: ${self:service}-${opt:stage}-getColors
+    name: ${self:service}-${self:provider.stage}-getColors
     package:
       include:
         - functions/getColors/**
@@ -139,7 +155,19 @@ functions:
           path: /colors
           method: get
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -150,7 +178,7 @@ functions:
                 authorization: true
   getFloors:
     handler: functions/getFloors/index.handler
-    name: ${self:service}-${opt:stage}-getFloors
+    name: ${self:service}-${self:provider.stage}-getFloors
     package:
       include:
         - functions/getFloors/**
@@ -160,7 +188,19 @@ functions:
           path: /floors
           method: get
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -171,7 +211,7 @@ functions:
                 authorization: true
   getFloorsFloorIdEdit:
     handler: functions/getFloorsFloorIdEdit/index.handler
-    name: ${self:service}-${opt:stage}-getFloorsFloorIdEdit
+    name: ${self:service}-${self:provider.stage}-getFloorsFloorIdEdit
     memorySize: 1024
     package:
       include:
@@ -182,7 +222,19 @@ functions:
           path: /floors/{floorId}/edit
           method: get
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -195,7 +247,7 @@ functions:
                 floorId: true
   getObjectsObjectId:
     handler: functions/getObjectsObjectId/index.handler
-    name: ${self:service}-${opt:stage}-getObjectsObjectId
+    name: ${self:service}-${self:provider.stage}-getObjectsObjectId
     package:
       include:
         - functions/getObjectsObjectId/**
@@ -205,7 +257,19 @@ functions:
           path: /objects/{objectId}
           method: get
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -218,7 +282,7 @@ functions:
                 objectId: true
   getPeople:
     handler: functions/getPeople/index.handler
-    name: ${self:service}-${opt:stage}-getPeople
+    name: ${self:service}-${self:provider.stage}-getPeople
     package:
       include:
         - functions/getPeople/**
@@ -228,7 +292,19 @@ functions:
           path: /people
           method: get
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -243,7 +319,7 @@ functions:
                 floorId: true
   getPrototypes:
     handler: functions/getPrototypes/index.handler
-    name: ${self:service}-${opt:stage}-getPrototypes
+    name: ${self:service}-${self:provider.stage}-getPrototypes
     package:
       include:
         - functions/getPrototypes/**
@@ -253,7 +329,19 @@ functions:
           path: /prototypes
           method: get
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -264,7 +352,7 @@ functions:
                 authorization: true
   getSearchObjectsQuery:
     handler: functions/getSearchObjectsQuery/index.handler
-    name: ${self:service}-${opt:stage}-getSearchObjectsQuery
+    name: ${self:service}-${self:provider.stage}-getSearchObjectsQuery
     package:
       include:
         - functions/getSearchObjectsQuery/**
@@ -274,7 +362,19 @@ functions:
           path: /search/Objects/{query}
           method: get
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -289,7 +389,7 @@ functions:
                 query: true
   getSearchQuery:
     handler: functions/getSearchQuery/index.handler
-    name: ${self:service}-${opt:stage}-getSearchQuery
+    name: ${self:service}-${self:provider.stage}-getSearchQuery
     package:
       include:
         - functions/getSearchQuery/**
@@ -299,7 +399,19 @@ functions:
           path: /search/{query}
           method: get
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -314,7 +426,7 @@ functions:
                 query: true
   getSelf:
     handler: functions/getSelf/index.handler
-    name: ${self:service}-${opt:stage}-getSelf
+    name: ${self:service}-${self:provider.stage}-getSelf
     package:
       include:
         - functions/getSelf/**
@@ -324,7 +436,19 @@ functions:
           path: /self
           method: get
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -335,13 +459,13 @@ functions:
                 authorization: true
   patchObjects:
     handler: functions/patchObjects/index.handler
-    name: ${self:service}-${opt:stage}-patchObjects
+    name: ${self:service}-${self:provider.stage}-patchObjects
     package:
       include:
         - functions/patchObjects/**
   patchObjects2:
     handler: functions/patchObjects2/index.handler
-    name: ${self:service}-${opt:stage}-patchObjects2
+    name: ${self:service}-${self:provider.stage}-patchObjects2
     memorySize: 1024
     package:
       include:
@@ -352,7 +476,19 @@ functions:
           path: /objects
           method: patch
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -363,7 +499,7 @@ functions:
                 authorization: true
   putColors:
     handler: functions/putColors/index.handler
-    name: ${self:service}-${opt:stage}-putColors
+    name: ${self:service}-${self:provider.stage}-putColors
     package:
       include:
         - functions/putColors/**
@@ -373,7 +509,19 @@ functions:
           path: /colors
           method: put
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -384,7 +532,7 @@ functions:
                 authorization: true
   putFloorsFloorIdEdit:
     handler: functions/putFloorsFloorIdEdit/index.handler
-    name: ${self:service}-${opt:stage}-putFloorsFloorIdEdit
+    name: ${self:service}-${self:provider.stage}-putFloorsFloorIdEdit
     package:
       include:
         - functions/putFloorsFloorIdEdit/**
@@ -394,7 +542,19 @@ functions:
           path: /floors/{floorId}/edit
           method: put
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -407,7 +567,7 @@ functions:
                 floorId: true
   putFloorsFloorIdPublic:
     handler: functions/putFloorsFloorIdPublic/index.handler
-    name: ${self:service}-${opt:stage}-putFloorsFloorIdPublic
+    name: ${self:service}-${self:provider.stage}-putFloorsFloorIdPublic
     memorySize: 1024
     package:
       include:
@@ -418,7 +578,19 @@ functions:
           path: /floors/{floorId}/public
           method: put
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -429,9 +601,45 @@ functions:
                 authorization: true
               paths:
                 floorId: true
+  putImagesImageId:
+    handler: functions/putImagesImageId/index.handler
+    name: ${self:service}-${self:provider.stage}-putImagesImageId
+    environment:
+      STORAGE_NAME: ${self:custom.storageName}
+    memorySize: 1024
+    package:
+      include:
+        - functions/putImagesImageId/**
+        - common/**
+    events:
+      - http:
+          path: /images/{imageId}
+          method: put
+          integration: lambda-proxy
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
   putPrototypes:
     handler: functions/putPrototypes/index.handler
-    name: ${self:service}-${opt:stage}-putPrototypes
+    name: ${self:service}-${self:provider.stage}-putPrototypes
     package:
       include:
         - functions/putPrototypes/**
@@ -441,7 +649,19 @@ functions:
           path: /prototypes
           method: put
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -452,7 +672,7 @@ functions:
                 authorization: true
   putPrototypesPrototypeId:
     handler: functions/putPrototypesPrototypeId/index.handler
-    name: ${self:service}-${opt:stage}-putPrototypesPrototypeId
+    name: ${self:service}-${self:provider.stage}-putPrototypesPrototypeId
     package:
       include:
         - functions/putPrototypesPrototypeId/**
@@ -462,7 +682,19 @@ functions:
           path: /prototypes/{prototypeId}
           method: put
           integration: lambda-proxy
-          cors: true
+          cors:
+            origin: ${file(AccessControlAllowOrigin)}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 0
@@ -481,12 +713,48 @@ resources:
     ApiGatewayRestApi:
       Type: AWS::ApiGateway::RestApi
       Properties:
-        Name: ${self:service}-${opt:stage}
+        Name: ${self:service}-${self:provider.stage}
     # DynamoDB
+    ColorsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.stage}_office_maker_map_colors
+        AttributeDefinitions:
+          - AttributeName: tenantId
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tenantId
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    PrototypesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.stage}_office_maker_map_prototypes
+        AttributeDefinitions:
+          - AttributeName: tenantId
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tenantId
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
     PublicFloorsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${opt:stage}_office_maker_map_public_floors
+        TableName: ${self:provider.stage}_office_maker_map_public_floors
         AttributeDefinitions:
           - AttributeName: tenantId
             AttributeType: S
@@ -502,6 +770,103 @@ resources:
           WriteCapacityUnits: 1
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+
+
+    EditFloorsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.stage}_office_maker_map_edit_floors
+        AttributeDefinitions:
+          - AttributeName: tenantId
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tenantId
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    PublicObjectsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.stage}_office_maker_map_public_objects
+        AttributeDefinitions:
+          - AttributeName: floorId
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: personId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: floorId
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: id-index
+            KeySchema:
+            - AttributeName: id
+              KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: personId-index
+            KeySchema:
+            - AttributeName: personId
+              KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+
+    EditObjectsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.stage}_office_maker_map_edit_objects
+        AttributeDefinitions:
+          - AttributeName: floorId
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: personId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: floorId
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: id-index
+            KeySchema:
+            - AttributeName: id
+              KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: personId-index
+            KeySchema:
+            - AttributeName: personId
+              KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
     # S3
     StorageBucket:
       Type: "AWS::S3::Bucket"

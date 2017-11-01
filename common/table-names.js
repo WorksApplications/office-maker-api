@@ -1,11 +1,10 @@
 module.exports = function(event) {
-  let prefix = null;
-  if (!event.stageVariables.Stage && event.stageVariables.Stage !== '') {
-    throw 'process.env.TABLE_PREFIX not found.';
-  }else{
-    prefix = event.stageVariables.Stage+'_';
-  }
+  const prefix = process.env.TABLE_PREFIX;
 
+  if (!prefix && prefix !== '') {
+    throw 'process.env.TABLE_PREFIX not found.';
+  }
+  
   return {
     editFloors: `${prefix}office_maker_map_edit_floors`,
     publicFloors: `${prefix}office_maker_map_public_floors`,

@@ -21,7 +21,7 @@ plugins:
   - serverless-plugin-stage-variables
 
 custom:
-  storageName: ${self:service}-storage-${opt:stage}-${opt:stage}-${opt:stage}
+  storageName: ${self:service}-storage-${opt:stage}
   stageVariables:
     AccessControlAllowOrigin: "http://"
     ProfileServiceRoot: "https://"

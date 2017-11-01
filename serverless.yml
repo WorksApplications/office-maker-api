@@ -1,0 +1,553 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: office-maker
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+plugins:
+  - serverless-plugin-stage-variables
+
+custom:
+  stageVariables:
+    AccessControlAllowOrigin: "http://"
+    ProfileServiceRoot: "https://"
+    StorageBucket: ${self:service}-storage-${opt:stage}
+    Stage: ${opt:stage}
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  memorySize: 128
+  timeout: 20
+
+# you can overwrite defaults here
+  stage: ${opt:stage}
+  region: ap-northeast-1
+
+# you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+   - Effect: "Allow"
+     Action:
+       - "dynamodb:*"
+     Resource:
+       - 'Fn::Join':
+         - ':'
+         -
+           - 'arn:aws:dynamodb'
+           - ${self:provider.region}
+           - Ref: 'AWS::AccountId'
+           - 'table/*'
+   - Effect: "Allow"
+     Action:
+       - "s3:*"
+     Resource: "arn:aws:s3:::*"
+
+
+# you can add packaging information here
+package:
+  individually: true
+  exclude:
+    - ./**
+
+functions:
+  authorizer:
+    handler: functions/authorizer/index.handler
+    name: ${self:service}-${opt:stage}-authorizer
+    package:
+      include:
+        - functions/authorizer/**
+        - sourceIp.yaml
+  batchAddCompressedObj:
+    handler: functions/batchAddCompressedObj/index.handler
+    name: ${self:service}-${opt:stage}-batchAddCompressedObj
+    environment:
+      STORAGE_NAME: ${self:service}-storage-${opt:stage}
+    memorySize: 1024
+    timeout: 300
+    package:
+      include:
+        - functions/batchAddCompressedObj/**
+        - common/**
+    events:
+      - stream:
+        arn:
+          Fn::GetAtt:
+            - PublicFloorsTable
+            - StreamArn
+        batchSize: 1
+        startingPosition: TRIM_HORIZON
+        enabled: true
+  batchDeleteUnusedData:
+    handler: functions/batchDeleteUnusedData/index.handler
+    name: ${self:service}-${opt:stage}-batchDeleteUnusedData
+    package:
+      include:
+        - functions/batchDeleteUnusedData/**
+        - common/**
+  batchDeleteUnusedImages:
+    handler: functions/batchDeleteUnusedImages/index.handler
+    name: ${self:service}-${opt:stage}-batchDeleteUnusedImages
+    package:
+      include:
+        - functions/batchDeleteUnusedImages/**
+        - common/**
+  deleteFloorsFloorIdEdit:
+    handler: functions/deleteFloorsFloorIdEdit/index.handler
+    name: ${self:service}-${opt:stage}-deleteFloorsFloorIdEdit
+    package:
+      include:
+        - functions/deleteFloorsFloorIdEdit/**
+        - common/**
+    events:
+      - http:
+          path: /floors/{floorId}/edit
+          method: delete
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+              paths:
+                floorId: true
+  getColors:
+    handler: functions/getColors/index.handler
+    name: ${self:service}-${opt:stage}-getColors
+    package:
+      include:
+        - functions/getColors/**
+        - common/**
+    events:
+      - http:
+          path: /colors
+          method: get
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+  getFloors:
+    handler: functions/getFloors/index.handler
+    name: ${self:service}-${opt:stage}-getFloors
+    package:
+      include:
+        - functions/getFloors/**
+        - common/**
+    events:
+      - http:
+          path: /floors
+          method: get
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+  getFloorsFloorIdEdit:
+    handler: functions/getFloorsFloorIdEdit/index.handler
+    name: ${self:service}-${opt:stage}-getFloorsFloorIdEdit
+    memorySize: 1024
+    package:
+      include:
+        - functions/getFloorsFloorIdEdit/**
+        - common/**
+    events:
+      - http:
+          path: /floors/{floorId}/edit
+          method: get
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+              paths:
+                floorId: true
+  getObjectsObjectId:
+    handler: functions/getObjectsObjectId/index.handler
+    name: ${self:service}-${opt:stage}-getObjectsObjectId
+    package:
+      include:
+        - functions/getObjectsObjectId/**
+        - common/**
+    events:
+      - http:
+          path: /objects/{objectId}
+          method: get
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+              paths:
+                objectId: true
+  getPeople:
+    handler: functions/getPeople/index.handler
+    name: ${self:service}-${opt:stage}-getPeople
+    package:
+      include:
+        - functions/getPeople/**
+        - common/**
+    events:
+      - http:
+          path: /people
+          method: get
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+              querystrings:
+                post: true
+                ids: true
+                floorId: true
+  getPrototypes:
+    handler: functions/getPrototypes/index.handler
+    name: ${self:service}-${opt:stage}-getPrototypes
+    package:
+      include:
+        - functions/getPrototypes/**
+        - common/**
+    events:
+      - http:
+          path: /prototypes
+          method: get
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+  getSearchObjectsQuery:
+    handler: functions/getSearchObjectsQuery/index.handler
+    name: ${self:service}-${opt:stage}-getSearchObjectsQuery
+    package:
+      include:
+        - functions/getSearchObjectsQuery/**
+        - common/**
+    events:
+      - http:
+          path: /search/Objects/{query}
+          method: get
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+              querystrings:
+                all: true
+              paths:
+                query: true
+  getSearchQuery:
+    handler: functions/getSearchQuery/index.handler
+    name: ${self:service}-${opt:stage}-getSearchQuery
+    package:
+      include:
+        - functions/getSearchQuery/**
+        - common/**
+    events:
+      - http:
+          path: /search/{query}
+          method: get
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+              querystrings:
+                all: true
+              paths:
+                query: true
+  getSelf:
+    handler: functions/getSelf/index.handler
+    name: ${self:service}-${opt:stage}-getSelf
+    package:
+      include:
+        - functions/getSelf/**
+        - common/**
+    events:
+      - http:
+          path: /self
+          method: get
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+  patchObjects:
+    handler: functions/patchObjects/index.handler
+    name: ${self:service}-${opt:stage}-patchObjects
+    package:
+      include:
+        - functions/patchObjects/**
+  patchObjects2:
+    handler: functions/patchObjects2/index.handler
+    name: ${self:service}-${opt:stage}-patchObjects2
+    memorySize: 1024
+    package:
+      include:
+        - functions/patchObjects2/**
+        - common/**
+    events:
+      - http:
+          path: /objects
+          method: patch
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+  putColors:
+    handler: functions/putColors/index.handler
+    name: ${self:service}-${opt:stage}-putColors
+    package:
+      include:
+        - functions/putColors/**
+        - common/**
+    events:
+      - http:
+          path: /colors
+          method: put
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+  putFloorsFloorIdEdit:
+    handler: functions/putFloorsFloorIdEdit/index.handler
+    name: ${self:service}-${opt:stage}-putFloorsFloorIdEdit
+    package:
+      include:
+        - functions/putFloorsFloorIdEdit/**
+        - common/**
+    events:
+      - http:
+          path: /floors/{floorId}/edit
+          method: put
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+              paths:
+                floorId: true
+  putFloorsFloorIdPublic:
+    handler: functions/putFloorsFloorIdPublic/index.handler
+    name: ${self:service}-${opt:stage}-putFloorsFloorIdPublic
+    memorySize: 1024
+    package:
+      include:
+        - functions/putFloorsFloorIdPublic/**
+        - common/**
+    events:
+      - http:
+          path: /floors/{floorId}/public
+          method: put
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+              paths:
+                floorId: true
+  putPrototypes:
+    handler: functions/putPrototypes/index.handler
+    name: ${self:service}-${opt:stage}-putPrototypes
+    package:
+      include:
+        - functions/putPrototypes/**
+        - common/**
+    events:
+      - http:
+          path: /prototypes
+          method: put
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+  putPrototypesPrototypeId:
+    handler: functions/putPrototypesPrototypeId/index.handler
+    name: ${self:service}-${opt:stage}-putPrototypesPrototypeId
+    package:
+      include:
+        - functions/putPrototypesPrototypeId/**
+        - common/**
+    events:
+      - http:
+          path: /prototypes/{prototypeId}
+          method: put
+          integration: lambda-proxy
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+              paths:
+                prototypeId: true
+
+# you can add CloudFormation resource templates here
+resources:
+  Resources:
+    # APIG
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ${self:service}-${opt:stage}
+    # DynamoDB
+    PublicFloorsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${opt:stage}_office_maker_map_public_floors
+        AttributeDefinitions:
+          - AttributeName: tenantId
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tenantId
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    # S3
+    StorageBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: ${self:service}-storage-${opt:stage}
+        CorsConfiguration:
+          CorsRules:
+          - AllowedHeaders: ['*']
+            AllowedMethods: [GET]
+            AllowedOrigins: ["*"]
+            Id: ${self:service}-storage-cors
+            MaxAge: '1'
+
+    StorageBucketPolicy:
+      Type: 'AWS::S3::BucketPolicy'
+      Properties:
+        Bucket:
+          Ref: StorageBucket
+        PolicyDocument:
+          Statement:
+            - Effect: "Allow"
+              Principal: "*"
+              Action: "s3:ListBucket"
+              Resource:
+                'Fn::Join':
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - Ref: StorageBucket
+              Condition:
+                Bool:
+                  "aws:SecureTransport": "true"
+                IpAddress: ${file(sourceIp.yaml)}
+            - Effect: Allow
+              Principal: "*"
+              Action: "s3:*"
+              Resource:
+                'Fn::Join':
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - Ref: StorageBucket
+                    - /*
+              Condition:
+                Bool:
+                  "aws:SecureTransport": "true"
+                IpAddress: ${file(sourceIp.yaml)}
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"

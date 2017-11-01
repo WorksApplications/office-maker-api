@@ -1,0 +1,9 @@
+{
+  "name": "office-maker",
+  "description": "",
+  "version": "0.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "serverless-plugin-stage-variables": "^1.7.8"
+  }
+}

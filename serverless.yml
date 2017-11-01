@@ -21,10 +21,10 @@ plugins:
   - serverless-plugin-stage-variables
 
 custom:
+  storageName: ${self:service}-storage-${opt:stage}-${opt:stage}-${opt:stage}
   stageVariables:
     AccessControlAllowOrigin: "http://"
     ProfileServiceRoot: "https://"
-    StorageBucket: ${self:service}-storage-${opt:stage}
     Stage: ${opt:stage}
 
 provider:
@@ -74,7 +74,7 @@ functions:
     handler: functions/batchAddCompressedObj/index.handler
     name: ${self:service}-${opt:stage}-batchAddCompressedObj
     environment:
-      STORAGE_NAME: ${self:service}-storage-${opt:stage}
+      STORAGE_NAME: ${self:custom.storageName}
     memorySize: 1024
     timeout: 300
     package:
@@ -506,7 +506,7 @@ resources:
     StorageBucket:
       Type: "AWS::S3::Bucket"
       Properties:
-        BucketName: ${self:service}-storage-${opt:stage}
+        BucketName: ${self:custom.storageName}
         CorsConfiguration:
           CorsRules:
           - AllowedHeaders: ['*']

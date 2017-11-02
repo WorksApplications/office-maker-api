@@ -24,7 +24,6 @@ custom:
   TABLE_PREFIX: ${self:provider.stage}_
   storageName: ${self:service}-storage-${self:provider.stage}
   stageVariables:
-    AccessControlAllowOrigin: ${file(AccessControlAllowOrigin)}
     ProfileServiceRoot: ${file(ProfileServiceRoot)}
 
 provider:
@@ -53,11 +52,13 @@ provider:
            - 'arn:aws:dynamodb'
            - ${self:provider.region}
            - Ref: 'AWS::AccountId'
-           - 'table/*'
+           - 'table/${self:custom.TABLE_PREFIX}*'
    - Effect: "Allow"
      Action:
        - "s3:*"
-     Resource: "arn:aws:s3:::*"
+     Resource:
+       - "arn:aws:s3:::${self:custom.storageName}"
+       - "arn:aws:s3:::${self:custom.storageName}/*"
 
 
 # you can add packaging information here
@@ -86,14 +87,16 @@ functions:
         - functions/batchAddCompressedObj/**
         - common/**
     events:
+      # - stream: arn:aws:dynamodb:region:ap-northeast-1:table/${self:provider.stage}_office_maker_map_public_floors/stream/1901T00:00:00.000
       - stream:
-        arn:
-          Fn::GetAtt:
-            - PublicFloorsTable
-            - StreamArn
-        batchSize: 1
-        startingPosition: TRIM_HORIZON
-        enabled: true
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - PublicFloorsTable
+              - StreamArn
+          batchSize: 1
+          startingPosition: TRIM_HORIZON
+          enabled: true
   batchDeleteUnusedData:
     handler: functions/batchDeleteUnusedData/index.handler
     name: ${self:service}-${self:provider.stage}-batchDeleteUnusedData
@@ -121,7 +124,7 @@ functions:
           method: delete
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -156,7 +159,7 @@ functions:
           method: get
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -189,7 +192,7 @@ functions:
           method: get
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -223,7 +226,7 @@ functions:
           method: get
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -258,7 +261,7 @@ functions:
           method: get
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -293,7 +296,7 @@ functions:
           method: get
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -330,7 +333,7 @@ functions:
           method: get
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -363,7 +366,7 @@ functions:
           method: get
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -400,7 +403,7 @@ functions:
           method: get
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -437,7 +440,7 @@ functions:
           method: get
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -477,7 +480,7 @@ functions:
           method: patch
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -510,7 +513,7 @@ functions:
           method: put
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -543,7 +546,7 @@ functions:
           method: put
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -579,7 +582,7 @@ functions:
           method: put
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -617,7 +620,7 @@ functions:
           method: put
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -650,7 +653,7 @@ functions:
           method: put
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -683,7 +686,7 @@ functions:
           method: put
           integration: lambda-proxy
           cors:
-            origin: ${file(AccessControlAllowOrigin)}
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
@@ -714,6 +717,10 @@ resources:
       Type: AWS::ApiGateway::RestApi
       Properties:
         Name: ${self:service}-${self:provider.stage}
+        BinaryMediaTypes:
+          - "image~1png"
+          - "image~1jpeg"
+          - "application~1octet-stream"
     # DynamoDB
     ColorsTable:
       Type: AWS::DynamoDB::Table

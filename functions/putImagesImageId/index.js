@@ -8,14 +8,17 @@ const s3 = new AWS.S3({});
 
 const commonModule = require('common');
 
-const storageName = process.env.storageName;
+const storageName = process.env.STORAGE_NAME;
 
 exports.handler = (event, context, callback) => {
   console.log('Received event:', JSON.stringify(event, null, 2));
 
   var id = event.pathParameters.imageId;
 
-  var body = new Buffer(event.body,'base64');
+
+  var body = Buffer.from(event.body.replace(/^data:image\/\w+;base64,/, ''),'base64');
+
+  console.log('body: ', body);
 
   var type = event.headers['content-type'];
 
@@ -25,6 +28,7 @@ exports.handler = (event, context, callback) => {
     commonModule.lambdaUtil(event).send(callback, 500, err);
   });
 };
+
 
 function putImage(id, body, type){
   return new Promise((resolve, reject) => {
@@ -41,7 +45,7 @@ function putImage(id, body, type){
         return reject(err);
       }
       else {
-        console.log('data: '+data);
+        console.log('data: '+JSON.stringify(data, null, 2));
         return resolve(data);
       }
     });

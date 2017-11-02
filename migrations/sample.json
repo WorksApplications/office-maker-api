@@ -1,5 +1,9 @@
 [
-  {
-    "id": "1"
-  }
+	{
+		"player": "user1",
+		"unixtime": 1482418800,
+		"player_hand": "rock",
+		"computer_hand": "paper",
+		"judge": "lose"
+	}
 ]

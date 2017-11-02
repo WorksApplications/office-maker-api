@@ -38,11 +38,21 @@ custom:
       inMemory: true
       migrate: true
       seed: true
-  seed:
-    development:
-      sources:
-        - table: jankens
-          sources: [./migrations/sample.json]
+    seed:
+      development:
+        sources:
+          - table: ${self:provider.stage}_office_maker_map_colors
+            sources: [./migrations/ColorsTable.json]
+          - table: PrototypesTable
+            sources: [./migrations/PrototypesTable.json]
+          - table: PublicFloorsTable
+            sources: [./migrations/PublicFloorsTable.json]
+          - table: EditFloorsTable
+            sources: [./migrations/EditFloorsTable.json]
+          - table: PublicObjectsTable
+            sources: [./migrations/PublicObjectsTable.json]
+          - table: EditObjectsTable
+            sources: [./migrations/EditObjectsTable.json]
 
 provider:
   name: aws
@@ -51,7 +61,7 @@ provider:
   timeout: 20
 
 # you can overwrite defaults here
-  stage: ${opt:stage}
+  stage: local
   region: ap-northeast-1
 
 # you can add environment variables
@@ -105,7 +115,6 @@ functions:
         - functions/batchAddCompressedObj/**
         - common/**
     events:
-      # - stream: arn:aws:dynamodb:region:ap-northeast-1:table/${self:provider.stage}_office_maker_map_public_floors/stream/1901T00:00:00.000
       - stream:
           type: dynamodb
           arn:

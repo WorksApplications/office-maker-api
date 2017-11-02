@@ -1,13 +1,31 @@
 const AWS = require('aws-sdk');
 
-const client = new AWS.DynamoDB.DocumentClient({
-  maxRetries: 1
-});
+// const client = new AWS.DynamoDB.DocumentClient({
+//   maxRetries: 1
+// });
+
+function getDynamoDC(event) {
+    var dynamodb = null;
+    if ('isOffline' in event && event.isOffline) {
+        dynamodb = new AWS.DynamoDB.DocumentClient({
+            region: 'localhost',
+            endpoint: 'http://localhost:8000',
+						maxRetries: 1
+        });
+    } else {
+        dynamodb = new AWS.DynamoDB.DocumentClient({
+					maxRetries: 1
+				});
+    }
+    return dynamodb;
+};
+
 
 const getTableNames = require('./table-names.js');
 
 function create(event) {
   console.log('event', event);
+	const client = getDynamoDC(event);
   const tableNames = getTableNames(event);
 
   function publishFloor(tenantId, floorId, updateBy, updateAt) {

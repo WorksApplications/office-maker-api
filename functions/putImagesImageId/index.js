@@ -8,7 +8,7 @@ const s3 = new AWS.S3({});
 
 const commonModule = require('common');
 
-const storageName = process.env.STORAGE_NAME;
+const STORAGE_NAME = process.env.STORAGE_NAME;
 
 exports.handler = (event, context, callback) => {
   console.log('Received event:', JSON.stringify(event, null, 2));
@@ -35,7 +35,7 @@ function putImage(id, body, type){
     var params = {
       Body: body,
       ContentType: type,
-      Bucket: storageName,
+      Bucket: STORAGE_NAME,
       Key: 'images/floors/'+id
     };
     console.log('params: '+JSON.stringify(params));

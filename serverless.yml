@@ -19,12 +19,17 @@ service: office-maker
 
 plugins:
   - serverless-plugin-stage-variables
+  - serverless-s3-remover
 
 custom:
   TABLE_PREFIX: ${self:provider.stage}_
-  storageName: ${self:service}-storage-${self:provider.stage}
+  STORAGE_NAME: ${self:service}-storage-${self:provider.stage}
   stageVariables:
     ProfileServiceRoot: ${file(ProfileServiceRoot)}
+  remover:
+     buckets:
+      #  - ${self:custom.STORAGE_NAME}
+       - ${self:service}-storage-${self:provider.stage}
 
 provider:
   name: aws
@@ -57,8 +62,8 @@ provider:
      Action:
        - "s3:*"
      Resource:
-       - "arn:aws:s3:::${self:custom.storageName}"
-       - "arn:aws:s3:::${self:custom.storageName}/*"
+       - "arn:aws:s3:::${self:custom.STORAGE_NAME}"
+       - "arn:aws:s3:::${self:custom.STORAGE_NAME}/*"
 
 
 # you can add packaging information here
@@ -79,7 +84,7 @@ functions:
     handler: functions/batchAddCompressedObj/index.handler
     name: ${self:service}-${self:provider.stage}-batchAddCompressedObj
     environment:
-      STORAGE_NAME: ${self:custom.storageName}
+      STORAGE_NAME: ${self:custom.STORAGE_NAME}
     memorySize: 1024
     timeout: 300
     package:
@@ -608,7 +613,7 @@ functions:
     handler: functions/putImagesImageId/index.handler
     name: ${self:service}-${self:provider.stage}-putImagesImageId
     environment:
-      STORAGE_NAME: ${self:custom.storageName}
+      STORAGE_NAME: ${self:custom.STORAGE_NAME}
     memorySize: 1024
     package:
       include:
@@ -878,7 +883,7 @@ resources:
     StorageBucket:
       Type: "AWS::S3::Bucket"
       Properties:
-        BucketName: ${self:custom.storageName}
+        BucketName: ${self:custom.STORAGE_NAME}
         CorsConfiguration:
           CorsRules:
           - AllowedHeaders: ['*']

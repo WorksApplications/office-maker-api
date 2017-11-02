@@ -20,6 +20,8 @@ service: office-maker
 plugins:
   - serverless-plugin-stage-variables
   - serverless-s3-remover
+  - serverless-dynamodb-local
+  - serverless-offline
 
 custom:
   TABLE_PREFIX: ${self:provider.stage}_
@@ -30,6 +32,17 @@ custom:
      buckets:
       #  - ${self:custom.STORAGE_NAME}
        - ${self:service}-storage-${self:provider.stage}
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      seed: true
+  seed:
+    development:
+      sources:
+        - table: jankens
+          sources: [./migrations/sample.json]
 
 provider:
   name: aws

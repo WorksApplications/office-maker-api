@@ -6,6 +6,8 @@
     "serverless": "^1.23.0"
   },
   "devDependencies": {
+    "serverless-dynamodb-local": "^0.2.26",
+    "serverless-offline": "^3.16.0",
     "serverless-plugin-stage-variables": "^1.7.8",
     "serverless-s3-remover": "^0.4.0"
   }

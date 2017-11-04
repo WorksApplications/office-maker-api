@@ -18,7 +18,7 @@ function getDynamoDC(event) {
 				});
     }
     return dynamodb;
-};
+}
 
 
 const getTableNames = require('./table-names.js');

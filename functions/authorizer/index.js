@@ -1,8 +1,8 @@
 var jwt = require('jsonwebtoken');
-var json = require('functions/authorizer/guest_token.json');
 var fs = require('fs');
-const yaml = require('js-yaml');
+var guest_token = JSON.parse(fs.readFileSync('functions/authorizer/guest_token.json', 'utf8'));
 var publicKey = fs.readFileSync('functions/authorizer/pubkey.pem');
+const yaml = require('js-yaml');
 
 const sourceIp = yaml.safeLoad(fs.readFileSync('sourceIp.yaml', 'utf8'));
 
@@ -56,17 +56,17 @@ const guest = {
   exp: '',
   userId: 'office-maker@worksap.co.jp',
   tenantDomain: 'worksap.co.jp',
-  token: json.GUEST_TOKEN
+	token: guest_token.GUEST_TOKEN
 };
 
 
-exports.handler = (event, context, callback) => {
+module.exports.handler = (event, context, callback) => {
   console.log('Received event:', JSON.stringify(event, null, 2));
   var token = (event.authorizationToken || '').split('Bearer ')[1];
   const allowedGuestResources = getAllowedGuestResource(event.methodArn);
   const allowedGeneralResources = getAllowedGeneralResource(event.methodArn);
   if (!token) {
-    callback(null, generate_policy('', 'Allow', allowedGuestResources, guest));
+    callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
   } else {
     getSelf(token).then(user => {
       if (user.role == 'admin') {
@@ -76,7 +76,7 @@ exports.handler = (event, context, callback) => {
       }
     }).catch(message => {
       console.log('msg: ', message);
-      callback(null, generate_policy('', 'Allow', allowedGuestResources, guest));
+      callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
     });
   }
 };

@@ -6,7 +6,7 @@ const AWS = require('aws-sdk');
 
 const s3 = new AWS.S3({});
 
-const commonModule = require('common');
+const commonModule = require(process.cwd()+'/common');
 
 const STORAGE_NAME = process.env.STORAGE_NAME;
 

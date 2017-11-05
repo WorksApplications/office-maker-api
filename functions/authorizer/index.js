@@ -1,7 +1,7 @@
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
-var guest_token = JSON.parse(fs.readFileSync('functions/authorizer/guest_token.json', 'utf8'));
-var publicKey = fs.readFileSync('functions/authorizer/pubkey.pem');
+var guest_token = JSON.parse(fs.readFileSync(__dirname+'/guest_token.json', 'utf8'));
+var publicKey = fs.readFileSync(__dirname+'/pubkey.pem');
 const yaml = require('js-yaml');
 
 const sourceIp = yaml.safeLoad(fs.readFileSync('sourceIp.yaml', 'utf8'));
@@ -65,6 +65,7 @@ module.exports.handler = (event, context, callback) => {
   var token = (event.authorizationToken || '').split('Bearer ')[1];
   const allowedGuestResources = getAllowedGuestResource(event.methodArn);
   const allowedGeneralResources = getAllowedGeneralResource(event.methodArn);
+	console.log('token: ', token);
   if (!token) {
     callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
   } else {

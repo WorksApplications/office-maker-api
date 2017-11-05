@@ -2,7 +2,7 @@
 
 console.log('Loading function');
 
-const commonModule = require('common');
+const commonModule = require(process.cwd()+'/common');
 
 const aws = require('aws-sdk');
 

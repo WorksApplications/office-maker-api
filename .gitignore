@@ -13,4 +13,4 @@ functions/authorizer/guest_token.json
 AccessControlAllowOrigin
 ProfileServiceRoot
 
-migration/*
+migrations/*

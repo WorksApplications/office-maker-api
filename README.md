@@ -1,4 +1,6 @@
 # office-maker-api
+## Getting Started
+node v6.10.3
 ## Initialization
 1. Installing
   - ```sh init.sh```
@@ -25,3 +27,36 @@
 
 ## Removement
 ```sls remove -v -s <stage name>```
+
+
+## Build
+
+TODO
+
+## Debug
+
+TODO
+
+## Contributing
+
+TODO
+
+## Versioning
+
+TODO
+
+## Authors
+
+TODO
+
+## Acknowledgments
+
+TODO
+
+## Copyright
+
+© 2017-Present WorksApplications CO.,LTD.
+
+## License
+
+[Apache License 2.0](LICENSE)

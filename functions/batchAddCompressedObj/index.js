@@ -4,12 +4,6 @@ console.log('Loading function');
 
 const commonModule = require(process.cwd()+'/common');
 
-const aws = require('aws-sdk');
-
-const s3 = new aws.S3({
-  apiVersion: '2006-03-01'
-});
-
 const zlib = require('zlib');
 
 
@@ -33,18 +27,11 @@ exports.handler = (event, context, callback) => {
     var floorId = record.dynamodb.Keys.id.S;
 
     const db = commonModule.db(event);
+    const s3 = commonModule.s3(event);
     return db.getFloorWithObjects(tenantId, floorId, isEditFloor).then((data) => {
       console.log('data: ', JSON.stringify(data));
       return zlib.gzip(JSON.stringify(data), function(err, binary) {
-        var params = {
-          Body: binary,
-          Bucket: storageBucketName,
-          Key: 'files/floors/' + floorId,
-          ContentType: 'application/json',
-          ContentEncoding: 'gzip',
-          CacheControl: 'max-age=0'
-        };
-        return s3.putObject(params).promise().then(() => {
+        return s3.putFloorsInfo(binary, storageBucketName, floorId).then(() => {
           commonModule.lambdaUtil(event).send(callback, 200, 'success');
         });
       });

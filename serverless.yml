@@ -19,6 +19,7 @@ service: office-maker
 
 plugins:
   - serverless-plugin-stage-variables
+  - serverless-s3-local
   - serverless-s3-remover
   - serverless-dynamodb-local
   - serverless-offline
@@ -53,6 +54,13 @@ custom:
             sources: [./migrations/PublicObjectsTable.json]
           - table: ${self:provider.stage}_office_maker_map_edit_objects
             sources: [./migrations/EditObjectsTable.json]
+  s3:
+    host: 0.0.0.0
+    port: 8888
+    directory: /tmp
+    cors: false
+    # Uncomment only if you already have a S3 server running locally
+    # noStart: true
 
 provider:
   name: aws

@@ -7,14 +7,10 @@ const commonModule = require(process.cwd()+'/common');
 const AWS = require('aws-sdk');
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
-const s3 = new AWS.S3({
-  apiVersion: '2006-03-01'
-});
 
 exports.handler = (event, context, callback) => {
   console.log('Received event:', JSON.stringify(event, null, 2));
 
-  const db = commonModule.db(event);
   const tableNames = commonModule.tableNames(context);
 
   return getAllFloors(tableNames.editFloors).then((editFloors) => {

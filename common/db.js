@@ -1,9 +1,5 @@
 const AWS = require('aws-sdk');
 
-// const client = new AWS.DynamoDB.DocumentClient({
-//   maxRetries: 1
-// });
-
 function getDynamoDC(event) {
     var dynamodb = null;
     if ('isOffline' in event && event.isOffline) {
@@ -20,12 +16,11 @@ function getDynamoDC(event) {
     return dynamodb;
 }
 
-
 const getTableNames = require('./table-names.js');
 
 function create(event) {
   console.log('event', event);
-	const client = getDynamoDC(event);
+  const client = getDynamoDC(event);
   const tableNames = getTableNames(event);
 
   function publishFloor(tenantId, floorId, updateBy, updateAt) {
@@ -778,7 +773,7 @@ function create(event) {
     deletePrototype: deletePrototype,
     getObjectByIdFromPublicFloor: getObjectByIdFromPublicFloor,
     searchPeopleWithObjects: searchPeopleWithObjects,
-    searchObjects: searchObjects,
+    searchObjects: searchObjects
   };
 }
 

@@ -1,5 +1,6 @@
 module.exports = {
   db: require('./db.js'),
+  s3: require('./s3.js'),
   lambdaUtil: require('./lambda-util'),
   profileService: require('./profile-service.js'),
   log: require('./log.js'),

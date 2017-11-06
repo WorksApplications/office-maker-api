@@ -21,7 +21,7 @@
   <!-- - S3 Bucket Local URL: ```http://localhost:6000``` -->
 
 ## Deployment
-'''sls deploy -v -s <stage name>'''
+```sls deploy -v -s <stage name>```
 
 ## Removement
-'''sls remove -v -s <stage name>'''
+```sls remove -v -s <stage name>```

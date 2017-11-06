@@ -1,6 +1,22 @@
 [
 	{
-		"tenantId": "worksap.co.jp",
-		"id": "1"
+		"color":"#000",
+		"tenantId":"worksap.co.jp",
+		"width":56,
+		"shape":"rectangle",
+		"fontSize":20,
+		"backgroundColor":"#eee",
+		"height":96,
+		"id":"1"
+	},
+	{
+		"color":"#000",
+		"tenantId":"worksap.co.jp",
+		"width":96,
+		"shape":"rectangle",
+		"fontSize":20,
+		"backgroundColor":"#eee",
+		"height":56,
+		"id":"2"
 	}
 ]

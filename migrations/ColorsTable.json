@@ -1,6 +1,16 @@
 [
 	{
-		"tenantId": "worksap.co.jp",
-		"id": "1"
+		"color":"#a75",
+		"ord":0,
+		"type":"color",
+		"id":"0",
+		"tenantId":"worksap.co.jp"
+	},
+	{
+		"color":"#75a",
+		"ord":1,
+		"type":"color",
+		"id":"1",
+		"tenantId":"worksap.co.jp"
 	}
 ]

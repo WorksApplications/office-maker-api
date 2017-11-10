@@ -45,7 +45,7 @@ function create(event) {
       id: profile.userId,
       tenantId: profile.tenantId,
       name: profile.name,
-      empNo: profile.employeeId,
+      employeeId: profile.employeeId,
       post: profile.post || '',
       tel1: profile.extensionPhone,
       tel2: profile.cellPhone,
@@ -57,7 +57,7 @@ function create(event) {
 
 
   function getPerson(token, personId) {
-    // return Promise.resolve({'id':'arai_s@worksap.co.jp','name':'新井 成一','empNo':'6057','post':'Site Reliability Engineering Div. hue operation Dept. Improvement Design Grp. Improvement Design Grp.付','mail':'arai_s@worksap.co.jp','image':'http://kanlinux/WhosWho/images/6057.jpg','tel':null});
+    // return Promise.resolve({'id':'arai_s@worksap.co.jp','name':'新井 成一','employeeId':'6057','post':'Site Reliability Engineering Div. hue operation Dept. Improvement Design Grp. Improvement Design Grp.付','mail':'arai_s@worksap.co.jp','image':'http://kanlinux/WhosWho/images/6057.jpg','tel':null});
     return get(token, root + '/profiles/' + personId).then((person) => {
       console.log('gotPerson: ' + person);
       return Promise.resolve(fixPerson(person));

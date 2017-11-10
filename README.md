@@ -1,6 +1,6 @@
 # office-maker-api
 ## Getting Started
-node v6.10.3
+[Node.js](https://nodejs.org/) (>= 6.10)
 ## Initialization
 1. Installing
   - ```sh init.sh```
@@ -10,10 +10,10 @@ node v6.10.3
   - functions/authorizer/pubkey.pem
     - publickey which is used to decode token
   - functions/authorizer/guest_token.json
-    - this is special token for guest user
+    - special token for guest user
   - ProfileServiceRoot
     - URL for ProfileServiceRoot
-3. DynamoDB Initial Data
+3. DynamoDB Table Data
   - you can add inital data under ```migrations```
 
 ## How to run

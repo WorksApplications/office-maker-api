@@ -5,7 +5,7 @@ function getS3(event) {
     if ('isOffline' in event && event.isOffline) {
       S3 = new AWS.S3({
         s3ForcePathStyle: true,
-        endpoint: new AWS.Endpoint('http://localhost:6000'),
+        endpoint: new AWS.Endpoint('http://localhost:8888'),
       });
     } else {
       S3 = new AWS.S3({

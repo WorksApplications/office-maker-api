@@ -1,0 +1,13 @@
+type: object
+properties:
+  results:
+    type: array
+    items:
+      type: object
+      properties:
+        person:
+          $ref: ${file(Person.yaml)}
+        objects:
+          type: array
+          items:
+            $ref: ${file(Object.yaml)}

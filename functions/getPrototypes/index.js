@@ -10,6 +10,7 @@ exports.handler = (event, context, callback) => {
   var user = event.requestContext.authorizer;
 
   const db = commonModule.db(event);
+  console.log('db: ', db);
   db.getPrototypes(user.tenantId).then((data) => {
     commonModule.lambdaUtil(event).send(callback, 200, data);
   }).catch((err) => {

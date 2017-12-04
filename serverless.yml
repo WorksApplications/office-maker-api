@@ -17,50 +17,6 @@ service: office-maker
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
 
-plugins:
-  - serverless-plugin-stage-variables
-  - serverless-s3-local
-  - serverless-s3-remover
-  - serverless-dynamodb-local
-  - serverless-offline
-
-custom:
-  TABLE_PREFIX: ${self:provider.stage}_
-  STORAGE_NAME: ${self:service}-storage-${self:provider.stage}
-  stageVariables:
-    ProfileServiceRoot: ${file(ProfileServiceRoot)}
-  remover:
-     buckets:
-      #  - ${self:custom.STORAGE_NAME}
-       - ${self:service}-storage-${self:provider.stage}
-  dynamodb:
-    start:
-      port: 8000
-      inMemory: true
-      migrate: true
-      seed: true
-    seed:
-      development:
-        sources:
-          - table: ${self:provider.stage}_office_maker_map_colors
-            sources: [./migrations/ColorsTable.json]
-          - table: ${self:provider.stage}_office_maker_map_prototypes
-            sources: [./migrations/PrototypesTable.json]
-          - table: ${self:provider.stage}_office_maker_map_public_floors
-            sources: [./migrations/PublicFloorsTable.json]
-          - table: ${self:provider.stage}_office_maker_map_edit_floors
-            sources: [./migrations/EditFloorsTable.json]
-          - table: ${self:provider.stage}_office_maker_map_public_objects
-            sources: [./migrations/PublicObjectsTable.json]
-          - table: ${self:provider.stage}_office_maker_map_edit_objects
-            sources: [./migrations/EditObjectsTable.json]
-  s3:
-    host: 0.0.0.0
-    port: 8888
-    directory: /tmp
-    cors: false
-    # Uncomment only if you already have a S3 server running locally
-    # noStart: true
 
 provider:
   name: aws
@@ -69,7 +25,7 @@ provider:
   timeout: 20
 
 # you can overwrite defaults here
-  stage: ${opt:stage}
+  stage: ${git:branch}
   region: ap-northeast-1
 
 # you can add environment variables
@@ -103,6 +59,117 @@ package:
   exclude:
     - ./**
 
+
+plugins:
+  - serverless-plugin-stage-variables
+  - serverless-s3-local
+  - serverless-s3-remover
+  - serverless-dynamodb-local
+  - serverless-offline
+  - serverless-apigw-binary
+  - serverless-aws-documentation
+  - serverless-plugin-git-variables
+custom:
+  TABLE_PREFIX: ${self:service}-map-${self:provider.stage}
+  STORAGE_NAME: ${self:service}-storage-${self:provider.stage}
+  stageVariables:
+    ProfileServiceRoot: ${file(ProfileServiceRoot)}
+  apigwBinary:
+    types:           #list of mime-types
+      - "image/png"
+      - "image/jpeg"
+      - "application/octet-stream"
+  documentation:
+    models:
+      -
+        name: "Color"
+        description: "Model for get colors"
+        contentType: "application/json"
+        schema: ${file(models/Color.yaml)}
+      -
+        name: "FloorFloorId"
+        description: ""
+        contentType: "application/json"
+        schema: ${file(models/FloorFloorId.yaml)}
+      -
+        name: "Floors"
+        description: ""
+        contentType: "application/json"
+        schema: ${file(models/Floors.yaml)}
+      -
+        name: "Object"
+        description: ""
+        contentType: "application/json"
+        schema: ${file(models/Object.yaml)}
+      -
+        name: "Objects"
+        description: ""
+        contentType: "application/json"
+        schema: ${file(models/Objects.yaml)}
+      -
+        name: "People"
+        description: ""
+        contentType: "application/json"
+        schema: ${file(models/People.yaml)}
+      -
+        name: "Person"
+        description: ""
+        contentType: "application/json"
+        schema: ${file(models/Person.yaml)}
+      -
+        name: "Prototype"
+        description: ""
+        contentType: "application/json"
+        schema: ${file(models/Prototype.yaml)}
+      -
+        name: "Prototypes"
+        description: ""
+        contentType: "application/json"
+        schema: ${file(models/Prototypes.yaml)}
+      -
+        name: "SearchPeopleWithObjects"
+        description: ""
+        contentType: "application/json"
+        schema: ${file(models/SearchPeopleWithObjects.yaml)}
+      -
+        name: "Self"
+        description: ""
+        contentType: "application/json"
+        schema: ${file(models/Self.yaml)}
+
+  remover:
+     buckets:
+      #  - ${self:custom.STORAGE_NAME}
+       - ${self:service}-storage-${self:provider.stage}
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      seed: true
+    seed:
+      development:
+        sources:
+          - table: ${self:service}_map_${self:provider.stage}_colors
+            sources: [./migrations/ColorsTable.json]
+          - table: ${self:service}_map_${self:provider.stage}_prototypes
+            sources: [./migrations/PrototypesTable.json]
+          - table: ${self:service}_map_${self:provider.stage}_public_floors
+            sources: [./migrations/PublicFloorsTable.json]
+          - table: ${self:service}_map_${self:provider.stage}_edit_floors
+            sources: [./migrations/EditFloorsTable.json]
+          - table: ${self:service}_map_${self:provider.stage}_public_objects
+            sources: [./migrations/PublicObjectsTable.json]
+          - table: ${self:service}_map_${self:provider.stage}_edit_objects
+            sources: [./migrations/EditObjectsTable.json]
+  s3:
+    host: 0.0.0.0
+    port: 8888
+    directory: /tmp
+    cors: false
+    # Uncomment only if you already have a S3 server running locally
+    # noStart: true
+
 functions:
   authorizer:
     handler: functions/authorizer/index.handler
@@ -111,6 +178,7 @@ functions:
       include:
         - functions/authorizer/**
         - sourceIp.yaml
+
   batchAddCompressedObj:
     handler: functions/batchAddCompressedObj/index.handler
     name: ${self:service}-${self:provider.stage}-batchAddCompressedObj
@@ -132,6 +200,7 @@ functions:
           batchSize: 1
           startingPosition: TRIM_HORIZON
           enabled: true
+
   batchDeleteUnusedData:
     handler: functions/batchDeleteUnusedData/index.handler
     name: ${self:service}-${self:provider.stage}-batchDeleteUnusedData
@@ -181,6 +250,7 @@ functions:
                 authorization: true
               paths:
                 floorId: true
+
   getColors:
     handler: functions/getColors/index.handler
     name: ${self:service}-${self:provider.stage}-getColors
@@ -214,6 +284,15 @@ functions:
             parameters:
               headers:
                 authorization: true
+          documentation:
+            summary: "Get Colors"
+            description: "Get Colors"
+            methodResponses:
+              -
+                statusCode: "200"
+                responseModels:
+                  "application/json": "Color"
+
   getFloors:
     handler: functions/getFloors/index.handler
     name: ${self:service}-${self:provider.stage}-getFloors
@@ -751,16 +830,12 @@ resources:
     ApiGatewayRestApi:
       Type: AWS::ApiGateway::RestApi
       Properties:
-        Name: ${self:service}-${self:provider.stage}
-        BinaryMediaTypes:
-          - "image~1png"
-          - "image~1jpeg"
-          - "application~1octet-stream"
+        Name: ${self:service}-api-${self:provider.stage}
     # DynamoDB
     ColorsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:provider.stage}_office_maker_map_colors
+        TableName: ${self:custom.TABLE_PREFIX}_colors
         AttributeDefinitions:
           - AttributeName: tenantId
             AttributeType: S
@@ -778,7 +853,7 @@ resources:
     PrototypesTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:provider.stage}_office_maker_map_prototypes
+        TableName: ${self:custom.TABLE_PREFIX}_prototypes
         AttributeDefinitions:
           - AttributeName: tenantId
             AttributeType: S
@@ -796,7 +871,7 @@ resources:
     PublicFloorsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:provider.stage}_office_maker_map_public_floors
+        TableName: ${self:custom.TABLE_PREFIX}_public_floors
         AttributeDefinitions:
           - AttributeName: tenantId
             AttributeType: S
@@ -817,7 +892,7 @@ resources:
     EditFloorsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:provider.stage}_office_maker_map_edit_floors
+        TableName: ${self:custom.TABLE_PREFIX}_edit_floors
         AttributeDefinitions:
           - AttributeName: tenantId
             AttributeType: S
@@ -835,7 +910,7 @@ resources:
     PublicObjectsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:provider.stage}_office_maker_map_public_objects
+        TableName: ${self:custom.TABLE_PREFIX}_public_objects
         AttributeDefinitions:
           - AttributeName: floorId
             AttributeType: S
@@ -849,8 +924,8 @@ resources:
           - AttributeName: id
             KeyType: RANGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
         GlobalSecondaryIndexes:
           - IndexName: id-index
             KeySchema:
@@ -859,8 +934,8 @@ resources:
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
+              ReadCapacityUnits: 3
+              WriteCapacityUnits: 3
           - IndexName: personId-index
             KeySchema:
             - AttributeName: personId
@@ -869,12 +944,12 @@ resources:
               ProjectionType: ALL
             ProvisionedThroughput:
               ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
+              WriteCapacityUnits: 3
 
     EditObjectsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:provider.stage}_office_maker_map_edit_objects
+        TableName: ${self:custom.TABLE_PREFIX}_edit_objects
         AttributeDefinitions:
           - AttributeName: floorId
             AttributeType: S
@@ -888,8 +963,8 @@ resources:
           - AttributeName: id
             KeyType: RANGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
         GlobalSecondaryIndexes:
           - IndexName: id-index
             KeySchema:
@@ -899,7 +974,7 @@ resources:
               ProjectionType: ALL
             ProvisionedThroughput:
               ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
+              WriteCapacityUnits: 3
           - IndexName: personId-index
             KeySchema:
             - AttributeName: personId
@@ -908,7 +983,7 @@ resources:
               ProjectionType: ALL
             ProvisionedThroughput:
               ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
+              WriteCapacityUnits: 3
     # S3
     StorageBucket:
       Type: "AWS::S3::Bucket"

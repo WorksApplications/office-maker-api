@@ -4,15 +4,8 @@ console.log('Loading function');
 
 const commonModule = require(process.cwd()+'/common');
 
-var fs = require('fs');
-
-var guest_token = JSON.parse(fs.readFileSync('functions/authorizer/guest_token.json', 'utf8'));
-
-
 exports.handler = (event, context, callback) => {
   console.log('Received event:', JSON.stringify(event, null, 2));
-
-	console.log('guest_token: ', guest_token);
 
   var user = event.requestContext.authorizer;
 

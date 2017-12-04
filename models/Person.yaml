@@ -1,0 +1,20 @@
+type: object
+required:
+- "id"
+properties:
+  id:
+    type: string
+  employeeId:
+    type: integer
+  image:
+    type: string
+  mail:
+    type: string
+  name:
+    type: string
+  post:
+    type: string
+  tel1:
+    type: integer
+  tel2:
+    type: integer

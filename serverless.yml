@@ -150,17 +150,17 @@ custom:
     seed:
       development:
         sources:
-          - table: ${self:service}_map_${self:provider.stage}_colors
+          - table: ${self:custom.TABLE_PREFIX}_colors
             sources: [./migrations/ColorsTable.json]
-          - table: ${self:service}_map_${self:provider.stage}_prototypes
+          - table: ${self:custom.TABLE_PREFIX}_prototypes
             sources: [./migrations/PrototypesTable.json]
-          - table: ${self:service}_map_${self:provider.stage}_public_floors
+          - table: ${self:custom.TABLE_PREFIX}_public_floors
             sources: [./migrations/PublicFloorsTable.json]
-          - table: ${self:service}_map_${self:provider.stage}_edit_floors
+          - table: ${self:custom.TABLE_PREFIX}_edit_floors
             sources: [./migrations/EditFloorsTable.json]
-          - table: ${self:service}_map_${self:provider.stage}_public_objects
+          - table: ${self:custom.TABLE_PREFIX}_public_objects
             sources: [./migrations/PublicObjectsTable.json]
-          - table: ${self:service}_map_${self:provider.stage}_edit_objects
+          - table: ${self:custom.TABLE_PREFIX}_edit_objects
             sources: [./migrations/EditObjectsTable.json]
   s3:
     host: 0.0.0.0
@@ -924,7 +924,7 @@ resources:
           - AttributeName: id
             KeyType: RANGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 5
+          ReadCapacityUnits: 10
           WriteCapacityUnits: 5
         GlobalSecondaryIndexes:
           - IndexName: id-index

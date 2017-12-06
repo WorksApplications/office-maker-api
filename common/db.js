@@ -1,19 +1,19 @@
 const AWS = require('aws-sdk');
 
 function getDynamoDC(event) {
-    var dynamodb = null;
-    if ('isOffline' in event && event.isOffline) {
-        dynamodb = new AWS.DynamoDB.DocumentClient({
-            region: 'localhost',
-            endpoint: 'http://localhost:8000',
-						maxRetries: 1
-        });
-    } else {
-        dynamodb = new AWS.DynamoDB.DocumentClient({
-					maxRetries: 1
-				});
-    }
-    return dynamodb;
+  var dynamodb = null;
+  if ('isOffline' in event && event.isOffline) {
+    dynamodb = new AWS.DynamoDB.DocumentClient({
+      region: 'localhost',
+      endpoint: 'http://localhost:8000',
+      maxRetries: 1
+    });
+  } else {
+    dynamodb = new AWS.DynamoDB.DocumentClient({
+      maxRetries: 1
+    });
+  }
+  return dynamodb;
 }
 
 
@@ -715,10 +715,12 @@ function create(event) {
 
   function searchObjects(tenantId, option, query) {
     var floorTableName = option ? tableNames.editFloors : tableNames.publicFloors;
+    console.log('floorTableName: ', floorTableName);
     return getFloors(tenantId, floorTableName).then((floors) => {
       return floors.reduce((memo, floor) => {
         return memo.then((results) => {
           var objectTableName = option ? tableNames.editObjects : tableNames.publicObjects;
+          console.log('objectTableName: ', objectTableName);
           return getObjectsByName(floor.id, objectTableName, query).then((objects) => {
             return Promise.resolve(results.concat(objects));
           });

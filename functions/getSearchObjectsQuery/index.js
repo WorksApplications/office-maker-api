@@ -23,7 +23,7 @@ exports.handler = (event, context, callback) => {
   }
 
   const db = commonModule.db(event);
-  return db.searchObjects(tenantId, options, query).then(results => {
+  return db.searchObjects(tenantId, isEditFloor, query).then(results => {
     var data = {};
     data.results = results;
     commonModule.lambdaUtil(event).send(callback, 200, data);

@@ -17,16 +17,17 @@
   - you can add inital data under ```migrations```
 
 ## How to run
-```sls offline start```
-  - API Gateway Offline URL:  ```http://localhost:8000```
-  - Dynamo Local URL: ```http://localhost:3000```
-  <!-- - S3 Bucket Local URL: ```http://localhost:6000``` -->
+```sls dynamodb start```
+- Dynamo Local URL: ```http://localhost:8000```
+```sls offline```
+  - API Gateway Offline URL:  ```http://localhost:3000```
+  <!-- - S3 Bucket Local URL: ```http://localhost:8888``` -->
 
 ## Deployment
-```sls deploy -v -s <stage name>```
+```sls deploy -v```
 
 ## Removement
-```sls remove -v -s <stage name>```
+```sls remove -v```
 
 
 ## Build

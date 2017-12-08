@@ -9,11 +9,11 @@ const sourceIp = yaml.safeLoad(fs.readFileSync('sourceIp.yaml', 'utf8'));
 
 function getResourceRoot(methodArn) {
   return methodArn
-    .split('/GET/')[0]
-    .split('/POST/')[0]
-    .split('/PUT/')[0]
-    .split('/PATCH/')[0]
-    .split('/DELETE/')[0];
+  .split('/GET/')[0]
+  .split('/POST/')[0]
+  .split('/PUT/')[0]
+  .split('/PATCH/')[0]
+  .split('/DELETE/')[0];
 }
 
 function getAllowedGuestResource(methodArn) {
@@ -56,7 +56,7 @@ const guest = {
   exp: '',
   userId: 'office-maker@worksap.co.jp',
   tenantDomain: 'worksap.co.jp',
-	token: guest_token.GUEST_TOKEN
+  token: guest_token.GUEST_TOKEN
 };
 
 
@@ -65,19 +65,19 @@ module.exports.handler = (event, context, callback) => {
   var token = (event.authorizationToken || '').split('Bearer ')[1];
   const allowedGuestResources = getAllowedGuestResource(event.methodArn);
   const allowedGeneralResources = getAllowedGeneralResource(event.methodArn);
-	console.log('token: ', token);
+  console.log('token: ', token);
   if (!token) {
     callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
   } else {
-    getSelf(token).then(user => {
-      if (user.role == 'admin') {
-        callback(null, generate_policy(user.userId, 'Allow', event.methodArn, user));
-      } else {
-        callback(null, generate_policy(user.userId, 'Allow', allowedGeneralResources, user));
-      }
-    }).catch(message => {
+    getSelf(token).catch(message => {
       console.log('msg: ', message);
       callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
+    }).then(user => {
+      if (user.role == 'admin') {
+        callback(null, generate_policy_without_sourceip(user.userId, 'Allow', event.methodArn, user));
+      } else {
+        callback(null, generate_policy_without_sourceip(user.userId, 'Allow', allowedGeneralResources, user));
+      }
     });
   }
 };
@@ -109,12 +109,30 @@ function generate_policy(principal_id, effect, resource, user) {
     principalId: principal_id,
     policyDocument: {
       Version: '2012-10-17',
+      Statement:
+      [
+        {
+          Action: 'execute-api:Invoke',
+          Effect: effect,
+          Condition: {
+            IpAddress: sourceIp
+          },
+          Resource: resource
+        }
+      ]
+    },
+    context: user
+  };
+}
+
+function generate_policy_without_sourceip(principal_id, effect, resource, user) {
+  return {
+    principalId: principal_id,
+    policyDocument: {
+      Version: '2012-10-17',
       Statement: [{
         Action: 'execute-api:Invoke',
         Effect: effect,
-        Condition: {
-          IpAddress: sourceIp
-        },
         Resource: resource
       }]
     },

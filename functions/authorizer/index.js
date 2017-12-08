@@ -109,14 +109,17 @@ function generate_policy(principal_id, effect, resource, user) {
     principalId: principal_id,
     policyDocument: {
       Version: '2012-10-17',
-      Statement: [{
-        Action: 'execute-api:Invoke',
-        Effect: effect,
-        Condition: {
-          IpAddress: sourceIp
-        },
-        Resource: resource
-      }]
+      Statement:
+      [
+        {
+          Action: 'execute-api:Invoke',
+          Effect: effect,
+          Condition: {
+            IpAddress: sourceIp
+          },
+          Resource: resource
+        }
+      ]
     },
     context: user
   };

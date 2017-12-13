@@ -1,6 +1,4 @@
 function create(event) {
-  // let accessControlAllowOrigin = event.stageVariables.AccessControlAllowOrigin;
-
   function send(callback, statusCode, data) {
     callback(null, {
       statusCode: statusCode,

@@ -1,6 +1,6 @@
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
-var guest_token = JSON.parse(fs.readFileSync(__dirname+'/guest_token.json', 'utf8'));
+var guest_token = process.env.GUEST_TOKEN;
 var publicKey = fs.readFileSync(__dirname+'/pubkey.pem');
 const yaml = require('js-yaml');
 

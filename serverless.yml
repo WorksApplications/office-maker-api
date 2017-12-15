@@ -31,6 +31,8 @@ provider:
 # you can add environment variables
   environment:
     TABLE_PREFIX: ${self:custom.TABLE_PREFIX}
+  stackTags:
+    Name: ${self:service}--${self:provider.stage}
 
 # you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
@@ -179,6 +181,8 @@ functions:
       include:
         - functions/authorizer/**
         - config.yml
+    environment:
+      GUEST_TOKEN: ${self:custom.config.GUEST_TOKEN}
 
   batchAddCompressedObj:
     handler: functions/batchAddCompressedObj/index.handler

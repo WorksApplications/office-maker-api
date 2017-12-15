@@ -32,7 +32,7 @@ provider:
   environment:
     TABLE_PREFIX: ${self:custom.TABLE_PREFIX}
   stackTags:
-    Name: ${self:service}--${self:provider.stage}
+    Name: ${self:service}-${self:provider.stage}
 
 # you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:

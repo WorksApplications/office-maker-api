@@ -3,6 +3,10 @@ node_js:
 - 6.10.3
 before_install:
 - openssl aes-256-cbc -K $encrypted_b47eb4726dfc_key -iv $encrypted_b47eb4726dfc_iv
+  -in pubkey.pem.enc -out functions/authorizer/pubkey.pem -d
+- openssl aes-256-cbc -K $encrypted_b47eb4726dfc_key -iv $encrypted_b47eb4726dfc_iv
+  -in guest_token.json.enc -out functions/authorizer/guest_token.json -d
+- openssl aes-256-cbc -K $encrypted_b47eb4726dfc_key -iv $encrypted_b47eb4726dfc_iv
   -in config.yml.enc -out config.yml -d
 install:
 - npm install

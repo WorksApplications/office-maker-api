@@ -3,23 +3,9 @@ node_js:
   - 6.10.3
 
 install:
-  - sh init.sh
-  - sls dynamodb install -s $TRAVIS_BRANCH
+  - npm install 
 
 script:
   # - npm test
-  - git branch -a
   - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
-  # - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
-  # - sls deploy -v
-
-# after_success:
-#   - git branch -a
-# before_deploy:
-#   - git branch -a
-# # deploy:
-# #   - git branch -a
-# after_script:
-#   - git branch -a
-# after_deploy:
-#   - git branch -a
+  - sls deploy -v -s $TRAVIS_BRANCH

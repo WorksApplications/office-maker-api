@@ -1,6 +1,4 @@
-npm install
-npm install common/
-npm install functions/authorizer/
+#!bin/bash
 cp defaultConfig.yml config.yml
 echo '"tmp"' > functions/authorizer/pubkey.pem
 echo '{\n\t"GUEST_TOKEN": "tmp"\n}' > functions/authorizer/guest_token.json
@@ -11,3 +9,4 @@ echo '[]' > migrations/EditFloorsTable.json
 echo '[]' > migrations/PublicFloorsTable.json
 echo '[]' > migrations/EditObjectsTable.json
 echo '[]' > migrations/PublicObjectsTable.json
+- sls dynamodb install -s dev

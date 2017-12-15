@@ -3,8 +3,9 @@
 [Node.js](https://nodejs.org/) (>= 6.10)
 ## Initialization
 1. Installing
-  - ```sh init.sh```
+  - ```npm install```
 2. Configuration
+  - ```sh init.sh```
   - sourceIp.yaml
     - ip address which you allow to access
   - functions/authorizer/pubkey.pem

@@ -14,8 +14,8 @@ after_success:
   - git branch -a
 before_deploy:
   - git branch -a
-deploy:
-  - git branch -a
+# deploy:
+#   - git branch -a
 after_script:
   - git branch -a
 after_deploy:

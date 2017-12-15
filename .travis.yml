@@ -8,15 +8,15 @@ install:
 script:
   # - npm test
   - git branch -a
-  # - sls deploy -v
+  - sls deploy -v
 
-after_success:
-  - git branch -a
-before_deploy:
-  - git branch -a
-# deploy:
+# after_success:
 #   - git branch -a
-after_script:
-  - git branch -a
-after_deploy:
-  - git branch -a
+# before_deploy:
+#   - git branch -a
+# # deploy:
+# #   - git branch -a
+# after_script:
+#   - git branch -a
+# after_deploy:
+#   - git branch -a

@@ -5,9 +5,10 @@ jspm_packages
 # Serverless directories
 .serverless
 
+# others
 tmp
 swagger.yaml
-functions/authorizer/pubkey.pem
-functions/authorizer/guest_token.json
+pubkey.pem
+guest_token.json
 config.yml
-migrations/*
+migrations

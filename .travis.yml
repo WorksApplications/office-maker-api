@@ -3,10 +3,9 @@ node_js:
   - 6.10.3
 
 install:
-  - npm install
-  - npm install common/
-  - npm install functions/authorizer/
+  - sh init.sh
+
 script:
-  - npm test
+  # - npm test
   - git branch -a
-  - sls deploy
+  - sls deploy -v

@@ -4,7 +4,7 @@ var guest_token = JSON.parse(fs.readFileSync(__dirname+'/guest_token.json', 'utf
 var publicKey = fs.readFileSync(__dirname+'/pubkey.pem');
 const yaml = require('js-yaml');
 
-const sourceIp = yaml.safeLoad(fs.readFileSync('sourceIp.yaml', 'utf8'));
+const sourceIp = yaml.safeLoad(fs.readFileSync('config.yml', 'utf8')).sourceIp;
 
 
 function getResourceRoot(methodArn) {

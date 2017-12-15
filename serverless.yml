@@ -70,10 +70,12 @@ plugins:
   - serverless-aws-documentation
   - serverless-plugin-git-variables
 custom:
+  config: ${file(config.yml)}
   TABLE_PREFIX: ${self:service}-map-${self:provider.stage}
   STORAGE_NAME: ${self:service}-storage-${self:provider.stage}
   stageVariables:
-    ProfileServiceRoot: ${file(ProfileServiceRoot)}
+    ProfileServiceRoot: ${self:custom.config.ProfileServiceRoot_${self:provider.stage}}
+
   apigwBinary:
     types:           #list of mime-types
       - "image/png"
@@ -177,7 +179,7 @@ functions:
     package:
       include:
         - functions/authorizer/**
-        - sourceIp.yaml
+        - config.yml
 
   batchAddCompressedObj:
     handler: functions/batchAddCompressedObj/index.handler
@@ -1015,7 +1017,7 @@ resources:
               Condition:
                 Bool:
                   "aws:SecureTransport": "true"
-                IpAddress: ${file(sourceIp.yaml)}
+                IpAddress: ${self:custom.config.sourceIp}
             - Effect: Allow
               Principal: "*"
               Action: "s3:*"
@@ -1028,7 +1030,7 @@ resources:
               Condition:
                 Bool:
                   "aws:SecureTransport": "true"
-                IpAddress: ${file(sourceIp.yaml)}
+                IpAddress: ${self:custom.config.sourceIp}
 #  Outputs:
 #     NewOutput:
 #       Description: "Description for the output"

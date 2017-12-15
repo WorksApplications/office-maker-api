@@ -25,7 +25,7 @@ provider:
   timeout: 20
 
 # you can overwrite defaults here
-  stage: ${git:branch}
+  stage: ${opt:stage}
   region: ap-northeast-1
 
 # you can add environment variables
@@ -68,7 +68,6 @@ plugins:
   - serverless-offline
   - serverless-apigw-binary
   - serverless-aws-documentation
-  - serverless-plugin-git-variables
 custom:
   config: ${file(config.yml)}
   TABLE_PREFIX: ${self:service}-map-${self:provider.stage}

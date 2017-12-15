@@ -12,3 +12,4 @@ pubkey.pem
 guest_token.json
 config.yml
 migrations
+secrets.tar

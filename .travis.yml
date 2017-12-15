@@ -8,7 +8,9 @@ install:
 script:
   # - npm test
   - git branch -a
-  - sls deploy -v
+  - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+  - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
+  # - sls deploy -v
 
 # after_success:
 #   - git branch -a

@@ -8,3 +8,5 @@ install:
   - npm install functions/authorizer/
 script:
   - npm test
+  - git branch -a
+  - sls deploy

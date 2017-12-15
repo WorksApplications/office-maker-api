@@ -11,4 +11,3 @@ echo '[]' > migrations/EditFloorsTable.json
 echo '[]' > migrations/PublicFloorsTable.json
 echo '[]' > migrations/EditObjectsTable.json
 echo '[]' > migrations/PublicObjectsTable.json
-sls dynamodb install

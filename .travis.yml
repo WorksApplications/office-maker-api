@@ -4,6 +4,7 @@ node_js:
 
 install:
   - sh init.sh
+  - sls dynamodb install -s $TRAVIS_BRANCH
 
 script:
   # - npm test

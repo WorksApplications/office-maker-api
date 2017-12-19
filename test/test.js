@@ -15,12 +15,20 @@ describe('office-maker-api Lambda', () => {
   let dynamoDbGetStub;
 
   beforeEach(() => {
+    proxyDynamoDB = class {
+      query (params) {
+        return {
+          promise: () => {}
+        };
+      }
+    };
     event = {
       requestContext: {
         authorizer: {
           tenantId: 'worksap.co.jp'
         }
-      }
+      },
+      isTest: true
     };
     callback = (error, result) => {
       return new Promise((resolve, reject) => {
@@ -28,13 +36,7 @@ describe('office-maker-api Lambda', () => {
       });
     };
     context = {};
-    proxyDynamoDB = class {
-      get (params) {
-        return {
-          promise: () => {}
-        };
-      }
-    };
+
     lambda = proxyquire(process.cwd() + '/functions/getColors/index', {
       'aws-sdk': {
         DynamoDB: {
@@ -45,7 +47,7 @@ describe('office-maker-api Lambda', () => {
   });
 
   it('Should return resolve when running successfully', () => {
-    dynamoDbGetStub = sinon.stub(proxyDynamoDB.prototype, 'get')
+    dynamoDbGetStub = sinon.stub(proxyDynamoDB.prototype, 'query')
     .returns({promise: () => {
       return Promise.resolve({
         Item: {
@@ -54,61 +56,19 @@ describe('office-maker-api Lambda', () => {
         }
       });
     }});
-    return expect(lambda.handler(event, context, callback)).to.be.fulfilled.then(result => {
-      expect(dynamoDbGetStub.calledOnce).to.be.equal(true);
-      expect(result).to.deep.equal(JSON.stringify({
-        statusCode: 200,
-        body: {post_title: 'aa', post_content: 'bb'}
-      }));
-    });
-  });
-
-  it('Should return reject when post_id is not given', () => {
-    event = {};
-    dynamoDbGetStub = sinon.stub(proxyDynamoDB.prototype, 'get')
-    .returns({promise: () => {
-      return Promise.resolve({
-        Item: {
-          post_title: 'aa',
-          post_content: 'bb'
-        }
-      });
-    }});
-    return expect(lambda.handler(event, context, callback)).to.be.rejected.then(result => {
-      expect(dynamoDbGetStub.calledOnce).to.be.equal(false);
-      expect(result).to.deep.equal(JSON.stringify({
-        statusCode: 400,
-        body: {message: 'invalid param'}
-      }));
-    });
-  });
-
-  it('Should return reject when you can not your item in DB', () => {
-    dynamoDbGetStub = sinon.stub(proxyDynamoDB.prototype, 'get')
-    .returns({promise: () => {
-      return Promise.resolve({});
-    }});
-    return expect(lambda.handler(event, context, callback)).to.be.rejected.then(result => {
-      expect(dynamoDbGetStub.calledOnce).to.be.equal(true);
-      expect(result).to.deep.equal(JSON.stringify({
-        statusCode: 404,
-        body: {message: 'can not find specified post'}
-      }));
-    });
-  });
-
-  it('Should return reject when error occurs in DB', () => {
-    dynamoDbGetStub = sinon.stub(proxyDynamoDB.prototype, 'get')
-    .returns({promise: () => {
-      return Promise.reject('error');
-    }});
-    return expect(lambda.handler(event, context, callback)).to.be.rejected.then(result => {
-      expect(dynamoDbGetStub.calledOnce).to.be.equal(true);
-      expect(result).to.be.equal('error');
-    });
-  });
-
-  afterEach(() => {
-    proxyDynamoDB.prototype.get.restore();
+    var result = lambda.handler(event, context, callback);
+    console.log('dynamoDbGetStub.calledOnce: ', dynamoDbGetStub.calledOnce);
+    expect(dynamoDbGetStub.calledOnce).to.be.equal(true);
+    expect(result).to.deep.equal(JSON.stringify({
+      statusCode: 200,
+      body: {post_title: 'aa', post_content: 'bb'}
+    }));
+    // return expect(lambda.handler(event, context, callback)).to.be.fulfilled.then(result => {
+    //   expect(dynamoDbGetStub.calledOnce).to.be.equal(true);
+    //   expect(result).to.deep.equal(JSON.stringify({
+    //     statusCode: 200,
+    //     body: {post_title: 'aa', post_content: 'bb'}
+    //   }));
+    // });
   });
 });

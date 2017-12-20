@@ -8,5 +8,6 @@ before_install:
 install:
 - npm install
 script:
+- npm test
 - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
 - sls deploy -v -s $TRAVIS_BRANCH

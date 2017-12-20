@@ -625,7 +625,6 @@ function create(event) {
           ':tenantId': tenantId
         }
       };
-      console.log('params: ', params);
       client.query(params, function(err, data) {
         if (err) {
           console.log('err: ', err);

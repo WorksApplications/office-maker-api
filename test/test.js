@@ -1,74 +1,69 @@
 'use strict';
-const chai = require('chai');
+
+var expect = require( 'chai' ).expect;
 const sinon = require('sinon');
+var LambdaTester = require( 'lambda-tester' );
+// var myLambda = require( process.cwd()+'/functions/getColors/index' );
 const proxyquire = require('proxyquire');
-chai.use(require('chai-as-promised'));
-const expect = require('chai').expect;
 require('dotenv').config({path: 'test/environments/.env'});
 
 describe('office-maker-api Lambda', () => {
   let event;
-  let callback;
-  let context;
+  let db;
+  let common;
   let lambda;
   let proxyDynamoDB;
   let dynamoDbGetStub;
 
   beforeEach(() => {
     proxyDynamoDB = class {
-      query (params) {
-        return {
-          promise: () => {}
-        };
-      }
+      query (params, func) {}
     };
+
     event = {
       requestContext: {
         authorizer: {
           tenantId: 'worksap.co.jp'
         }
-      },
-      isTest: true
+      }
     };
-    callback = (error, result) => {
-      return new Promise((resolve, reject) => {
-        error ? reject(error) : resolve(result);
-      });
-    };
-    context = {};
 
-    lambda = proxyquire(process.cwd() + '/functions/getColors/index', {
+    db = proxyquire(process.cwd() + '/common/db', {
       'aws-sdk': {
         DynamoDB: {
           DocumentClient: proxyDynamoDB
         }
       }
     });
+    common = proxyquire(process.cwd() +'/functions/getColors/index', {
+      './db.js': db
+    });
+    lambda = proxyquire(process.cwd() + '/functions/getColors/index', {
+      '../../common': common
+    });
   });
 
-  it('Should return resolve when running successfully', () => {
+  it('Should return result when running successfully', () => {
     dynamoDbGetStub = sinon.stub(proxyDynamoDB.prototype, 'query')
-    .returns({promise: () => {
-      return Promise.resolve({
-        Item: {
-          post_title: 'aa',
-          post_content: 'bb'
-        }
+    .callsArgWith(1, '', {
+      Items: {
+        post_title: 'aa',
+        post_content: 'bb'
+      }
+    });
+    return LambdaTester( lambda.handler )
+    .event(event)
+    .expectResult((result) => {
+      console.log('result: ', result);
+      expect(result).to.deep.equal({
+        statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': 'true',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({post_title: 'aa', post_content: 'bb'})
       });
-    }});
-    var result = lambda.handler(event, context, callback);
-    console.log('dynamoDbGetStub.calledOnce: ', dynamoDbGetStub.calledOnce);
-    expect(dynamoDbGetStub.calledOnce).to.be.equal(true);
-    expect(result).to.deep.equal(JSON.stringify({
-      statusCode: 200,
-      body: {post_title: 'aa', post_content: 'bb'}
-    }));
-    // return expect(lambda.handler(event, context, callback)).to.be.fulfilled.then(result => {
-    //   expect(dynamoDbGetStub.calledOnce).to.be.equal(true);
-    //   expect(result).to.deep.equal(JSON.stringify({
-    //     statusCode: 200,
-    //     body: {post_title: 'aa', post_content: 'bb'}
-    //   }));
-    // });
+    });
   });
 });

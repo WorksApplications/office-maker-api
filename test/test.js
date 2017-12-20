@@ -3,7 +3,6 @@
 var expect = require( 'chai' ).expect;
 const sinon = require('sinon');
 var LambdaTester = require( 'lambda-tester' );
-// var myLambda = require( process.cwd()+'/functions/getColors/index' );
 const proxyquire = require('proxyquire');
 require('dotenv').config({path: 'test/environments/.env'});
 

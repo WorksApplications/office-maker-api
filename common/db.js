@@ -8,8 +8,6 @@ function getDynamoDC(event) {
       endpoint: 'http://localhost:8000',
       maxRetries: 1
     });
-  } else if ('isTest' in event && event.isTest) {
-    dynamodb = new AWS.DynamoDB.DocumentClient({});
   } else {
     dynamodb = new AWS.DynamoDB.DocumentClient({
       maxRetries: 1

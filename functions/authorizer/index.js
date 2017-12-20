@@ -56,7 +56,7 @@ const guest = {
   exp: '',
   userId: 'office-maker@worksap.co.jp',
   tenantDomain: 'worksap.co.jp',
-  token: guest_token.GUEST_TOKEN
+  token: guest_token
 };
 
 

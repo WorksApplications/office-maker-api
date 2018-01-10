@@ -686,7 +686,7 @@ functions:
               headers:
                 authorization: true
               paths:
-                floorId: true
+                id: true
   putFloorsFloorIdEdit:
     handler: functions/putFloorsFloorIdEdit/index.handler
     name: ${self:service}-${self:provider.stage}-putFloorsFloorIdEdit

@@ -683,7 +683,6 @@ functions:
             type: token
           request:
             parameters:
-            parameters:
               headers:
                 authorization: true
               paths:

@@ -652,41 +652,41 @@ functions:
             parameters:
               headers:
                 authorization: true
-  # putColorById:
-  #   handler: functions/putColorById/index.handler
-  #   name: ${self:service}-${self:provider.stage}-putColorById
-  #   package:
-  #     include:
-  #       - functions/putColorById/**
-  #       - common/**
-  #   events:
-  #     - http:
-  #         path: /colors/{id}
-  #         method: put
-  #         integration: lambda-proxy
-  #         cors:
-  #           origin: '*'
-  #           headers:
-  #             - Content-Type
-  #             - X-Amz-Date
-  #             - Authorization
-  #             - X-Api-Key
-  #             - X-Amz-Security-Token
-  #             - X-Amz-User-Agent
-  #             - Pragma
-  #             - Cache-Control
-  #             - If-Modified-Since
-  #           allowCredentials: true
-  #         authorizer:
-  #           name: authorizer
-  #           resultTtlInSeconds: 0
-  #           type: token
-  #         request:
-  #           parameters:
-  #             headers:
-  #               authorization: true
-  #             paths:
-  #               id: true
+  putColorById:
+    handler: functions/putColorById/index.handler
+    name: ${self:service}-${self:provider.stage}-putColorById
+    package:
+      include:
+        - functions/putColorById/**
+        - common/**
+    events:
+      - http:
+          path: /colors/{id}
+          method: put
+          integration: lambda-proxy
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Pragma
+              - Cache-Control
+              - If-Modified-Since
+            allowCredentials: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            type: token
+          request:
+            parameters:
+              headers:
+                authorization: true
+              paths:
+                id: true
   putFloorsFloorIdEdit:
     handler: functions/putFloorsFloorIdEdit/index.handler
     name: ${self:service}-${self:provider.stage}-putFloorsFloorIdEdit

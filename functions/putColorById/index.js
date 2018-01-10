@@ -15,9 +15,9 @@ exports.handler = (event, context, callback) => {
 
   color.id = id;
 
-  // if (!colors || !colors.length) {
-  //   commonModule.lambdaUtil(event).send(callback, 403, 'Forbiden');
-  // }
+  if (!color) {
+    commonModule.lambdaUtil(event).send(callback, 403, 'Forbiden');
+  }
 
   const db = commonModule.db(event);
   db.putColor(user.tenantId, color).then((data) => {

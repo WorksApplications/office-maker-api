@@ -772,6 +772,7 @@ function create(event) {
     getFloorWithObjects: getFloorWithObjects,
     publishFloor: publishFloor,
     saveColors: saveColors,
+    putColor: putColor,
     getPrototypes: getPrototypes,
     putPrototypes: putPrototypes,
     putPrototype: putPrototype,

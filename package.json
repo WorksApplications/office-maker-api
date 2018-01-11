@@ -4,6 +4,8 @@
   "version": "0.1.0",
   "scripts": {
     "test": "mocha",
+    "precommit": "npm test",
+    "prepush": "npm test",
     "postinstall": "(cd common && npm install);(cd functions/authorizer/ && npm install);"
   },
   "dependencies": {
@@ -16,6 +18,7 @@
     "serverless": "^1.23.0"
   },
   "devDependencies": {
+    "husky": "^0.14.3",
     "serverless-apigw-binary": "^0.4.4",
     "serverless-aws-documentation": "^1.0.0",
     "serverless-dynamodb-local": "^0.2.26",

@@ -2,6 +2,7 @@ language: node_js
 node_js:
 - 6.10.3
 before_install:
+- openssl version
 - openssl aes-256-cbc -K $encrypted_b47eb4726dfc_key -iv $encrypted_b47eb4726dfc_iv -in secrets.tar.enc -out secrets.tar -d
 - ls -al
 - tar xvf secrets.tar

@@ -1,0 +1,13 @@
+type: object
+properties:
+  results:
+    type: array
+    items:
+      type: object
+      properties:
+        person:
+          $ref: ${file(./models/Person.yml)}
+        objects:
+          type: array
+          items:
+            $ref: ${file(./models/Object.yml)}

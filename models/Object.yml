@@ -1,0 +1,34 @@
+type: object
+required:
+- "id"
+properties:
+  floorId:
+    type: string
+  id:
+    type: string
+  backgroundColor:
+    type: string
+  bold:
+    type: boolean
+  color:
+    type: boolean
+  fontSize:
+    type: boolean
+  height:
+    type: integer
+  name:
+    type: string
+  personId:
+    type: string
+  shape:
+    type: boolean
+  type:
+    type: string
+  updateAt:
+    type: integer
+  width:
+    type: integer
+  x:
+    type: integer
+  y:
+    type: integer

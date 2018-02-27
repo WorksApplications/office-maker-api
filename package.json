@@ -5,7 +5,7 @@
   "scripts": {
     "test": "mocha",
     "precommit": "npm test",
-    "prepush": "npm test",
+    "prepush": "npm test && sh travis_encryption.sh",
     "postinstall": "(cd common && npm install);(cd functions/authorizer/ && npm install);"
   },
   "dependencies": {

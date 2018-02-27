@@ -88,57 +88,57 @@ custom:
         name: "Color"
         description: "Model for get colors"
         contentType: "application/json"
-        schema: ${file(models/Color.yaml)}
+        schema: ${file(models/Color.yml)}
       -
         name: "FloorFloorId"
         description: ""
         contentType: "application/json"
-        schema: ${file(models/FloorFloorId.yaml)}
+        schema: ${file(models/FloorFloorId.yml)}
       -
         name: "Floors"
         description: ""
         contentType: "application/json"
-        schema: ${file(models/Floors.yaml)}
+        schema: ${file(models/Floors.yml)}
       -
         name: "Object"
         description: ""
         contentType: "application/json"
-        schema: ${file(models/Object.yaml)}
+        schema: ${file(models/Object.yml)}
       -
         name: "Objects"
         description: ""
         contentType: "application/json"
-        schema: ${file(models/Objects.yaml)}
+        schema: ${file(models/Objects.yml)}
       -
         name: "People"
         description: ""
         contentType: "application/json"
-        schema: ${file(models/People.yaml)}
+        schema: ${file(models/People.yml)}
       -
         name: "Person"
         description: ""
         contentType: "application/json"
-        schema: ${file(models/Person.yaml)}
+        schema: ${file(models/Person.yml)}
       -
         name: "Prototype"
         description: ""
         contentType: "application/json"
-        schema: ${file(models/Prototype.yaml)}
+        schema: ${file(models/Prototype.yml)}
       -
         name: "Prototypes"
         description: ""
         contentType: "application/json"
-        schema: ${file(models/Prototypes.yaml)}
+        schema: ${file(models/Prototypes.yml)}
       -
         name: "SearchPeopleWithObjects"
         description: ""
         contentType: "application/json"
-        schema: ${file(models/SearchPeopleWithObjects.yaml)}
+        schema: ${file(models/SearchPeopleWithObjects.yml)}
       -
         name: "Self"
         description: ""
         contentType: "application/json"
-        schema: ${file(models/Self.yaml)}
+        schema: ${file(models/Self.yml)}
 
   remover:
      buckets:

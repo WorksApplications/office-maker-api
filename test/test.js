@@ -1,10 +1,10 @@
 'use strict';
-
+process.env.TABLE_PREFIX = 'office-maker-map-dev';
 var expect = require( 'chai' ).expect;
 const sinon = require('sinon');
 var LambdaTester = require( 'lambda-tester' );
 const proxyquire = require('proxyquire');
-require('dotenv').config({path: 'test/environments/.env'});
+// require('dotenv').config({path: 'test/.env'});
 
 describe('office-maker-api Lambda', () => {
   let event;

@@ -331,6 +331,14 @@ functions:
             parameters:
               headers:
                 authorization: true
+          documentation:
+            summary: "Get Floor"
+            description: "Get Floor"
+            methodResponses:
+              -
+                statusCode: "200"
+                responseModels:
+                  "application/json": "Floors"
   getFloorsFloorIdEdit:
     handler: functions/getFloorsFloorIdEdit/index.handler
     name: ${self:service}-${self:provider.stage}-getFloorsFloorIdEdit
@@ -439,6 +447,14 @@ functions:
                 post: true
                 ids: true
                 floorId: true
+          documentation:
+            summary: "Get People"
+            description: "Get People"
+            methodResponses:
+              -
+                statusCode: "200"
+                responseModels:
+                  "application/json": "People"
   getPrototypes:
     handler: functions/getPrototypes/index.handler
     name: ${self:service}-${self:provider.stage}-getPrototypes

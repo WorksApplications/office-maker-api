@@ -6,8 +6,8 @@ properties:
       type: object
       properties:
         person:
-          $ref: ${file(./models/Person.yml)}
+          $ref: "{{model: Person}}"
         objects:
           type: array
           items:
-            $ref: ${file(./models/Object.yml)}
+            $ref: "{{model: Object}}"

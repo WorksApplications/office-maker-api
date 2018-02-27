@@ -1,4 +1,6 @@
 # office-maker-api
+## Architecture
+![Architecture](https://github.com/WorksApplications/office-maker-api/blob/dev/images/map.png)
 ## Getting Started
 [Node.js](https://nodejs.org/) (>= 6.10)
 ## Initialization
@@ -17,7 +19,7 @@
     - special token for guest user
   - ProfileServiceRoot
     - URL for ProfileServiceRoot
-    
+
 3. DynamoDB Table Data
   - you can add inital data under ```migrations```
 

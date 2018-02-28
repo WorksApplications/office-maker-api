@@ -14,6 +14,6 @@ install:
 - npm install
 script:
 - npm test
-after_failure:
+after_success:
 - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
 - sls deploy -v -s $TRAVIS_BRANCH

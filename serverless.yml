@@ -168,7 +168,7 @@ custom:
             sources: [./migrations/EditObjectsTable.json]
   capacities:
     - table: PublicObjectsTable  # DynamoDB Resource
-      write:
+      read:
         minimum: 1       # Minimum write capacity
         maximum: 50      # Maximum write capacity
         usage: 0.8        # Targeted usage percentage
@@ -987,7 +987,7 @@ resources:
           - AttributeName: id
             KeyType: RANGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 10
+          ReadCapacityUnits: 1
           WriteCapacityUnits: 5
         GlobalSecondaryIndexes:
           - IndexName: id-index

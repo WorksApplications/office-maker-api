@@ -1,6 +1,6 @@
 # office-maker-api
 ## Architecture
-![Architecture](https://github.com/WorksApplications/office-maker-api/blob/dev/images/map.png)
+![Architecture](https://github.com/WorksApplications/office-maker-api/blob/prod/images/map.png)
 ## Getting Started
 [Node.js](https://nodejs.org/) (>= 6.10)
 ## Initialization

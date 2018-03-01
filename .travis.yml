@@ -16,6 +16,6 @@ script:
 - npm test
 after_success:
 - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
-- 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then echo $TRAVIS_PULL_REQUEST ; fi'
+- 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then echo $TRAVIS_PULL_REQUEST ; fi'
 - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then echo $TRAVIS_PULL_REQUEST ; fi'
 # - sls deploy -v -s $TRAVIS_BRANCH

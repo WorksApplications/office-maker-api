@@ -1,0 +1,19 @@
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+
+# others
+tmp
+swagger.yaml
+sourceIp.yaml
+functions/authorizer/pubkey.pem
+functions/authorizer/guest_token.json
+AccessControlAllowOrigin
+ProfileServiceRoot
+
+migrations/*
+config.yml
+secrets.tar

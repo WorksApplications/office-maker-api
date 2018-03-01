@@ -1,0 +1,10 @@
+type: array
+items:
+  type: object
+  properties:
+    color:
+      type: string
+    ord:
+      type: integer
+    type:
+      type: string

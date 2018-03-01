@@ -1,0 +1,13 @@
+type: object
+properties:
+  results:
+    type: array
+    items:
+      type: object
+      properties:
+        person:
+          $ref: "{{model: Person}}"
+        objects:
+          type: array
+          items:
+            $ref: "{{model: Object}}"

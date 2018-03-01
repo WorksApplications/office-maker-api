@@ -16,8 +16,4 @@ script:
 - npm test
 after_success:
 - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
-- sls deploy -v -s $TRAVIS_BRANCH
-after_success:
-- echo "after_success"
-after_failure:
-- echo "after_failure"
+# - sls deploy -v -s $TRAVIS_BRANCH

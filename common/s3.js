@@ -69,6 +69,7 @@ function create(event) {
         Bucket: storageBucketName,
         Key: 'files/floors/' + floorId
       };
+      console.log('params: ' + JSON.stringify(params));
       s3.deleteObject(params, function(err, data) {
         if (err) {
           reject(err);

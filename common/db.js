@@ -805,12 +805,12 @@ function create(event) {
         objects.forEach((object) => {
           if(isEdit){
             if(floorIds.indexOf(object.floorId) == -1 || (!object.changed && object.deleted)) {
-              console.log('object: ', object);
+              console.log('edit_object: ', object);
               removeObject(object.floorId, object.id, objectTableName);
             }
           }else{
             if(floorIds.indexOf(object.floorId) == -1 || object.deleted) {
-              console.log('object: ', object);
+              console.log('public_object: ', object);
               removeObject(object.floorId, object.id, objectTableName);
             }
           }
@@ -828,7 +828,6 @@ function create(event) {
           id: objectId
         }
       };
-      console.log('params: ' + JSON.stringify(params));
       client.delete(params, function(err, data) {
         if (err) {
           reject(err);

@@ -11,7 +11,7 @@ before_install:
 - ls -al
 - tar xvf secrets.tar
 install:
-- npm install
+- sudo npm install
 script:
 - npm test
 after_success:

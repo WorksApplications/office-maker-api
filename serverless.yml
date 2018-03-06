@@ -216,6 +216,8 @@ functions:
   batchDeleteUnusedData:
     handler: functions/batchDeleteUnusedData/index.handler
     name: ${self:service}-${self:provider.stage}-batchDeleteUnusedData
+    memorySize: 1024
+    timeout: 300
     package:
       include:
         - functions/batchDeleteUnusedData/**

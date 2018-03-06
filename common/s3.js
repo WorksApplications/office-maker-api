@@ -1,18 +1,18 @@
 const AWS = require('aws-sdk');
 
 function getS3(event) {
-    var S3 = null;
-    if ('isOffline' in event && event.isOffline) {
-      S3 = new AWS.S3({
-        s3ForcePathStyle: true,
-        endpoint: new AWS.Endpoint('http://localhost:8888'),
-      });
-    } else {
-      S3 = new AWS.S3({
-        apiVersion: '2006-03-01'
-      });
-    }
-    return S3;
+  var S3 = null;
+  if ('isOffline' in event && event.isOffline) {
+    S3 = new AWS.S3({
+      s3ForcePathStyle: true,
+      endpoint: new AWS.Endpoint('http://localhost:8888'),
+    });
+  } else {
+    S3 = new AWS.S3({
+      apiVersion: '2006-03-01'
+    });
+  }
+  return S3;
 }
 
 function create(event) {
@@ -63,9 +63,27 @@ function create(event) {
     });
   }
 
+  function deleteObject(storageBucketName, floorId){
+    return new Promise((resolve, reject) => {
+      var params = {
+        Bucket: storageBucketName,
+        Key: 'files/floors/' + floorId
+      };
+      s3.deleteObject(params, function(err, data) {
+        if (err) {
+          reject(err);
+        } else {
+          console.log('data: ' + JSON.stringify(data));
+          resolve(data);
+        }
+      });
+    });
+  }
+
   return {
     putImage: putImage,
-    putFloorsInfo: putFloorsInfo
+    putFloorsInfo: putFloorsInfo,
+    deleteObject: deleteObject
   };
 }
 

@@ -29,7 +29,7 @@ exports.handler = (event, context, callback) => {
     const db = commonModule.db(event);
     const s3 = commonModule.s3(event);
     if(record.eventName == 'REMOVE'){
-      return s3.deleteObject(tenantId, floorId).then((data) => {
+      return s3.deleteObject(storageBucketName, floorId).then((data) => {
         console.log('data: ', JSON.stringify(data));
         commonModule.lambdaUtil(event).send(callback, 200, 'success');
       }).catch((err) => {

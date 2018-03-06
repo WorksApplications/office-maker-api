@@ -798,7 +798,7 @@ function create(event) {
     return scanTable(floorTableName).then((floors) => {
       var floorIds = [];
       floors.forEach((floor) => {
-        return floorIds.push(floor.image);
+        return floorIds.push(floor.id);
       });
       console.log('floorIds: ', floorIds);
       return scanTable(objectTableName).then((objects) => {

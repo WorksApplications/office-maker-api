@@ -802,21 +802,43 @@ function create(event) {
       });
       console.log('floorIds: ', floorIds);
       return scanTable(objectTableName).then((objects) => {
-        console.log('objects: ', objects);
         objects.forEach((object) => {
           if(isEdit){
             if(floorIds.indexOf(object.floorId) == -1 || (!object.changed && object.deleted)) {
-              deleteObject(object.floorId, object.id, objectTableName);
+              console.log('object: ', object);
+              removeObject(object.floorId, object.id, objectTableName);
             }
           }else{
             if(floorIds.indexOf(object.floorId) == -1 || object.deleted) {
-              deleteObject(object.floorId, object.id, objectTableName);
+              console.log('object: ', object);
+              removeObject(object.floorId, object.id, objectTableName);
             }
           }
         });
       });
     });
   }
+
+  function removeObject(floorId, objectId, table_name){
+    return new Promise((resolve, reject) => {
+      var params = {
+        TableName: table_name,
+        Key: {
+          floorId: floorId,
+          id: objectId
+        }
+      };
+      console.log('params: ' + JSON.stringify(params));
+      client.delete(params, function(err, data) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
 
   return {
     getFloors: getFloors,

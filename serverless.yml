@@ -223,6 +223,8 @@ functions:
   batchDeleteUnusedImages:
     handler: functions/batchDeleteUnusedImages/index.handler
     name: ${self:service}-${self:provider.stage}-batchDeleteUnusedImages
+    environment:
+      STORAGE_NAME: ${self:custom.STORAGE_NAME}
     package:
       include:
         - functions/batchDeleteUnusedImages/**

@@ -765,11 +765,12 @@ function create(event) {
     return getAllFloors(tableNames.editFloors).then((editFloors) => {
       return getAllFloors(tableNames.publicFloors).then((publicFloors) => {
         var floors = editFloors.concat(publicFloors);
+        // console.log('floos: ' + JSON.stringify(floors))
         var floorImageIds = [];
         floors.forEach((floor) => {
-          floorImageIds.push(floor.image);
+          return floorImageIds.push(floor.image);
         });
-        var ids = floorImageIds.FilterExpression((x, i, self) => {
+        var ids = floorImageIds.filter((x, i, self) => {
           return self.indexOf(x) === i;
         });
         return ids;

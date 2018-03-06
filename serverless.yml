@@ -227,6 +227,14 @@ functions:
       include:
         - functions/batchDeleteUnusedImages/**
         - common/**
+    events:
+      - schedule:
+          name: ${self:service}-${self:provider.stage}-fetchPeople-schedule
+          rate: cron(0 22 ? * 5 *)
+          enabled: true
+          input:
+            key: value
+
   deleteFloorsFloorIdEdit:
     handler: functions/deleteFloorsFloorIdEdit/index.handler
     name: ${self:service}-${self:provider.stage}-deleteFloorsFloorIdEdit

@@ -74,17 +74,56 @@ function create(event) {
         if (err) {
           reject(err);
         } else {
-          console.log('data: ' + JSON.stringify(data));
+          console.log('success: ' + JSON.stringify(data));
           resolve(data);
         }
       });
     });
   }
 
+  function listImages(storageBucketName) {
+    return new Promise((resolve, reject) => {
+      var params = {
+        Bucket: storageBucketName,
+        Prefix: 'images/floors/'
+      };
+      return s3.listObjects(params, function(err, data) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
+  function deleteImage(storageBucketName, imageId) {
+    console.log('deleteImage');
+    return new Promise((resolve, reject) => {
+      var params = {
+        Bucket: storageBucketName,
+        Key: 'images/floors/' + imageId
+      };
+      console.log('params' + JSON.stringify(params));
+      return s3.deleteObject(params, function(err, data) {
+        if (err) {
+          console.log('err in deleteImage: ' + err);
+          reject(err); // an error occurred
+        } else {
+          console.log('success: ' + JSON.stringify(data));
+          resolve(data); // successful response
+        }
+      });
+    });
+  }
+
+
   return {
     putImage: putImage,
     putFloorsInfo: putFloorsInfo,
-    deleteObject: deleteObject
+    deleteObject: deleteObject,
+    deleteImage: deleteImage,
+    listImages: listImages
   };
 }
 

@@ -761,6 +761,37 @@ function create(event) {
     });
   }
 
+  function getAllImageIds() {
+    return getAllFloors(tableNames.editFloors).then((editFloors) => {
+      return getAllFloors(tableNames.publicFloors).then((publicFloors) => {
+        var floors = editFloors.concat(publicFloors);
+        var floorImageIds = [];
+        floors.forEach((floor) => {
+          floorImageIds.push(floor.image);
+        });
+        var ids = floorImageIds.FilterExpression((x, i, self) => {
+          return self.indexOf(x) === i;
+        });
+        return ids;
+      });
+    });
+  }
+
+  function getAllFloors(table_name){
+    return new Promise(function(resolve, reject) {
+      return client.scan({
+        TableName: table_name
+      }, function(err, data) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data.Items);
+        }
+      });
+    });
+  }
+
+
   return {
     getFloors: getFloors,
     getTmpFloors:getTmpFloors,
@@ -780,7 +811,8 @@ function create(event) {
     deletePrototype: deletePrototype,
     getObjectByIdFromPublicFloor: getObjectByIdFromPublicFloor,
     searchPeopleWithObjects: searchPeopleWithObjects,
-    searchObjects: searchObjects
+    searchObjects: searchObjects,
+    getAllImageIds: getAllImageIds
   };
 }
 

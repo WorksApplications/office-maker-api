@@ -231,7 +231,7 @@ functions:
         - common/**
     events:
       - schedule:
-          name: ${self:service}-${self:provider.stage}-fetchPeople-schedule
+          name: ${self:service}-${self:provider.stage}-batchDeleteUnusedImages-schedule
           rate: cron(0 22 ? * 5 *)
           enabled: true
           input:

@@ -762,8 +762,8 @@ function create(event) {
   }
 
   function getAllImageIds() {
-    return getAllFloors(tableNames.editFloors).then((editFloors) => {
-      return getAllFloors(tableNames.publicFloors).then((publicFloors) => {
+    return scanTable(tableNames.editFloors).then((editFloors) => {
+      return scanTable(tableNames.publicFloors).then((publicFloors) => {
         var floors = editFloors.concat(publicFloors);
         // console.log('floos: ' + JSON.stringify(floors))
         var floorImageIds = [];
@@ -778,7 +778,7 @@ function create(event) {
     });
   }
 
-  function getAllFloors(table_name){
+  function scanTable(table_name){
     return new Promise(function(resolve, reject) {
       return client.scan({
         TableName: table_name
@@ -792,6 +792,31 @@ function create(event) {
     });
   }
 
+  function deleteUnusedData(isEdit){
+    let floorTableName = isEdit? tableNames.editFloors: tableNames.publicFloors;
+    let objectTableName = isEdit? tableNames.editObjects: tableNames.publicObjects;
+    return scanTable(floorTableName).then((floors) => {
+      var floorIds = [];
+      floors.forEach((floor) => {
+        return floorIds.push(floor.image);
+      });
+      console.log('floorIds: ', floorIds);
+      return scanTable(objectTableName).then((objects) => {
+        console.log('objects: ', objects);
+        objects.forEach((object) => {
+          if(isEdit){
+            if(floorIds.indexOf(object.floorId) == -1 || (!object.changed && object.deleted)) {
+              deleteObject(object.floorId, object.id, objectTableName);
+            }
+          }else{
+            if(floorIds.indexOf(object.floorId) == -1 || object.deleted) {
+              deleteObject(object.floorId, object.id, objectTableName);
+            }
+          }
+        });
+      });
+    });
+  }
 
   return {
     getFloors: getFloors,
@@ -813,7 +838,9 @@ function create(event) {
     getObjectByIdFromPublicFloor: getObjectByIdFromPublicFloor,
     searchPeopleWithObjects: searchPeopleWithObjects,
     searchObjects: searchObjects,
-    getAllImageIds: getAllImageIds
+    getAllImageIds: getAllImageIds,
+    scanTable: scanTable,
+    deleteUnusedData: deleteUnusedData
   };
 }
 

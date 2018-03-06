@@ -14,15 +14,16 @@ exports.handler = (event, context, callback) => {
 
   return db.getAllImageIds().then((floorImageIds) => {
     return s3.listImages(storageBucketName).then((data) => {
-      return data.Contents.forEach((object) => {
+      data.Contents.forEach((object) => {
         var imageId = object.Key.split('images/floors/')[1];
         if(floorImageIds.indexOf(imageId) == -1) {
           s3.deleteImage(storageBucketName, imageId);
         }
       });
+      return Promise.resolve('success');
     });
-  }).then(() => {
-    commonModule.lambdaUtil(event).send(callback, 200, 'success');
+  }).then((data) => {
+    commonModule.lambdaUtil(event).send(callback, 200, data);
   }).catch((err) => {
     commonModule.lambdaUtil(event).send(callback, 500, err);
   });

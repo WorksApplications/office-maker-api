@@ -814,7 +814,15 @@ function create(event) {
               return removeObject(object.floorId, object.id, objectTableName);
             }
           }
-        }));
+        })).then((data) => {
+          console.log('data: ', data);
+          console.log('delete complete for all public data');
+          return Promise.resolve();
+        }).catch((err) =>{
+          console.log('err: ', err);
+          console.log('still have some public data');
+          return Promise.resolve();
+        });
       });
     });
   }

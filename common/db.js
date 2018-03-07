@@ -815,12 +815,13 @@ function create(event) {
             }
           }
         })).then((data) => {
+          isEdit? console.log('Edit'): console.log('Public');
           console.log('data: ', data);
-          console.log('delete complete for all public data');
+          console.log('delete complete for all data');
           return Promise.resolve();
         }).catch((err) =>{
           console.log('err: ', err);
-          console.log('still have some public data');
+          console.log('still have some data');
           return Promise.resolve();
         });
       });

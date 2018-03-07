@@ -799,6 +799,7 @@ function create(event) {
   }
 
   function deleteUnusedData(isEdit){
+    isEdit? console.log('Edit'): console.log('Public');
     let floorTableName = isEdit? tableNames.editFloors: tableNames.publicFloors;
     let objectTableName = isEdit? tableNames.editObjects: tableNames.publicObjects;
     return scanTable(floorTableName, null, []).then((floors) => {
@@ -821,12 +822,10 @@ function create(event) {
             }
           }
         })).then((data) => {
-          isEdit? console.log('Edit'): console.log('Public');
           console.log('data: ', data);
           console.log('delete complete for all data');
           return Promise.resolve();
         }).catch((err) => {
-          isEdit? console.log('Edit'): console.log('Public');
           console.log('err: ', err);
           console.log('still have some data');
           return Promise.resolve();

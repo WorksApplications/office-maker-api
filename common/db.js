@@ -762,8 +762,8 @@ function create(event) {
   }
 
   function getAllImageIds() {
-    return scanTable(tableNames.editFloors).then((editFloors) => {
-      return scanTable(tableNames.publicFloors).then((publicFloors) => {
+    return scanTable(tableNames.editFloors, null, []).then((editFloors) => {
+      return scanTable(tableNames.publicFloors, null, []).then((publicFloors) => {
         var floors = editFloors.concat(publicFloors);
         // console.log('floos: ' + JSON.stringify(floors))
         var floorImageIds = [];
@@ -778,15 +778,21 @@ function create(event) {
     });
   }
 
-  function scanTable(table_name){
+  function scanTable(table_name, lastKey, items){
     return new Promise(function(resolve, reject) {
       return client.scan({
-        TableName: table_name
-      }, function(err, data) {
+          TableName: table_name,
+          ExclusiveStartKey: lastKey
+        }, function(err, data) {
         if (err) {
           reject(err);
         } else {
-          resolve(data.Items);
+          items = items.concat(data.Items);
+          if(data.LastEvaluatedKey){
+            resolve(scanTable(table_name, data.LastEvaluatedKey, items));
+          }else{
+            return resolve(items);
+          }
         }
       });
     });
@@ -795,13 +801,13 @@ function create(event) {
   function deleteUnusedData(isEdit){
     let floorTableName = isEdit? tableNames.editFloors: tableNames.publicFloors;
     let objectTableName = isEdit? tableNames.editObjects: tableNames.publicObjects;
-    return scanTable(floorTableName).then((floors) => {
+    return scanTable(floorTableName, null, []).then((floors) => {
       var floorIds = [];
       floors.forEach((floor) => {
         return floorIds.push(floor.id);
       });
       console.log('floorIds: ', floorIds);
-      return scanTable(objectTableName).then((objects) => {
+      return scanTable(objectTableName, null, []).then((objects) => {
         return Promise.all(objects.map((object) => {
           if(isEdit){
             if(floorIds.indexOf(object.floorId) == -1 || (!object.changed && object.deleted)) {

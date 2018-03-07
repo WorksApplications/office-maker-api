@@ -802,7 +802,7 @@ function create(event) {
       });
       console.log('floorIds: ', floorIds);
       return scanTable(objectTableName).then((objects) => {
-        objects.forEach((object) => {
+        return Promise.all(objects.map((object) => {
           if(isEdit){
             if(floorIds.indexOf(object.floorId) == -1 || (!object.changed && object.deleted)) {
               console.log('edit_object: ', object);
@@ -814,7 +814,7 @@ function create(event) {
               removeObject(object.floorId, object.id, objectTableName);
             }
           }
-        });
+        }));
       });
     });
   }

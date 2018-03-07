@@ -806,12 +806,12 @@ function create(event) {
           if(isEdit){
             if(floorIds.indexOf(object.floorId) == -1 || (!object.changed && object.deleted)) {
               console.log('edit_object: ', object);
-              removeObject(object.floorId, object.id, objectTableName);
+              return removeObject(object.floorId, object.id, objectTableName);
             }
           }else{
             if(floorIds.indexOf(object.floorId) == -1 || object.deleted) {
               console.log('public_object: ', object);
-              removeObject(object.floorId, object.id, objectTableName);
+              return removeObject(object.floorId, object.id, objectTableName);
             }
           }
         }));

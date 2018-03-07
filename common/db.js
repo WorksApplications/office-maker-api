@@ -819,7 +819,8 @@ function create(event) {
           console.log('data: ', data);
           console.log('delete complete for all data');
           return Promise.resolve();
-        }).catch((err) =>{
+        }).catch((err) => {
+          isEdit? console.log('Edit'): console.log('Public');
           console.log('err: ', err);
           console.log('still have some data');
           return Promise.resolve();

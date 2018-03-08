@@ -1071,6 +1071,14 @@ resources:
       Type: "AWS::S3::Bucket"
       Properties:
         BucketName: ${self:custom.STORAGE_NAME}
+        VersioningConfiguration:
+          Status: Enabled
+        LifecycleConfiguration:
+          Rules:
+          - Id: deleteEverythingInOneWeek
+            Prefix: ''
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: '7'
         CorsConfiguration:
           CorsRules:
           - AllowedHeaders: ['*']

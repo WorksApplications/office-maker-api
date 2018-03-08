@@ -1078,8 +1078,7 @@ resources:
           - Id: deleteEverythingInOneWeek
             Prefix: ''
             Status: Enabled
-            NoncurrentVersionExpiration:
-              ExpirationInDays: '7'
+            NoncurrentVersionExpirationInDays: '7'
         CorsConfiguration:
           CorsRules:
           - AllowedHeaders: ['*']

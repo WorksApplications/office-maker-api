@@ -225,7 +225,7 @@ functions:
     events:
       - schedule:
           name: ${self:service}-${self:provider.stage}-batchDeleteUnusedData-schedule
-          rate: cron(0 22 ? * * *)
+          rate: cron(0 22 ? * 5 *)
           enabled: true
           input:
             key: value
@@ -241,7 +241,7 @@ functions:
     events:
       - schedule:
           name: ${self:service}-${self:provider.stage}-batchDeleteUnusedImages-schedule
-          rate: cron(0 22 ? * * *)
+          rate: cron(0 22 ? * 5 *)
           enabled: true
           input:
             key: value

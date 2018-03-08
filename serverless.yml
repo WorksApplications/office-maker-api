@@ -1074,10 +1074,11 @@ resources:
         VersioningConfiguration:
           Status: Enabled
         LifecycleConfiguration:
-        Rules:
-        - Id: deleteEverythingInOneWeek
-          Status: Enabled
-          ExpirationInDays: '7'
+          Rules:
+          - Id: deleteEverythingInOneWeek
+            Prefix: ''
+            Status: Enabled
+            ExpirationInDays: '7'
         CorsConfiguration:
           CorsRules:
           - AllowedHeaders: ['*']

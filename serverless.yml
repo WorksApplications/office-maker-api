@@ -1071,6 +1071,8 @@ resources:
       Type: "AWS::S3::Bucket"
       Properties:
         BucketName: ${self:custom.STORAGE_NAME}
+        VersioningConfiguration:
+          Status: Enabled
         CorsConfiguration:
           CorsRules:
           - AllowedHeaders: ['*']

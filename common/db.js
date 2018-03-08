@@ -762,8 +762,8 @@ function create(event) {
   }
 
   function getAllImageIds() {
-    return getAllFloors(tableNames.editFloors).then((editFloors) => {
-      return getAllFloors(tableNames.publicFloors).then((publicFloors) => {
+    return scanTable(tableNames.editFloors, null, []).then((editFloors) => {
+      return scanTable(tableNames.publicFloors, null, []).then((publicFloors) => {
         var floors = editFloors.concat(publicFloors);
         // console.log('floos: ' + JSON.stringify(floors))
         var floorImageIds = [];
@@ -778,15 +778,76 @@ function create(event) {
     });
   }
 
-  function getAllFloors(table_name){
+  function scanTable(table_name, lastKey, items){
     return new Promise(function(resolve, reject) {
       return client.scan({
-        TableName: table_name
-      }, function(err, data) {
+          TableName: table_name,
+          ExclusiveStartKey: lastKey
+        }, function(err, data) {
         if (err) {
           reject(err);
         } else {
-          resolve(data.Items);
+          items = items.concat(data.Items);
+          if(data.LastEvaluatedKey){
+            resolve(scanTable(table_name, data.LastEvaluatedKey, items));
+          }else{
+            return resolve(items);
+          }
+        }
+      });
+    });
+  }
+
+  function deleteUnusedData(isEdit){
+    isEdit? console.log('Edit'): console.log('Public');
+    let floorTableName = isEdit? tableNames.editFloors: tableNames.publicFloors;
+    let objectTableName = isEdit? tableNames.editObjects: tableNames.publicObjects;
+    return scanTable(floorTableName, null, []).then((floors) => {
+      var floorIds = [];
+      floors.forEach((floor) => {
+        return floorIds.push(floor.id);
+      });
+      console.log('floorIds: ', floorIds);
+      return scanTable(objectTableName, null, []).then((objects) => {
+        return Promise.all(objects.map((object) => {
+          if(isEdit){
+            if(floorIds.indexOf(object.floorId) == -1 || (!object.changed && object.deleted)) {
+              console.log('edit_object: ', object);
+              return removeObject(object.floorId, object.id, objectTableName);
+            }
+          }else{
+            if(floorIds.indexOf(object.floorId) == -1 || object.deleted) {
+              console.log('public_object: ', object);
+              return removeObject(object.floorId, object.id, objectTableName);
+            }
+          }
+        })).then((data) => {
+          console.log('data: ', data);
+          console.log('delete complete for all data');
+          return Promise.resolve();
+        }).catch((err) => {
+          console.log('err: ', err);
+          console.log('still have some data');
+          return Promise.resolve();
+        });
+      });
+    });
+  }
+
+  function removeObject(floorId, objectId, table_name){
+    return new Promise((resolve, reject) => {
+      var params = {
+        TableName: table_name,
+        Key: {
+          floorId: floorId,
+          id: objectId
+        }
+      };
+      client.delete(params, function(err, data) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
         }
       });
     });
@@ -813,7 +874,9 @@ function create(event) {
     getObjectByIdFromPublicFloor: getObjectByIdFromPublicFloor,
     searchPeopleWithObjects: searchPeopleWithObjects,
     searchObjects: searchObjects,
-    getAllImageIds: getAllImageIds
+    getAllImageIds: getAllImageIds,
+    scanTable: scanTable,
+    deleteUnusedData: deleteUnusedData
   };
 }
 

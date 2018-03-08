@@ -1076,7 +1076,6 @@ resources:
         LifecycleConfiguration:
         Rules:
         - Id: deleteEverythingInOneWeek
-          Prefix: ''
           Status: Enabled
           ExpirationInDays: '7'
         CorsConfiguration:

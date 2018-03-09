@@ -4,7 +4,7 @@ node_js:
 branches:
   only:
     - prod
-    - dev
+    - stg
 before_install:
 - openssl version
 - openssl aes-256-cbc -K $encrypted_b47eb4726dfc_key -iv $encrypted_b47eb4726dfc_iv -in secrets.tar.enc -out secrets.tar -d

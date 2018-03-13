@@ -1,6 +1,6 @@
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
-var guest_token = process.env.GUEST_TOKEN;
+// var guest_token = process.env.GUEST_TOKEN;
 var publicKey = fs.readFileSync(__dirname+'/pubkey.pem');
 const yaml = require('js-yaml');
 
@@ -48,16 +48,16 @@ function getAllowedGeneralResource(methodArn) {
     return resourceRoot + r;
   });
 }
-
-const guest = {
-  role: 'guest',
-  tenantId: 'worksap.co.jp',
-  principalId: 'office-maker@worksap.co.jp',
-  exp: '',
-  userId: 'office-maker@worksap.co.jp',
-  tenantDomain: 'worksap.co.jp',
-  token: guest_token
-};
+//
+// const guest = {
+//   role: 'guest',
+//   tenantId: 'worksap.co.jp',
+//   principalId: 'office-maker@worksap.co.jp',
+//   exp: '',
+//   userId: 'office-maker@worksap.co.jp',
+//   tenantDomain: 'worksap.co.jp',
+//   token: guest_token
+// };
 
 
 module.exports.handler = (event, context, callback) => {
@@ -67,11 +67,13 @@ module.exports.handler = (event, context, callback) => {
   const allowedGeneralResources = getAllowedGeneralResource(event.methodArn);
   console.log('token: ', token);
   if (!token) {
-    callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
+    // callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
+    callback('Error: Must need token');
   } else {
     getSelf(token).catch(message => {
       console.log('msg: ', message);
-      callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
+      // callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
+      callback('Error: Invalid token');
     }).then(user => {
       if (user.role == 'admin') {
         callback(null, generate_policy_without_sourceip(user.userId, 'Allow', event.methodArn, user));

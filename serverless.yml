@@ -188,8 +188,8 @@ functions:
       include:
         - functions/authorizer/**
         - config.yml
-    environment:
-      GUEST_TOKEN: ${self:custom.config.GUEST_TOKEN}
+    # environment:
+    #   GUEST_TOKEN: ${self:custom.config.GUEST_TOKEN}
 
   batchAddCompressedObj:
     handler: functions/batchAddCompressedObj/index.handler

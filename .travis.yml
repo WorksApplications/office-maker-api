@@ -13,8 +13,6 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_b47eb4726dfc_key -iv $encrypted_b47eb4726dfc_iv -in secrets.tar.enc -out secrets.tar -d
 - ls -al
 - tar xvf secrets.tar
-- echo "sonarcloud_organization_key=$sonarcloud_organization_key"
-- echo "sonarcloud_token=$sonarcloud_token"
 install:
 - npm install
 addons:

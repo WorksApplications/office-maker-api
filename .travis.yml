@@ -1,6 +1,7 @@
-language: node_js
 dist: trusty
 sudo: required
+
+language: node_js
 node_js:
 - 6.10.3
 branches:
@@ -24,6 +25,8 @@ addons:
     branches:
       - prod
       - stg
+jdk:
+  - oraclejdk8
 script:
 - sonar-scanner
 - npm test

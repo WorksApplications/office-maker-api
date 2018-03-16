@@ -30,7 +30,7 @@ addons:
 jdk:
   - oraclejdk8
 script:
-- sonar-scanner
+- sonar-scanner -X
 - npm test
 cache:
   directories:

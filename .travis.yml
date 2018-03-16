@@ -1,5 +1,6 @@
 language: node_js
 dist: trusty
+sudo: required
 node_js:
 - 6.10.3
 branches:
@@ -17,9 +18,12 @@ addons:
   sonarcloud:
     organization: $sonarcloud_organization_key
     token:
-      secure: $sonarcloud_token
+      secure: $sonarcloud_toke
     # github_token:
     #   secure: *********
+    branches:
+      - prod
+      - stg
 script:
 - sonar-scanner
 - npm test

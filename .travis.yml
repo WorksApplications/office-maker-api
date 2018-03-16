@@ -14,19 +14,19 @@ before_install:
 - tar xvf secrets.tar
 install:
 - npm install
-addons:
-  sonarcloud:
-    organization: $sonarcloud_organization_key
-    token:
-      secure: $sonarcloud_toke
-    # github_token:
-    #   secure: *********
-    branches:
-      - prod
-      - stg
+# addons:
+#   sonarcloud:
+#     organization: $sonarcloud_organization_key
+#     token:
+#       secure: $sonarcloud_toke
+#     # github_token:
+#     #   secure: *********
+#     branches:
+#       - prod
+#       - stg
 script:
-- sonar-scanner
+# - sonar-scanner
 - npm test
 after_success:
 - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
-# - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then sls deploy -v -s $TRAVIS_BRANCH ; fi'
+- 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then sls deploy -v -s $TRAVIS_BRANCH ; fi'

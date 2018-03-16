@@ -32,6 +32,9 @@ jdk:
 script:
 - sonar-scanner
 - npm test
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
 after_success:
 - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
 # - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then sls deploy -v -s $TRAVIS_BRANCH ; fi'

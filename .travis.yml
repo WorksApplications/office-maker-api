@@ -30,7 +30,7 @@ addons:
 jdk:
   - oraclejdk8
 script:
-- sonar-scanner -X
+- sonar-scanner -Dsonar.projectKey=seiichi:my-project -Dsonar.sources=. -Dsonar.java.binaries=.
 - npm test
 cache:
   directories:

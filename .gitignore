@@ -17,3 +17,4 @@ ProfileServiceRoot
 migrations/*
 config.yml
 secrets.tar
+coverage

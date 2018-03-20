@@ -75,10 +75,12 @@ module.exports.handler = (event, context, callback) => {
       callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
       // callback('Error: Invalid token');
     }).then(user => {
-      if (user.role == 'admin') {
-        callback(null, generate_policy_without_sourceip(user.userId, 'Allow', event.methodArn, user));
+      if (user.userId.indexOf('people-register-service') > 0){
+        callback(null, generate_policy(user.userId, 'Allow', event.methodArn, user));
+      } else if (user.role == 'admin') {
+        callback(null, generate_policy(user.userId, 'Allow', event.methodArn, user));
       } else {
-        callback(null, generate_policy_without_sourceip(user.userId, 'Allow', allowedGeneralResources, user));
+        callback(null, generate_policy(user.userId, 'Allow', allowedGeneralResources, user));
       }
     });
   }

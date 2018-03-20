@@ -27,8 +27,8 @@ addons:
 jdk:
   - oraclejdk8
 script:
+- npm run test-cov
 - sonar-scanner
-- npm test
 cache:
   directories:
     - '$HOME/.sonar/cache'

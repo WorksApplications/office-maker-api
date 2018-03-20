@@ -19,14 +19,6 @@ describe('office-maker-api Lambda', () => {
       query (params, func) {}
     };
 
-    event = {
-      requestContext: {
-        authorizer: {
-          tenantId: 'worksap.co.jp'
-        }
-      }
-    };
-
     db = proxyquire(process.cwd() + '/common/db', {
       'aws-sdk': {
         DynamoDB: {
@@ -34,15 +26,21 @@ describe('office-maker-api Lambda', () => {
         }
       }
     });
-    common = proxyquire(process.cwd() +'/functions/getColors/index', {
-      './db.js': db
-    });
     lambda = proxyquire(process.cwd() + '/functions/getColors/index', {
-      '../../common': common
+      '../../common': {
+        './db.js': db
+      }
     });
   });
 
   it('Should return result when running successfully', () => {
+    event = {
+      requestContext: {
+        authorizer: {
+          tenantId: 'worksap.co.jp'
+        }
+      }
+    };
     dynamoDbGetStub = sinon.stub(proxyDynamoDB.prototype, 'query')
     .callsArgWith(1, '', {
       Items: {

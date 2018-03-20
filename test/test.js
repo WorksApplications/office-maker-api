@@ -1,5 +1,5 @@
 'use strict';
-process.env.TABLE_PREFIX = 'office-maker-map-dev';
+process.env.TABLE_PREFIX = 'office-maker-map-stg';
 var expect = require( 'chai' ).expect;
 const sinon = require('sinon');
 var LambdaTester = require( 'lambda-tester' );
@@ -53,7 +53,6 @@ describe('office-maker-api Lambda', () => {
     return LambdaTester( lambda.handler )
     .event(event)
     .expectResult((result) => {
-      console.log('result: ', result);
       expect(result).to.deep.equal({
         statusCode: 200,
         headers: {

@@ -31,6 +31,9 @@ provider:
 # you can add environment variables
   environment:
     TABLE_PREFIX: ${self:custom.TABLE_PREFIX}
+    lambdaRole:
+      Fn::GetAtt: [ IamRoleLambdaExecution, Arn ]
+    accountServiceStorage: ${self:custom.config.accountServiceStorage_${self:provider.stage}}
   stackTags:
     Name: ${self:service}-${self:provider.stage}
 

@@ -117,13 +117,41 @@ function create(event) {
     });
   }
 
+  function getServiceToken(bucketName, key) {
+    return new Promise((resolve, reject) => {
+      var params = {
+        // Bucket: process.env.accountServiceStorage,
+        // Key: process.env.lambdaRole.split(':')[5] + '/token'
+        Bucket: bucketName,
+        Key: key
+      };
+      console.log('params: ', params);
+      s3.getObject(params, function (err, data) {
+        if (err) {
+          console.log('err: ', err, err.stack); // an error occurred
+          reject(err);
+        }
+        else {
+          console.log('data: ', data);           // successful response
+
+          var buf = Buffer.from(data.Body);
+          var token = JSON.parse(buf.toString());
+          console.log('token: ', token);
+
+          resolve(token.accessToken);
+        }
+      });
+    });
+  }
+
 
   return {
     putImage: putImage,
     putFloorsInfo: putFloorsInfo,
     deleteObject: deleteObject,
     deleteImage: deleteImage,
-    listImages: listImages
+    listImages: listImages,
+    getServiceToken: getServiceToken
   };
 }
 

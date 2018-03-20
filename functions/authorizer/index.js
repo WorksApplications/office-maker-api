@@ -67,8 +67,8 @@ module.exports.handler = (event, context, callback) => {
   const allowedGeneralResources = getAllowedGeneralResource(event.methodArn);
   console.log('token: ', token);
   if (!token) {
-    // callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
-    callback('Error: Must need token');
+    callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
+    // callback('Error: Must need token');
   } else {
     getSelf(token).catch(message => {
       console.log('msg: ', message);

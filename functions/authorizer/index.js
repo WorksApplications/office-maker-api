@@ -48,16 +48,16 @@ function getAllowedGeneralResource(methodArn) {
     return resourceRoot + r;
   });
 }
-//
-// const guest = {
-//   role: 'guest',
-//   tenantId: 'worksap.co.jp',
-//   principalId: 'office-maker@worksap.co.jp',
-//   exp: '',
-//   userId: 'office-maker@worksap.co.jp',
-//   tenantDomain: 'worksap.co.jp',
-//   token: guest_token
-// };
+
+const guest = {
+  role: 'guest',
+  tenantId: 'worksap.co.jp',
+  principalId: 'office-maker@worksap.co.jp',
+  exp: '',
+  userId: 'office-maker@worksap.co.jp',
+  tenantDomain: 'worksap.co.jp'
+  // token: guest_token
+};
 
 
 module.exports.handler = (event, context, callback) => {
@@ -72,8 +72,8 @@ module.exports.handler = (event, context, callback) => {
   } else {
     getSelf(token).catch(message => {
       console.log('msg: ', message);
-      // callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
-      callback('Error: Invalid token');
+      callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
+      // callback('Error: Invalid token');
     }).then(user => {
       if (user.role == 'admin') {
         callback(null, generate_policy_without_sourceip(user.userId, 'Allow', event.methodArn, user));

@@ -34,8 +34,8 @@ exports.handler = (event, context, callback) => {
         console.log('data: ', JSON.stringify(data));
         commonModule.lambdaUtil(event).send(callback, 200, data);
       });
-    }).catch((err) => {
-      commonModule.lambdaUtil(event).send(callback, 500, err);
     });
+  }).catch((err) => {
+    commonModule.lambdaUtil(event).send(callback, 500, err);
   });
 };

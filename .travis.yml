@@ -20,8 +20,8 @@ addons:
     organization: $sonarcloud_organization_key
     token:
       secure: $sonarcloud_token
-    # github_token:
-    #   secure: *********
+    github_token:
+      secure: $github_token
     branches:
       - prod
       - stg

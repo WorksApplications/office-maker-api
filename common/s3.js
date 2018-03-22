@@ -122,11 +122,13 @@ function create(event) {
       if(process.env.SERVICE_TOKEN){
         let envToken = process.env.SERVICE_TOKEN;
         console.log('envToken: ', envToken);
-        let buffer = Buffer(envToken.split('.')[1], 'base64').toString('ascii');
-        console.log('buffer ', buffer);
-        console.log('buffer.exp ', buffer.exp);
-        if( buffer.exp > 0){
+        let payload = Buffer(envToken.split('.')[1], 'base64').toString('ascii');
+        let tokenExp = JSON.parse(payload).exp;
+        console.log('tokenExp: ', tokenExp);
+        if( tokenExp > (Math.floor(Date.now() / 1000) + 60)){
+          console.log('use environment tokne');
           resolve(process.env.SERVICE_TOKEN);
+          return ;
         }
       }
       var params = {

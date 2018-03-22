@@ -44,8 +44,8 @@ describe('office-maker-api Lambda', () => {
     dynamoDbGetStub = sinon.stub(proxyDynamoDB.prototype, 'query')
     .callsArgWith(1, '', {
       Items: {
-        post_title: 'aa',
-        post_content: 'bb'
+        tenantId: 'worksap.co.jp',
+        id: 0
       }
     });
     return LambdaTester( lambda.handler )
@@ -58,7 +58,10 @@ describe('office-maker-api Lambda', () => {
           'Access-Control-Allow-Credentials': 'true',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({post_title: 'aa', post_content: 'bb'})
+        body: JSON.stringify({
+          tenantId: 'worksap.co.jp',
+          id: 0
+        })
       });
     });
   });

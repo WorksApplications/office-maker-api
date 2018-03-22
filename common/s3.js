@@ -119,6 +119,16 @@ function create(event) {
 
   function getServiceToken(bucketName, key) {
     return new Promise((resolve, reject) => {
+      if(process.env.SERVICE_TOKEN){
+        let envToken = process.env.SERVICE_TOKEN;
+        console.log('envToken: ', envToken);
+        let buffer = Buffer(envToken.split('.')[1], 'base64').toString('ascii');
+        console.log('buffer ', buffer);
+        console.log('buffer.exp ', buffer.exp);
+        if( buffer.exp > 0){
+          resolve(process.env.SERVICE_TOKEN);
+        }
+      }
       var params = {
         // Bucket: process.env.accountServiceStorage,
         // Key: process.env.lambdaRole.split(':')[5] + '/token'
@@ -137,7 +147,7 @@ function create(event) {
           var buf = Buffer.from(data.Body);
           var token = JSON.parse(buf.toString());
           console.log('token: ', token);
-
+          process.env.SERVICE_TOKEN = token.accessToken;
           resolve(token.accessToken);
         }
       });

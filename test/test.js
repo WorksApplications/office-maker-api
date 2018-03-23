@@ -1,5 +1,5 @@
 'use strict';
-process.env.TABLE_PREFIX = 'office-maker-map-dev';
+process.env.TABLE_PREFIX = 'office-maker-map-stg';
 var expect = require( 'chai' ).expect;
 const sinon = require('sinon');
 var LambdaTester = require( 'lambda-tester' );
@@ -16,9 +16,27 @@ describe('office-maker-api Lambda', () => {
 
   beforeEach(() => {
     proxyDynamoDB = class {
-      query (params, func) {}
+      query () {
+        return {
+          promise: () => {}
+        };
+      }
     };
 
+    lambda = proxyquire(process.cwd() + '/functions/getColors/index', {
+      '../../common': {
+        'db' : proxyquire(process.cwd() + '/common/db', {
+          'aws-sdk': {
+            DynamoDB: {
+              DocumentClient: proxyDynamoDB
+            }
+          }
+        })
+      }
+    });
+  });
+
+  describe('getColors Lambda', () => {
     event = {
       requestContext: {
         authorizer: {
@@ -26,42 +44,47 @@ describe('office-maker-api Lambda', () => {
         }
       }
     };
-
-    db = proxyquire(process.cwd() + '/common/db', {
-      'aws-sdk': {
-        DynamoDB: {
-          DocumentClient: proxyDynamoDB
+    it('Should return result when running successfully', () => {
+      dynamoDbGetStub = sinon.stub(proxyDynamoDB.prototype, 'query')
+      .callsArgWith(1, '', {
+        Items: {
+          tenantId: 'worksap.co.jp',
+          id: 0
         }
-      }
+      });
+      return LambdaTester( lambda.handler )
+      .event(event)
+      .expectResult((result) => {
+        expect(result).to.deep.equal({
+          statusCode: 200,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': 'true',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            tenantId: 'worksap.co.jp',
+            id: 0
+          })
+        });
+      });
     });
-    common = proxyquire(process.cwd() +'/functions/getColors/index', {
-      './db.js': db
-    });
-    lambda = proxyquire(process.cwd() + '/functions/getColors/index', {
-      '../../common': common
-    });
-  });
 
-  it('Should return result when running successfully', () => {
-    dynamoDbGetStub = sinon.stub(proxyDynamoDB.prototype, 'query')
-    .callsArgWith(1, '', {
-      Items: {
-        post_title: 'aa',
-        post_content: 'bb'
-      }
-    });
-    return LambdaTester( lambda.handler )
-    .event(event)
-    .expectResult((result) => {
-      console.log('result: ', result);
-      expect(result).to.deep.equal({
-        statusCode: 200,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Credentials': 'true',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({post_title: 'aa', post_content: 'bb'})
+    it('Should return result when running successfully', () => {
+      dynamoDbGetStub = sinon.stub(proxyDynamoDB.prototype, 'query')
+      .callsArgWith(1, 'err', {});
+      return LambdaTester( lambda.handler )
+      .event(event)
+      .expectResult((result) => {
+        expect(result).to.deep.equal({
+          statusCode: 500,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': 'true',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify('err')
+        });
       });
     });
   });

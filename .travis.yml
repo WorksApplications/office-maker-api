@@ -1,10 +1,12 @@
+dist: trusty
+sudo: required
 language: node_js
 node_js:
 - 6.10.3
 branches:
   only:
     - prod
-    - dev
+    - stg
 before_install:
 - openssl version
 - openssl aes-256-cbc -K $encrypted_b47eb4726dfc_key -iv $encrypted_b47eb4726dfc_iv -in secrets.tar.enc -out secrets.tar -d
@@ -12,8 +14,24 @@ before_install:
 - tar xvf secrets.tar
 install:
 - npm install
+addons:
+  sonarcloud:
+    organization: $sonarcloud_organization_key
+    token:
+      secure: $sonarcloud_token
+    github_token:
+      secure: $github_token
+    branches:
+      - prod
+      - stg
+jdk:
+  - oraclejdk8
 script:
-- npm test
+- npm run test-cov
+- sonar-scanner
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
 after_success:
 - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
 - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then sls deploy -v -s $TRAVIS_BRANCH ; fi'

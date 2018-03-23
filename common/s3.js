@@ -117,13 +117,53 @@ function create(event) {
     });
   }
 
+  function getServiceToken(bucketName, key) {
+    return new Promise((resolve, reject) => {
+      if(process.env.SERVICE_TOKEN){
+        let envToken = process.env.SERVICE_TOKEN;
+        console.log('envToken: ', envToken);
+        let payload = Buffer(envToken.split('.')[1], 'base64').toString('ascii');
+        let tokenExp = JSON.parse(payload).exp;
+        console.log('tokenExp: ', tokenExp);
+        if( tokenExp > (Math.floor(Date.now() / 1000) + 60)){
+          console.log('use environment tokne');
+          resolve(process.env.SERVICE_TOKEN);
+          return ;
+        }
+      }
+      var params = {
+        // Bucket: process.env.accountServiceStorage,
+        // Key: process.env.lambdaRole.split(':')[5] + '/token'
+        Bucket: bucketName,
+        Key: key
+      };
+      console.log('params: ', params);
+      s3.getObject(params, function (err, data) {
+        if (err) {
+          console.log('err: ', err, err.stack); // an error occurred
+          reject(err);
+        }
+        else {
+          console.log('data: ', data);           // successful response
+
+          var buf = Buffer.from(data.Body);
+          var token = JSON.parse(buf.toString());
+          console.log('token: ', token);
+          process.env.SERVICE_TOKEN = token.accessToken;
+          resolve(token.accessToken);
+        }
+      });
+    });
+  }
+
 
   return {
     putImage: putImage,
     putFloorsInfo: putFloorsInfo,
     deleteObject: deleteObject,
     deleteImage: deleteImage,
-    listImages: listImages
+    listImages: listImages,
+    getServiceToken: getServiceToken
   };
 }
 

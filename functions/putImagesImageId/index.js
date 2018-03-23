@@ -2,7 +2,7 @@
 
 console.log('Loading function');
 
-const commonModule = require(process.cwd()+'/common');
+const commonModule = require('../../common');
 
 const STORAGE_NAME = process.env.STORAGE_NAME;
 

@@ -16,19 +16,22 @@ describe('office-maker-api Lambda', () => {
 
   beforeEach(() => {
     proxyDynamoDB = class {
-      query (params, func) {}
+      query () {
+        return {
+          promise: () => {}
+        };
+      }
     };
 
-    db = proxyquire(process.cwd() + '/common/db', {
-      'aws-sdk': {
-        DynamoDB: {
-          DocumentClient: proxyDynamoDB
-        }
-      }
-    });
     lambda = proxyquire(process.cwd() + '/functions/getColors/index', {
       '../../common': {
-        './db.js': db
+        'db' : proxyquire(process.cwd() + '/common/db', {
+          'aws-sdk': {
+            DynamoDB: {
+              DocumentClient: proxyDynamoDB
+            }
+          }
+        })
       }
     });
   });
@@ -62,6 +65,31 @@ describe('office-maker-api Lambda', () => {
           tenantId: 'worksap.co.jp',
           id: 0
         })
+      });
+    });
+  });
+
+  it('Should return result when running successfully', () => {
+    event = {
+      requestContext: {
+        authorizer: {
+          tenantId: 'worksap.co.jp'
+        }
+      }
+    };
+    dynamoDbGetStub = sinon.stub(proxyDynamoDB.prototype, 'query')
+    .callsArgWith(1, 'err', {});
+    return LambdaTester( lambda.handler )
+    .event(event)
+    .expectResult((result) => {
+      expect(result).to.deep.equal({
+        statusCode: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': 'true',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify('err')
       });
     });
   });

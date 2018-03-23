@@ -1,4 +1,7 @@
 # office-maker-api
+[![Build Status](https://api.travis-ci.org/WorksApplications/office-maker.svg)](https://travis-ci.org/WorksApplications/office-maker-api)
+[![Bugs](https://sonarcloud.io/api/badges/measure?key=office-maker-api:project:prod&metric=bugs)](https://sonarcloud.io/project/issues?id=office-maker-api:project:prod&resolved=false&types=BUG)
+[![Coverage](https://sonarcloud.io/api/badges/measure?key=office-maker-api:project:prod&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=office-maker-api:project:prod)
 ## Architecture
 ![Architecture](https://github.com/WorksApplications/office-maker-api/blob/prod/images/map.png)
 ## Getting Started

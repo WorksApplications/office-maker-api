@@ -1,6 +1,6 @@
 GUEST_TOKEN:
 ProfileServiceRoot_prod:
-ProfileServiceRoot_dev:
+ProfileServiceRoot_stg:
 sourceIp:
   'aws:SourceIp':
     - '0.0.0.0/32' #

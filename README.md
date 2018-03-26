@@ -14,14 +14,11 @@
 2. Configuration
 
  ```sh init.sh```
-  - sourceIp.yaml
-    - ip address which you allow to access
+  - config.yaml
+    - URL setting
+    - SourceIp setting
   - functions/authorizer/pubkey.pem
     - publickey which is used to decode token
-  - functions/authorizer/guest_token.json
-    - special token for guest user
-  - ProfileServiceRoot
-    - URL for ProfileServiceRoot
 
 3. DynamoDB Table Data
   - you can add inital data under ```migrations```

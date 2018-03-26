@@ -35,10 +35,10 @@
   - S3 Bucket Local URL: ```http://localhost:8888```
 
 ## Deployment
-```sls deploy```
+```sls deploy -s <stage name>```
 
 ## Removement
-```sls deploy```
+```sls remove -s <stage name>```
 
 
 ## Build

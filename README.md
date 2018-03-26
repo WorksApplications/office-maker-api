@@ -40,23 +40,6 @@
 ## Removement
 ```sls remove -s <stage name>```
 
-
-## Build
-
-TODO
-
-## Debug
-
-TODO
-
-## Contributing
-
-TODO
-
-## Versioning
-
-TODO
-
 ## Authors
 
 TODO

@@ -44,10 +44,6 @@
 
 TODO
 
-## Acknowledgments
-
-TODO
-
 ## Copyright
 
 © 2017-Present WorksApplications CO.,LTD.

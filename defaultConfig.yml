@@ -1,4 +1,5 @@
-GUEST_TOKEN:
+accountServiceStorage_prod:
+accountServiceStorage_stg:
 ProfileServiceRoot_prod:
 ProfileServiceRoot_stg:
 sourceIp:

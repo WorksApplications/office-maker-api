@@ -73,7 +73,6 @@ plugins:
   - serverless-offline
   - serverless-apigw-binary
   - serverless-aws-documentation
-  - serverless-dynamodb-autoscaling
 custom:
   config: ${file(config.yml)}
   TABLE_PREFIX: ${self:service}-map-${self:provider.stage}
@@ -931,9 +930,7 @@ resources:
             KeyType: HASH
           - AttributeName: id
             KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+        BillingMode: PAY_PER_REQUEST
 
     PrototypesTable:
       Type: AWS::DynamoDB::Table
@@ -949,9 +946,7 @@ resources:
             KeyType: HASH
           - AttributeName: id
             KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+        BillingMode: PAY_PER_REQUEST
 
     PublicFloorsTable:
       Type: AWS::DynamoDB::Table
@@ -967,9 +962,7 @@ resources:
             KeyType: HASH
           - AttributeName: id
             KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+        BillingMode: PAY_PER_REQUEST
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
 
@@ -988,9 +981,7 @@ resources:
             KeyType: HASH
           - AttributeName: id
             KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+        BillingMode: PAY_PER_REQUEST
 
     PublicObjectsTable:
       Type: AWS::DynamoDB::Table
@@ -1008,9 +999,7 @@ resources:
             KeyType: HASH
           - AttributeName: id
             KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         GlobalSecondaryIndexes:
           - IndexName: id-index
             KeySchema:
@@ -1018,18 +1007,12 @@ resources:
               KeyType: HASH
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 3
-              WriteCapacityUnits: 3
           - IndexName: personId-index
             KeySchema:
             - AttributeName: personId
               KeyType: HASH
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 3
 
     EditObjectsTable:
       Type: AWS::DynamoDB::Table
@@ -1047,9 +1030,7 @@ resources:
             KeyType: HASH
           - AttributeName: id
             KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         GlobalSecondaryIndexes:
           - IndexName: id-index
             KeySchema:
@@ -1057,18 +1038,12 @@ resources:
               KeyType: HASH
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 3
           - IndexName: personId-index
             KeySchema:
             - AttributeName: personId
               KeyType: HASH
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 3
     # S3
     StorageBucket:
       Type: "AWS::S3::Bucket"

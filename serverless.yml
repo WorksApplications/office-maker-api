@@ -25,7 +25,7 @@ provider:
   timeout: 20
 
 # you can overwrite defaults here
-  stage: ${opt:stage}
+  stage: ${opt:stage, 'dev'}
   region: ap-northeast-1
 
 # you can add environment variables

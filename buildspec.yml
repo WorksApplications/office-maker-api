@@ -13,7 +13,7 @@ phases:
       - echo ${config_yml} >> config.yml
       - echo ${pubkey} >> ./functions/authorizer/pubkey.pem
       - npm install
-      - cd functions/authorizer/ && npm install
+      - cd functions/authorizer/ && npm install && cd -
   build:
     commands:
       - npm run test

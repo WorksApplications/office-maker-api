@@ -2,10 +2,10 @@ version: 0.2
 
 env:
   variables:
-    stage: prod
+    stage: "prod"
   parameter-store:
-    config_yml: office-maker-api-config-prod
-    pubkey: office-maker-api-authorizer-pubkey
+    config_yml: "office-maker-api-config-prod"
+    pubkey: "office-maker-api-authorizer-pubkey"
 
 phases:
   install:

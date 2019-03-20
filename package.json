@@ -7,23 +7,22 @@
     "test-cov": "istanbul cover --print both _mocha -- test/test.js",
     "postinstall": "(cd common && npm install); (cd functions/authorizer/ && npm install);"
   },
-  "dependencies": {
-    "serverless": "^1.37.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "chai": "^4.2.0",
     "istanbul": "^0.4.5",
     "lambda-tester": "^3.5.0",
-    "mocha": "^5.2.0",
+    "mocha": "^6.0.2",
     "proxyquire": "^2.1.0",
+    "serverless": "^1.39.1",
     "serverless-apigw-binary": "^0.4.4",
     "serverless-aws-documentation": "^1.1.0",
     "serverless-dynamodb-autoscaling": "^0.6.2",
-    "serverless-dynamodb-local": "0.2.35",
-    "serverless-offline": "^4.4.2",
+    "serverless-dynamodb-local": "^0.2.35",
+    "serverless-offline": "^4.9.2",
     "serverless-plugin-stage-variables": "^1.9.2",
-    "serverless-s3-local": "^0.3.22",
+    "serverless-s3-local": "^0.3.23",
     "serverless-s3-remover": "^0.6.0",
-    "sinon": "^7.2.3"
+    "sinon": "^7.2.7"
   }
 }

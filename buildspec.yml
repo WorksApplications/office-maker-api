@@ -12,6 +12,7 @@ phases:
     commands:
       - echo ${config_yml} >> config.yml
       - echo "${pubkey}" >> ./functions/authorizer/pubkey.pem
+      - npm i -g npm@latest
       - npm ci
       - cd functions/authorizer/ && npm ci && cd -
       - cd common && npm ci && cd -

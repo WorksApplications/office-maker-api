@@ -60,10 +60,12 @@ provider:
 
 # you can add packaging information here
 package:
-  individually: true
   exclude:
     - ./**
-
+  include:
+    - common/**
+    - functions/**
+    - config.yml
 
 plugins:
   - serverless-plugin-stage-variables

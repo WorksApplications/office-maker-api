@@ -6,7 +6,7 @@ describe('getSelf', () => {
 
   describe('When the user found', () => {
     beforeEach(() => {
-      process.env.lambdaRole = 'test1:test2:test3:test4:test5:test6';
+      process.env.lambdaRole = 'arn:aws:iam::111111111111:role/lambda-role';
 
       getSelf = proxyquire(process.cwd() + '/functions/getSelf/index', {
         '../../common': {
@@ -40,11 +40,27 @@ describe('getSelf', () => {
       });
     });
 
-    it('should respond 200', () => {
+    it('should respond 200 to a request from an admin', () => {
       getSelf.handler({
         requestContext: {
           authorizer: {
             role: 'admin'
+          }
+        },
+        stageVariables: {
+          ProfileServiceRoot: 'hoge',
+        },
+      }, {}, (err, response) => {
+        expect(err).to.equal(null);
+        expect(response.statusCode).to.equal(200);
+      });
+    });
+
+    it('should respond 200 to a request from a guest', () => {
+      getSelf.handler({
+        requestContext: {
+          authorizer: {
+            role: 'guest'
           }
         },
         stageVariables: {

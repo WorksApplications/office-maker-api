@@ -1,5 +1,5 @@
 # office-maker-api
-[![Build Status](https://api.travis-ci.org/WorksApplications/office-maker.svg)](https://travis-ci.org/WorksApplications/office-maker-api)
+[![Build Status](https://api.travis-ci.org/WorksApplications/office-maker.svg)](https://travis-ci.org/WorksApplications/office-maker-api) [![Greenkeeper badge](https://badges.greenkeeper.io/WorksApplications/office-maker-api.svg)](https://greenkeeper.io/)
 
 ## Architecture
 ![Architecture](https://github.com/WorksApplications/office-maker-api/blob/master/images/map.png)

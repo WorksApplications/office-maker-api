@@ -1,0 +1,11 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "common/package.json",
+        "functions/authorizer/package.json",
+        "package.json"
+      ]
+    }
+  }
+}

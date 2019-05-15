@@ -16,7 +16,7 @@ exports.handler = (event, context, callback) => {
 
   if (user.role == 'guest') commonModule.lambdaUtil(event).send(callback, 200, {});
 
-  return commonModule.s3(event).getServiceToken(accountServiceStorage, lambdaRole.split(':')[5] + '/token').then((serviceToken) => {
+  commonModule.s3(event).getServiceToken(accountServiceStorage, lambdaRole.split(':')[5] + '/token').then((serviceToken) => {
     commonModule.profileService(event).getPerson(serviceToken, user.userId).then((person) => {
       if (person == null) {
         var msg = 'Relevant person for ' + user.userId + ' not found.';

@@ -16,7 +16,11 @@ function create(event) {
         // json: true
       };
       console.log('options: ' + JSON.stringify(options));
-      return request(options, function(err, response, body) {
+      request(options, function (err, response, body) {
+        console.log('err: ' + JSON.stringify(err));
+        console.log('response: ' + JSON.stringify(response));
+        console.log('body: ' + JSON.stringify(body));
+
         if (err || response.statusCode >= 400) {
           console.log('err in send: ' + err);
           // log.system.error(response ? response.statusCode : err, 'profile service: failed ' + method + ' ' + url);
@@ -58,7 +62,7 @@ function create(event) {
 
   function getPerson(token, personId) {
     return get(token, root + '/profiles/' + personId).then((person) => {
-      console.log('gotPerson: ' + person);
+      console.log('gotPerson: ' + JSON.stringify(person));
       return Promise.resolve(fixPerson(person));
     }).catch((e) => {
       console.log('e: ' + e);
@@ -84,7 +88,7 @@ function create(event) {
 
   function getPeopleByPost(token, post, exclusiveStartKey) {
     var url = root + '/profiles?q=' + encodeURIComponent('"' + post + '"') +
-    (exclusiveStartKey ? '&exclusiveStartKey=' + exclusiveStartKey : '');
+      (exclusiveStartKey ? '&exclusiveStartKey=' + exclusiveStartKey : '');
     return get(token, url).then((data) => {
       var people = data.profiles.map(fixPerson);
       if (data.lastEvaluatedKey) {
@@ -99,7 +103,7 @@ function create(event) {
 
   function search(token, query, exclusiveStartKey) {
     var url = root + '/profiles?q=' + encodeURIComponent(query) +
-    (exclusiveStartKey ? '&exclusiveStartKey=' + exclusiveStartKey : '');
+      (exclusiveStartKey ? '&exclusiveStartKey=' + exclusiveStartKey : '');
     return get(token, url).then((data) => {
       var people = data.profiles.map(fixPerson);
       if (data.lastEvaluatedKey) {

@@ -2,9 +2,9 @@ version: 0.2
 
 env:
   variables:
-    stage: "prod"
+    stage: "stg"
   parameter-store:
-    config_yml: "office-maker-api-config-prod"
+    config_yml: "office-maker-api-config-stg"
     pubkey: "office-maker-api-authorizer-pubkey"
 
 phases:

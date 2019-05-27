@@ -3,12 +3,13 @@
   "description": "",
   "version": "0.1.0",
   "scripts": {
-    "test": "mocha",
+    "test": "bash test/startOffline.sh && mocha; bash test/stopOffline.sh",
     "test-cov": "istanbul cover --print both _mocha -- test/test.js",
     "postinstall": "(cd common && npm install); (cd functions/authorizer/ && npm install);"
   },
   "dependencies": {},
   "devDependencies": {
+    "axios": "^0.18.0",
     "chai": "^4.2.0",
     "istanbul": "^0.4.5",
     "lambda-tester": "^3.5.0",
@@ -18,11 +19,12 @@
     "serverless-apigw-binary": "^0.4.4",
     "serverless-aws-documentation": "^1.1.0",
     "serverless-dynamodb-autoscaling": "^0.6.2",
-    "serverless-dynamodb-local": "^1.0.2",
-    "serverless-offline": "^4.9.2",
+    "serverless-dynamodb-local": "^0.2.37",
+    "serverless-offline": "^4.10.6",
     "serverless-plugin-stage-variables": "^1.9.2",
     "serverless-s3-local": "^0.4.4",
     "serverless-s3-remover": "^0.6.0",
-    "sinon": "^7.2.7"
+    "sinon": "^7.3.2",
+    "uuid": "^3.3.2"
   }
 }

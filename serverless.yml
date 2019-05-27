@@ -170,9 +170,13 @@ custom:
     # Uncomment only if you already have a S3 server running locally
     # noStart: true
 
+  path:
+    authorizer:
+      test: test/fake-authorizer.js
+
 functions:
   authorizer:
-    handler: functions/authorizer/index.handler
+    handler: test/fake_authorizer.handler #${self:custom.path.authorizer.${opt:stage}, 'functions/authorizer/index.handler'}
     name: ${self:service}-${self:provider.stage}-authorizer
     package:
       include:

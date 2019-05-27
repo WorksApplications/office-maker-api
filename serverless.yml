@@ -17,46 +17,43 @@ service: office-maker
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
 
-
 provider:
   name: aws
   runtime: nodejs8.10
   memorySize: 128
   timeout: 20
 
-# you can overwrite defaults here
+  # you can overwrite defaults here
   stage: ${opt:stage, 'dev'}
   region: ap-northeast-1
 
-# you can add environment variables
+  # you can add environment variables
   environment:
     TABLE_PREFIX: ${self:custom.TABLE_PREFIX}
     lambdaRole:
-      Fn::GetAtt: [ IamRoleLambdaExecution, Arn ]
+      Fn::GetAtt: [IamRoleLambdaExecution, Arn]
     accountServiceStorage: ${self:custom.config.accountServiceStorage_${self:provider.stage}}
   stackTags:
     Name: ${self:service}-${self:provider.stage}
 
-# you can add statements to the Lambda function's IAM Role here
+  # you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
-   - Effect: "Allow"
-     Action:
-       - "dynamodb:*"
-     Resource:
-       - 'Fn::Join':
-         - ':'
-         -
-           - 'arn:aws:dynamodb'
-           - ${self:provider.region}
-           - Ref: 'AWS::AccountId'
-           - 'table/${self:custom.TABLE_PREFIX}*'
-   - Effect: "Allow"
-     Action:
-       - "s3:*"
-     Resource:
-       - "arn:aws:s3:::${self:custom.STORAGE_NAME}"
-       - "arn:aws:s3:::${self:custom.STORAGE_NAME}/*"
-
+    - Effect: 'Allow'
+      Action:
+        - 'dynamodb:*'
+      Resource:
+        - 'Fn::Join':
+            - ':'
+            - - 'arn:aws:dynamodb'
+              - ${self:provider.region}
+              - Ref: 'AWS::AccountId'
+              - 'table/${self:custom.TABLE_PREFIX}*'
+    - Effect: 'Allow'
+      Action:
+        - 's3:*'
+      Resource:
+        - 'arn:aws:s3:::${self:custom.STORAGE_NAME}'
+        - 'arn:aws:s3:::${self:custom.STORAGE_NAME}/*'
 
 # you can add packaging information here
 package:
@@ -83,72 +80,61 @@ custom:
     ProfileServiceRoot: ${self:custom.config.ProfileServiceRoot_${self:provider.stage}}
 
   apigwBinary:
-    types:           #list of mime-types
-      - "image/png"
-      - "image/jpeg"
-      - "application/octet-stream"
+    types: #list of mime-types
+      - 'image/png'
+      - 'image/jpeg'
+      - 'application/octet-stream'
   documentation:
     models:
-      -
-        name: "Color"
-        description: "Model for get colors"
-        contentType: "application/json"
+      - name: 'Color'
+        description: 'Model for get colors'
+        contentType: 'application/json'
         schema: ${file(models/Color.yml)}
-      -
-        name: "FloorFloorId"
-        description: ""
-        contentType: "application/json"
+      - name: 'FloorFloorId'
+        description: ''
+        contentType: 'application/json'
         schema: ${file(models/FloorFloorId.yml)}
-      -
-        name: "Floors"
-        description: ""
-        contentType: "application/json"
+      - name: 'Floors'
+        description: ''
+        contentType: 'application/json'
         schema: ${file(models/Floors.yml)}
-      -
-        name: "Object"
-        description: ""
-        contentType: "application/json"
+      - name: 'Object'
+        description: ''
+        contentType: 'application/json'
         schema: ${file(models/Object.yml)}
-      -
-        name: "Objects"
-        description: ""
-        contentType: "application/json"
+      - name: 'Objects'
+        description: ''
+        contentType: 'application/json'
         schema: ${file(models/Objects.yml)}
-      -
-        name: "People"
-        description: ""
-        contentType: "application/json"
+      - name: 'People'
+        description: ''
+        contentType: 'application/json'
         schema: ${file(models/People.yml)}
-      -
-        name: "Person"
-        description: ""
-        contentType: "application/json"
+      - name: 'Person'
+        description: ''
+        contentType: 'application/json'
         schema: ${file(models/Person.yml)}
-      -
-        name: "Prototype"
-        description: ""
-        contentType: "application/json"
+      - name: 'Prototype'
+        description: ''
+        contentType: 'application/json'
         schema: ${file(models/Prototype.yml)}
-      -
-        name: "Prototypes"
-        description: ""
-        contentType: "application/json"
+      - name: 'Prototypes'
+        description: ''
+        contentType: 'application/json'
         schema: ${file(models/Prototypes.yml)}
-      -
-        name: "SearchPeopleWithObjects"
-        description: ""
-        contentType: "application/json"
+      - name: 'SearchPeopleWithObjects'
+        description: ''
+        contentType: 'application/json'
         schema: ${file(models/SearchPeopleWithObjects.yml)}
-      -
-        name: "Self"
-        description: ""
-        contentType: "application/json"
+      - name: 'Self'
+        description: ''
+        contentType: 'application/json'
         schema: ${file(models/Self.yml)}
 
   remover:
-     buckets:
+    buckets:
       #  - ${self:custom.STORAGE_NAME}
-       - ${self:service}-storage-${self:provider.stage}
+      - ${self:service}-storage-${self:provider.stage}
   dynamodb:
     start:
       port: 8000
@@ -171,11 +157,11 @@ custom:
           - table: ${self:custom.TABLE_PREFIX}_edit_objects
             sources: [./migrations/EditObjectsTable.json]
   capacities:
-    - table: PublicObjectsTable  # DynamoDB Resource
+    - table: PublicObjectsTable # DynamoDB Resource
       read:
-        minimum: 1       # Minimum write capacity
-        maximum: 50      # Maximum write capacity
-        usage: 0.8        # Targeted usage percentage
+        minimum: 1 # Minimum write capacity
+        maximum: 50 # Maximum write capacity
+        usage: 0.8 # Targeted usage percentage
   s3:
     host: 0.0.0.0
     port: 8888
@@ -320,13 +306,12 @@ functions:
               headers:
                 authorization: true
           documentation:
-            summary: "Get Colors"
-            description: "Get Colors"
+            summary: 'Get Colors'
+            description: 'Get Colors'
             methodResponses:
-              -
-                statusCode: "200"
+              - statusCode: '200'
                 responseModels:
-                  "application/json": "Color"
+                  'application/json': 'Color'
 
   getFloors:
     handler: functions/getFloors/index.handler
@@ -362,13 +347,12 @@ functions:
               headers:
                 authorization: true
           documentation:
-            summary: "Get Floor"
-            description: "Get Floor"
+            summary: 'Get Floor'
+            description: 'Get Floor'
             methodResponses:
-              -
-                statusCode: "200"
+              - statusCode: '200'
                 responseModels:
-                  "application/json": "Floors"
+                  'application/json': 'Floors'
   getFloorsFloorIdEdit:
     handler: functions/getFloorsFloorIdEdit/index.handler
     name: ${self:service}-${self:provider.stage}-getFloorsFloorIdEdit
@@ -478,13 +462,12 @@ functions:
                 ids: true
                 floorId: true
           documentation:
-            summary: "Get People"
-            description: "Get People"
+            summary: 'Get People'
+            description: 'Get People'
             methodResponses:
-              -
-                statusCode: "200"
+              - statusCode: '200'
                 responseModels:
-                  "application/json": "People"
+                  'application/json': 'People'
   getPrototypes:
     handler: functions/getPrototypes/index.handler
     name: ${self:service}-${self:provider.stage}-getPrototypes
@@ -968,7 +951,6 @@ resources:
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
 
-
     EditFloorsTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -1005,14 +987,14 @@ resources:
         GlobalSecondaryIndexes:
           - IndexName: id-index
             KeySchema:
-            - AttributeName: id
-              KeyType: HASH
+              - AttributeName: id
+                KeyType: HASH
             Projection:
               ProjectionType: ALL
           - IndexName: personId-index
             KeySchema:
-            - AttributeName: personId
-              KeyType: HASH
+              - AttributeName: personId
+                KeyType: HASH
             Projection:
               ProjectionType: ALL
 
@@ -1036,36 +1018,36 @@ resources:
         GlobalSecondaryIndexes:
           - IndexName: id-index
             KeySchema:
-            - AttributeName: id
-              KeyType: HASH
+              - AttributeName: id
+                KeyType: HASH
             Projection:
               ProjectionType: ALL
           - IndexName: personId-index
             KeySchema:
-            - AttributeName: personId
-              KeyType: HASH
+              - AttributeName: personId
+                KeyType: HASH
             Projection:
               ProjectionType: ALL
     # S3
     StorageBucket:
-      Type: "AWS::S3::Bucket"
+      Type: 'AWS::S3::Bucket'
       Properties:
         BucketName: ${self:custom.STORAGE_NAME}
         VersioningConfiguration:
           Status: Enabled
         LifecycleConfiguration:
           Rules:
-          - Id: deleteEverythingInOneWeek
-            Prefix: ''
-            Status: Enabled
-            NoncurrentVersionExpirationInDays: '7'
+            - Id: deleteEverythingInOneWeek
+              Prefix: ''
+              Status: Enabled
+              NoncurrentVersionExpirationInDays: '7'
         CorsConfiguration:
           CorsRules:
-          - AllowedHeaders: ['*']
-            AllowedMethods: [GET]
-            AllowedOrigins: ["*"]
-            Id: ${self:service}-storage-cors
-            MaxAge: '1'
+            - AllowedHeaders: ['*']
+              AllowedMethods: [GET]
+              AllowedOrigins: ['*']
+              Id: ${self:service}-storage-cors
+              MaxAge: '1'
 
     StorageBucketPolicy:
       Type: 'AWS::S3::BucketPolicy'
@@ -1074,9 +1056,9 @@ resources:
           Ref: StorageBucket
         PolicyDocument:
           Statement:
-            - Effect: "Allow"
-              Principal: "*"
-              Action: "s3:ListBucket"
+            - Effect: 'Allow'
+              Principal: '*'
+              Action: 's3:ListBucket'
               Resource:
                 'Fn::Join':
                   - ''
@@ -1084,11 +1066,11 @@ resources:
                     - Ref: StorageBucket
               Condition:
                 Bool:
-                  "aws:SecureTransport": "true"
+                  'aws:SecureTransport': 'true'
                 IpAddress: ${self:custom.config.sourceIp}
             - Effect: Allow
-              Principal: "*"
-              Action: "s3:*"
+              Principal: '*'
+              Action: 's3:*'
               Resource:
                 'Fn::Join':
                   - ''
@@ -1097,7 +1079,7 @@ resources:
                     - /*
               Condition:
                 Bool:
-                  "aws:SecureTransport": "true"
+                  'aws:SecureTransport': 'true'
                 IpAddress: ${self:custom.config.sourceIp}
 #  Outputs:
 #     NewOutput:

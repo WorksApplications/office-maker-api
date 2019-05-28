@@ -14,7 +14,7 @@ const testUser = {
 const testUserToken = Buffer.from(JSON.stringify(testUser)).toString('base64');
 
 describe('Floors', () => {
-  it('create a floor', async () => {
+  it('create a temporary floor', async () => {
     const floorId = uuid();
     const putResponse = await axios.put(
       `${host}/floors/${floorId}/edit`,
@@ -27,7 +27,7 @@ describe('Floors', () => {
         ord: 507,
         realHeight: 7,
         realWidth: 10,
-        temporary: false,
+        temporary: true,
         tenantId: testUser.tenantDomain,
         updateAt: new Date().getTime(),
         updateBy: testUser.userId,

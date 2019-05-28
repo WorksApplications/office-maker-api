@@ -2,10 +2,10 @@ version: 0.2
 
 env:
   variables:
-    stage: "stg"
+    stage: 'stg'
   parameter-store:
-    config_yml: "office-maker-api-config-stg"
-    pubkey: "office-maker-api-authorizer-pubkey"
+    config_yml: 'office-maker-api-config-stg'
+    pubkey: 'office-maker-api-authorizer-pubkey'
 
 phases:
   install:
@@ -18,10 +18,27 @@ phases:
       - cd common && npm ci && cd -
   build:
     commands:
-      - npm run test
+      - npx mocha
+  pre_build:
+    commands:
+      - docker run -d -p 8000:8000 amazon/dynamodb-local
+      - echo $(npx sls print -s test | yq '.resources.Resources.ColorsTable.Properties') > input.json && aws dynamodb create-table --cli-input-json file://input.json --endpoint-url "http://localhost:8000"
+      - echo $(npx sls print -s test | yq '.resources.Resources.PrototypesTable.Properties') > input.json && aws dynamodb create-table --cli-input-json file://input.json --endpoint-url "http://localhost:8000"
+      - echo $(npx sls print -s test | yq '.resources.Resources.PublicFloorsTable.Properties') > input.json && aws dynamodb create-table --cli-input-json file://input.json --endpoint-url "http://localhost:8000"
+      - echo $(npx sls print -s test | yq '.resources.Resources.EditFloorsTable.Properties') > input.json && aws dynamodb create-table --cli-input-json file://input.json --endpoint-url "http://localhost:8000"
+      - echo $(npx sls print -s test | yq '.resources.Resources.PublicObjectsTable.Properties') > input.json && aws dynamodb create-table --cli-input-json file://input.json --endpoint-url "http://localhost:8000"
+      - echo $(npx sls print -s test | yq '.resources.Resources.EditObjectsTable.Properties') > input.json && aws dynamodb create-table --cli-input-json file://input.json --endpoint-url "http://localhost:8000"
+      - aws --endpoint-url http://localhost:8000 dynamodb list-tables
+      - |
+        serverless offline start -s test &> $TMPFILE &
+        while ! grep "Offline listening" $TMPFILE
+        do sleep 1; done
   post_build:
     commands: |
       if [ "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/master" ]; then
         ./node_modules/.bin/sls deploy -s ${stage}
       fi;
 
+cache:
+  paths:
+    - '~/.npm/**/*'

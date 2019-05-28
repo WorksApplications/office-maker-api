@@ -14,6 +14,7 @@ phases:
       - echo "${pubkey}" >> ./functions/authorizer/pubkey.pem
       - npm i -g npm@latest
       - npm ci
+      - docker pull amazon/dynamodb-local
       - cd functions/authorizer/ && npm ci && cd -
       - cd common && npm ci && cd -
   build:

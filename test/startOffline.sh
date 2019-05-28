@@ -6,7 +6,7 @@ if [ -f .offline.pid ]; then
   exit 1
 fi
 
-serverless offline start -s test --noAuth &> $TMPFILE &
+serverless offline start -s test &> $TMPFILE &
 PID=$!
 echo $PID > .offline.pid
 

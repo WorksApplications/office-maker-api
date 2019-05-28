@@ -176,7 +176,7 @@ custom:
 
 functions:
   authorizer:
-    handler: test/fake_authorizer.handler #${self:custom.path.authorizer.${opt:stage}, 'functions/authorizer/index.handler'}
+    handler: ${self:custom.path.authorizer.${opt:stage}, 'functions/authorizer/index.handler'}
     name: ${self:service}-${self:provider.stage}-authorizer
     package:
       include:

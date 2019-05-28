@@ -12,36 +12,45 @@ const testUser = {
   tenantDomain: 'example.com'
 };
 const testUserToken = Buffer.from(JSON.stringify(testUser)).toString('base64');
+const authHeaderOption = {
+  headers: {
+    Authorization: `Bearer ${testUserToken}`
+  }
+};
 
 describe('Floors', () => {
   it('create a temporary floor', async () => {
     const floorId = uuid();
+    const floorInfo = {
+      flipImage: false,
+      height: 4560,
+      id: floorId,
+      image: null,
+      name: 'New Floor',
+      ord: 507,
+      realHeight: 7,
+      realWidth: 10,
+      temporary: true,
+      tenantId: testUser.tenantDomain,
+      updateAt: new Date().getTime(),
+      updateBy: testUser.userId,
+      width: 700
+    };
+
     const putResponse = await axios.put(
       `${host}/floors/${floorId}/edit`,
-      {
-        flipImage: false,
-        height: 4560,
-        id: floorId,
-        image: null,
-        name: 'New Floor',
-        ord: 507,
-        realHeight: 7,
-        realWidth: 10,
-        temporary: true,
-        tenantId: testUser.tenantDomain,
-        updateAt: new Date().getTime(),
-        updateBy: testUser.userId,
-        width: 700
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${testUserToken}`
-        }
-      }
+      floorInfo,
+      authHeaderOption
     );
     expect(putResponse.status).eq(200);
 
-    const result = await axios.get(`${host}/floors`);
-    console.log(result.data);
+    const getResponse = await axios.get(
+      `${host}/floors/${floorId}/edit`,
+      authHeaderOption
+    );
+    expect(getResponse.status).eq(200);
+    expect(getResponse.data).to.not.equal(null);
+    expect(getResponse.data.name).eq(floorInfo.name);
+    expect(getResponse.data.tenantId).eq(floorInfo.tenantId);
   });
 });

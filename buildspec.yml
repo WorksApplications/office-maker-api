@@ -13,6 +13,7 @@ phases:
       java: openjdk8
       nodejs: 8
     commands:
+      - apt-get update && apt-get install -y lsof
       - echo ${config_yml} >> config.yml
       - echo "${pubkey}" >> ./functions/authorizer/pubkey.pem
       - npm i -g npm@latest

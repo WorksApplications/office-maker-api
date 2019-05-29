@@ -140,7 +140,7 @@ custom:
       port: 8000
       inMemory: true
       migrate: true
-      seed: true
+      seed: false
     # seed:
     #   development:
     #     sources:
@@ -172,7 +172,7 @@ custom:
 
   path:
     authorizer:
-      test: test/fake-authorizer.js
+      test: test/fake_authorizer.handler
 
 functions:
   authorizer:

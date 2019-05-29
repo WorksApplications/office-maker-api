@@ -141,21 +141,21 @@ custom:
       inMemory: true
       migrate: true
       seed: true
-    seed:
-      development:
-        sources:
-          - table: ${self:custom.TABLE_PREFIX}_colors
-            sources: [./migrations/ColorsTable.json]
-          - table: ${self:custom.TABLE_PREFIX}_prototypes
-            sources: [./migrations/PrototypesTable.json]
-          - table: ${self:custom.TABLE_PREFIX}_public_floors
-            sources: [./migrations/PublicFloorsTable.json]
-          - table: ${self:custom.TABLE_PREFIX}_edit_floors
-            sources: [./migrations/EditFloorsTable.json]
-          - table: ${self:custom.TABLE_PREFIX}_public_objects
-            sources: [./migrations/PublicObjectsTable.json]
-          - table: ${self:custom.TABLE_PREFIX}_edit_objects
-            sources: [./migrations/EditObjectsTable.json]
+    # seed:
+    #   development:
+    #     sources:
+    #       - table: ${self:custom.TABLE_PREFIX}_colors
+    #         sources: [./migrations/ColorsTable.json]
+    #       - table: ${self:custom.TABLE_PREFIX}_prototypes
+    #         sources: [./migrations/PrototypesTable.json]
+    #       - table: ${self:custom.TABLE_PREFIX}_public_floors
+    #         sources: [./migrations/PublicFloorsTable.json]
+    #       - table: ${self:custom.TABLE_PREFIX}_edit_floors
+    #         sources: [./migrations/EditFloorsTable.json]
+    #       - table: ${self:custom.TABLE_PREFIX}_public_objects
+    #         sources: [./migrations/PublicObjectsTable.json]
+    #       - table: ${self:custom.TABLE_PREFIX}_edit_objects
+    #         sources: [./migrations/EditObjectsTable.json]
   capacities:
     - table: PublicObjectsTable # DynamoDB Resource
       read:

@@ -11,6 +11,7 @@ tmp
 swagger.yaml
 sourceIp.yaml
 functions/authorizer/pubkey.pem
+functions/authorizer/mobile-pubkey.pem
 functions/authorizer/guest_token.json
 AccessControlAllowOrigin
 ProfileServiceRoot

@@ -6,6 +6,7 @@ env:
   parameter-store:
     config_yml: 'office-maker-api-config-stg'
     pubkey: 'office-maker-api-authorizer-pubkey'
+    mobile_pubkey: 'office-maker-api-authorizer-mobile-pubkey'
 
 phases:
   install:
@@ -16,6 +17,7 @@ phases:
       - apt-get update && apt-get install -y lsof
       - echo ${config_yml} >> config.yml
       - echo "${pubkey}" >> ./functions/authorizer/pubkey.pem
+      - echo "${mobile_pubkey}" >> ./functions/authorizer/mobile-pubkey.pem
       - npm i -g npm@latest
       - npm ci
       - cd functions/authorizer/ && npm ci && cd -

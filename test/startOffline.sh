@@ -14,6 +14,6 @@ echo $PID > .offline.pid
 while ! grep "Dynamodb Local Started" $TMPFILE
 do sleep 1; done
 
-sleep 2
+sleep 5
 
 rm $TMPFILE

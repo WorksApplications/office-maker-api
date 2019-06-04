@@ -2,26 +2,34 @@ version: 0.2
 
 env:
   variables:
-    stage: "stg"
+    stage: 'stg'
   parameter-store:
-    config_yml: "office-maker-api-config-stg"
-    pubkey: "office-maker-api-authorizer-pubkey"
+    config_yml: 'office-maker-api-config-stg'
+    pubkey: 'office-maker-api-authorizer-pubkey'
 
 phases:
   install:
+    runtime-versions:
+      java: openjdk8
+      nodejs: 8
     commands:
+      - apt-get update && apt-get install -y lsof
       - echo ${config_yml} >> config.yml
       - echo "${pubkey}" >> ./functions/authorizer/pubkey.pem
       - npm i -g npm@latest
       - npm ci
       - cd functions/authorizer/ && npm ci && cd -
       - cd common && npm ci && cd -
-  build:
+      - npx sls dynamodb install
+  pre_build:
     commands:
-      - npm run test
-  post_build:
+      - npm run test:start
+  build:
     commands: |
-      if [ "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/master" ]; then
+      if [ "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/release" ]; then
         ./node_modules/.bin/sls deploy -s ${stage}
       fi;
 
+cache:
+  paths:
+    - '~/.npm/**/*'

@@ -21,10 +21,10 @@ phases:
       - cd functions/authorizer/ && npm ci && cd -
       - cd common && npm ci && cd -
       - npx sls dynamodb install
-  build:
+  pre_build:
     commands:
       - npm test
-  post_build:
+  build:
     commands: |
       if [ "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/release" ]; then
         ./node_modules/.bin/sls deploy -s ${stage}

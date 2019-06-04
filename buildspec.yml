@@ -23,7 +23,7 @@ phases:
       - npx sls dynamodb install
   pre_build:
     commands:
-      - npm test
+      - npm run test:start
   build:
     commands: |
       if [ "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/release" ]; then

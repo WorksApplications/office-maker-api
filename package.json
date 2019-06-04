@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "test": "bash test/startOffline.sh && mocha; bash test/stopOffline.sh",
+    "test:start": "bash test/startOffline.sh && mocha",
     "test-cov": "istanbul cover --print both _mocha -- test/test.js",
     "postinstall": "(cd common && npm install); (cd functions/authorizer/ && npm install);"
   },

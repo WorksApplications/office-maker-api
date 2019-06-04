@@ -11,9 +11,7 @@ PID=$!
 echo $PID > .offline.pid
 
 # CodeBuild cannot catch this grep?
-while ! grep "Dynamodb Local Started" $TMPFILE
+while ! curl "localhost:3000" | grep "Serverless-offline"
 do sleep 1; done
-
-sleep 5
 
 rm $TMPFILE

@@ -26,7 +26,7 @@ phases:
       - npm test
   post_build:
     commands: |
-      if [ "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/master" ]; then
+      if [ "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/release" ]; then
         ./node_modules/.bin/sls deploy -s ${stage}
       fi;
 

@@ -2,6 +2,7 @@ var jwt = require('jsonwebtoken');
 var fs = require('fs');
 // var guest_token = process.env.GUEST_TOKEN;
 var publicKey = fs.readFileSync(__dirname+'/pubkey.pem');
+var mobilePublicKey = fs.readFileSync(__dirname+'/mobile-pubkey.pem');
 const yaml = require('js-yaml');
 
 const sourceIp = yaml.safeLoad(fs.readFileSync('config.yml', 'utf8')).sourceIp;
@@ -72,7 +73,12 @@ module.exports.handler = (event, context, callback) => {
   } else {
     getSelf(token).catch(message => {
       console.log('msg: ', message);
-      callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
+      try {
+        jwt.verify(token, mobilePublicKey)
+        callback(null, generate_policy_without_sourceip(guest.principalId, 'Allow', allowedGuestResources, guest))
+      } catch (error) {
+        callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
+      }
     }).then(user => {
       if (user.role == 'admin') {
         callback(null, generate_policy(user.userId, 'Allow', event.methodArn, user));

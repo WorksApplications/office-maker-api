@@ -1,0 +1,505 @@
+openapi: 3.0.0
+paths:
+  /floors:
+    get:
+      summary: Get floors
+      operationId: getFloors
+      tags:
+        - floor
+      responses:
+        '200':
+          description: Returns floors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Floors'
+  '/floors/{floorId}/public':
+    put:
+      summary: Publish a floor
+      operationId: putFloorsFloorIdPublic
+      tags:
+        - floor
+      parameters:
+        - name: floorId
+          in: query
+          description: floorId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Returns the newly published floor and the objects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FloorAndObjects'
+  '/floors/{floorId}/edit':
+    delete:
+      summary: Delete an edit floor
+      operationId: deleteFloorsFloorIdEdit
+      tags:
+        - floor
+      parameters:
+        - name: floorId
+          in: query
+          description: floorId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Returns nothing
+    put:
+      summary: Update an edit floor
+      operationId: putFloorsFloorIdEdit
+      tags:
+        - floor
+      parameters:
+        - name: floorId
+          in: query
+          description: floorId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Returns the edit floor and the objects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FloorAndObjects'
+    get:
+      summary: Get an edit floor
+      operationId: getFloorsFloorIdEdit
+      tags:
+        - floor
+      parameters:
+        - name: floorId
+          in: query
+          description: floorId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Returns the edit floor and the objects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FloorAndObjects'
+  /objects:
+    patch:
+      summary: Update objects
+      operationId: patchObjects2
+      tags:
+        - object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectModification'
+      responses:
+        '200':
+          description: Returns object modifications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectModification'
+  '/objects/{objectId}':
+    get:
+      summary: Get an object
+      operationId: getObjectsObjectId
+      tags:
+        - object
+      parameters:
+        - name: objectId
+          in: query
+          description: objectId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Returns the object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Objects'
+  /people:
+    get:
+      operationId: getPeople
+      tags:
+        - people
+  '/search/{query}':
+    get:
+      operationId: getSearchQuery
+      tags:
+        - search
+  '/search/Objects/{query}':
+    get:
+      operationId: getSearchObjectsQuery
+      tags:
+        - search
+  /self:
+    get:
+      operationId: getSelf
+      tags:
+        - self
+  /colors:
+    get:
+      operationId: getColors
+      tags:
+        - color
+      responses:
+        '200':
+          description: Returns the colors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Colors'
+    put:
+      operationId: putColors
+      tags:
+        - color
+  '/colors/{id}':
+    put:
+      operationId: putColorById
+      tags:
+        - color
+  /prototypes:
+    get:
+      summary: List prototypes
+      operationId: getPrototypes
+      tags:
+        - prototype
+      responses:
+        '200':
+          description: Returns prototypes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prototypes'
+    put:
+      operationId: putPrototypes
+      tags:
+        - prototype
+  '/prototypes/{prototypeId}':
+    put:
+      summary: Update a prototype
+      operationId: putPrototypesPrototypeId
+      tags:
+        - prototype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Object'
+      parameters:
+        - name: prototypeId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Returns nothing?
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+  '/images/{imageId}':
+    put:
+      operationId: putImagesImageId
+      tags:
+        - image
+info:
+  title: office-maker-api
+  description: Not completed yet
+  version: 1.0.0
+components:
+  schemas:
+    Floor:
+      type: object
+      properties:
+        flipImage:
+          type: boolean
+        height:
+          type: integer
+          format: int32
+        id:
+          type: string
+          format: uuid
+        image:
+          type: string
+          format: uuid
+        name:
+          type: string
+        ord:
+          type: integer
+          format: int32
+        realHeight:
+          type: integer
+          format: int32
+        realWidth:
+          type: integer
+          format: int32
+        temporary:
+          type: boolean
+        tenantId:
+          type: string
+        updateAt:
+          type: integer
+          format: timestamp
+          description: timestamp in milliseconds
+        updateBy:
+          type: string
+        width:
+          type: integer
+          format: int32
+        objects:
+          type: array
+          items:
+            type: object
+            properties:
+              backgroundColor:
+                type: string
+                format: color-code
+                example: '#eee'
+              floorId:
+                type: string
+                format: uuid
+              height:
+                type: integer
+                format: int32
+              id:
+                type: string
+                format: uuid
+              updateAt:
+                type: integer
+                format: timestamp
+                description: timestamp in milliseconds
+              width:
+                type: integer
+                format: int32
+              x:
+                type: integer
+                format: int32
+              'y':
+                type: integer
+                format: int32
+    Floors:
+      type: array
+      items:
+        type: array
+        items:
+          $ref: '#/components/schemas/Floor'
+    Object:
+      type: object
+      properties:
+        backgroundColor:
+          type: string
+          format: color-code
+          example: '#eee'
+        floorId:
+          type: string
+          format: uuid
+        height:
+          type: integer
+          format: int32
+        id:
+          type: string
+          format: uuid
+        updateAt:
+          type: integer
+          format: timestamp
+          description: timestamp in milliseconds
+        width:
+          type: integer
+          format: int32
+        x:
+          type: integer
+          format: int32
+        'y':
+          type: integer
+          format: int32
+    Objects:
+      type: array
+      items:
+        $ref: '#/components/schemas/Object'
+    FloorAndObjects:
+      type: object
+      properties:
+        flipImage:
+          type: boolean
+        height:
+          type: integer
+          format: int32
+        id:
+          type: string
+          format: uuid
+        image:
+          type: string
+          format: uuid
+        name:
+          type: string
+        ord:
+          type: integer
+          format: int32
+        realHeight:
+          type: integer
+          format: int32
+        realWidth:
+          type: integer
+          format: int32
+        temporary:
+          type: boolean
+        tenantId:
+          type: string
+        updateAt:
+          type: integer
+          format: timestamp
+          description: timestamp in milliseconds
+        updateBy:
+          type: string
+        width:
+          type: integer
+          format: int32
+        objects:
+          type: array
+          items:
+            type: object
+            properties:
+              backgroundColor:
+                type: string
+                format: color-code
+                example: '#eee'
+              floorId:
+                type: string
+                format: uuid
+              height:
+                type: integer
+                format: int32
+              id:
+                type: string
+                format: uuid
+              updateAt:
+                type: integer
+                format: timestamp
+                description: timestamp in milliseconds
+              width:
+                type: integer
+                format: int32
+              x:
+                type: integer
+                format: int32
+              'y':
+                type: integer
+                format: int32
+    ObjectModification:
+      type: array
+      items:
+        type: object
+        properties:
+          flag:
+            type: string
+            enum:
+              - added
+              - modified
+              - deleted
+          result:
+            type: string
+            enum:
+              - success
+          object:
+            type: object
+            properties:
+              backgroundColor:
+                type: string
+                format: color-code
+                example: '#eee'
+              floorId:
+                type: string
+                format: uuid
+              height:
+                type: integer
+                format: int32
+              id:
+                type: string
+                format: uuid
+              updateAt:
+                type: integer
+                format: timestamp
+                description: timestamp in milliseconds
+              width:
+                type: integer
+                format: int32
+              x:
+                type: integer
+                format: int32
+              'y':
+                type: integer
+                format: int32
+    Color:
+      type: object
+      properties:
+        color:
+          type: string
+          format: color-code
+        id:
+          type: string
+          format: int32
+          description: Not sure(?)
+        ord:
+          type: integer
+          format: int32
+        tenantId:
+          type: string
+        type:
+          type: string
+          example: color
+    Colors:
+      type: array
+      items:
+        $ref: '#/components/schemas/Color'
+    Prototype:
+      type: object
+      properties:
+        backgroundColor:
+          type: string
+          format: color-code
+        color:
+          type: string
+          format: color-code
+          description: nullable
+        fontSize:
+          type: integer
+          format: int32
+          description: nullable
+        height:
+          type: integer
+          format: int32
+          description: nullable
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        shape:
+          type: string
+          description: nullable
+        tenantId:
+          type: string
+        width:
+          type: integer
+          format: int32
+    Prototypes:
+      type: array
+      items:
+        $ref: '#/components/schemas/Prototype'

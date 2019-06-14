@@ -1,0 +1,25 @@
+schema {
+  query: Query
+}
+
+type Query {
+  listEditObjectsOnFloor(floorId: String!): [EditObject!]!
+}
+
+type EditObject {
+  backgroundColor: String
+  changed: Boolean
+  deleted: Boolean
+  floorId: String!
+  height: Int
+  id: String!
+  updateAt: Int
+  width: Int
+  x: Int
+  y: Int
+  name: String
+  personId: String
+  fontSize: Int
+  type: String
+  url: String
+}

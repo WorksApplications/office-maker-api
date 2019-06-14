@@ -1,11 +1,3 @@
-schema {
-  query: Query
-}
-
-type Query {
-  listEditObjectsOnFloor(floorId: String!): [EditObject!]!
-}
-
 type EditObject {
   backgroundColor: String
   changed: Boolean
@@ -13,7 +5,7 @@ type EditObject {
   floorId: String!
   height: Int
   id: String!
-  updateAt: Int
+  updateAt: Float
   width: Int
   x: Int
   y: Int
@@ -22,4 +14,60 @@ type EditObject {
   fontSize: Int
   type: String
   url: String
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Query {
+  listEditObjectsOnFloor(floorId: String!): [EditObject!]!
+}
+
+type Mutation {
+  addEditObject(
+    floorId: String!
+    backgroundColor: String
+    changed: Boolean
+    deleted: Boolean
+    width: Int
+    height: Int
+    x: Int
+    y: Int
+    name: String
+    personId: String
+    fontSize: Int
+    type: String
+    url: String
+  ): EditObject!
+  updateEditObject(
+    floorId: String!
+    id: String!
+    backgroundColor: String
+    changed: Boolean
+    deleted: Boolean
+    width: Int
+    height: Int
+    x: Int
+    y: Int
+    name: String
+    personId: String
+    fontSize: Int
+    type: String
+    url: String
+  ): EditObject!
+  deleteEditObject(floorId: String!, id: String!): EditObject!
+}
+
+type Subscription {
+  addedEditObject(floorId: String!): EditObject
+  @aws_subscribe(mutations: ["addEditObject"])
+
+  updatedEditObject(floorId: String!): EditObject
+  @aws_subscribe(mutations: ["updateEditObject"])
+
+  deletedEditObject(floorId: String!): EditObject
+  @aws_subscribe(mutations: ["deleteEditObject"])
 }

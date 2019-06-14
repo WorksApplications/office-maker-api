@@ -186,6 +186,16 @@ custom:
         field: listEditObjectsOnFloor
         request: ListEditObjectsOnFloor.vtl
         response: JsonListResponse.vtl
+      - dataSource: EditObjects
+        type: Mutation
+        field: addEditObject
+        request: AddEditObject.vtl
+        response: JsonObjectResponse.vtl
+      - dataSource: EditObjects
+        type: Mutation
+        field: deleteEditObject
+        request: DeleteEditObject.vtl
+        response: JsonObjectResponse.vtl
     schema: schema.graphql
     dataSources:
       - type: AMAZON_DYNAMODB

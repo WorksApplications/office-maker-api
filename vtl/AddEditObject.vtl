@@ -1,0 +1,12 @@
+{
+  "version" : "2017-02-28",
+  "operation" : "PutItem",
+  "key" : {
+    "floorId" : { "S" : "${context.arguments.floorId}" },
+    "id" : { "S" : "$util.autoId()" }
+  },
+
+  #set( $arg = $util.dynamodb.toMapValues($context.arguments) )
+  #set( $arg.updateAt = $util.dynamodb.toNumber($util.time.nowEpochMilliSeconds()) )
+  "attributeValues" : $util.toJson($arg)
+}

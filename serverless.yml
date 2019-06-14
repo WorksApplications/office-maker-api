@@ -72,6 +72,8 @@ plugins:
   - serverless-offline
   - serverless-apigw-binary
   - serverless-aws-documentation
+  - serverless-appsync-plugin
+
 custom:
   config: ${file(config.yml)}
   TABLE_PREFIX: ${self:service}-map-${self:provider.stage}
@@ -173,6 +175,28 @@ custom:
   path:
     authorizer:
       test: test/fake_authorizer.handler
+
+  appSync:
+    name: ${self:service}-${self:provider.stage}-edit-sync
+    authenticationType: API_KEY
+    mappingTemplatesLocation: './vtl'
+    mappingTemplates:
+      - dataSource: EditObjects
+        type: Query
+        field: listEditObjectsOnFloor
+        request: ListEditObjectsOnFloor.vtl
+        response: JsonListResponse.vtl
+    schema: schema.graphql
+    dataSources:
+      - type: AMAZON_DYNAMODB
+        name: EditObjects
+        config:
+          tableName: 
+            Ref: EditObjectsTable
+        iamRoleStatements:
+          - Effect: Allow
+            Action: 'dynamodb:*'
+            Resource: '*'
 
 functions:
   authorizer:

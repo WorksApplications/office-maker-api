@@ -5,22 +5,27 @@
   "scripts": {
     "test": "bash test/startOffline.sh && mocha; bash test/stopOffline.sh",
     "test:start": "bash test/startOffline.sh && mocha",
+    "test:appsync": "npx mocha --require @babel/register test/appsync",
     "test-cov": "istanbul cover --print both _mocha -- test/test.js",
     "postinstall": "(cd common && npm install); (cd functions/authorizer/ && npm install);"
   },
-  "dependencies": {},
+  "dependencies": {
+    "node-fetch-polyfill": "^2.0.6"
+  },
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "@babel/register": "^7.4.4",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.7",
+    "apollo-link-http": "^1.5.15",
     "aws-appsync": "^1.8.0",
     "axios": "^0.19.0",
     "chai": "^4.2.0",
     "istanbul": "^0.4.5",
     "lambda-tester": "^3.5.0",
     "mocha": "^6.1.4",
+    "node-fetch": "^2.6.0",
     "proxyquire": "^2.1.0",
     "serverless": "^1.44.1",
     "serverless-apigw-binary": "^0.4.4",

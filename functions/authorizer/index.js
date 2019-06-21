@@ -71,19 +71,19 @@ module.exports.handler = (event, context, callback) => {
     callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
     // callback('Error: Must need token');
   } else {
-    getSelf(token).catch(message => {
+    getSelf(token).then(user => {
+      if (user.role == 'admin') {
+        callback(null, generate_policy(user.userId, 'Allow', event.methodArn, user));
+      } else {
+        callback(null, generate_policy(user.userId, 'Allow', allowedGeneralResources, user));
+      }
+    }, message => {
       console.log('msg: ', message);
       try {
         jwt.verify(token, mobilePublicKey)
         callback(null, generate_policy_without_sourceip(guest.principalId, 'Allow', allowedGuestResources, guest))
       } catch (error) {
         callback(null, generate_policy(guest.principalId, 'Allow', allowedGuestResources, guest));
-      }
-    }).then(user => {
-      if (user.role == 'admin') {
-        callback(null, generate_policy(user.userId, 'Allow', event.methodArn, user));
-      } else {
-        callback(null, generate_policy(user.userId, 'Allow', allowedGeneralResources, user));
       }
     });
   }

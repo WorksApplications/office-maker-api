@@ -184,8 +184,12 @@ custom:
       - dataSource: EditObjects
         type: Query
         field: listEditObjectsOnFloor
-        request: ListEditObjectsOnFloor.vtl
-        response: JsonListResponse.vtl
+        request: ContextRequest.vtl
+        response: PrevResult.vtl
+        kind: PIPELINE
+        functions:
+          - authorizer
+          - listEditObjectsOnFloor
       - dataSource: EditObjects
         type: Mutation
         field: addEditObject
@@ -197,7 +201,25 @@ custom:
         request: DeleteEditObject.vtl
         response: JsonObjectResponse.vtl
     schema: schema.graphql
+    functionConfigurations:
+      - dataSource: authorizer
+        name: authorizer
+        request: AuthorizerRequest.vtl
+        response: AuthorizerResponse.vtl
+      - dataSource: EditObjects
+        name: listEditObjectsOnFloor
+        request: ListEditObjectsOnFloor.vtl
+        response: JsonListResponse.vtl
     dataSources:
+      - type: AWS_LAMBDA
+        name: authorizer
+        config:
+          functionName: appsyncAuthorizer
+          iamRoleStatements:
+            - Effect: Allow
+              Action:
+                - 'lambda:invokeFunction'
+              Resource: '*'
       - type: AMAZON_DYNAMODB
         name: EditObjects
         config:
@@ -209,6 +231,12 @@ custom:
             Resource: '*'
 
 functions:
+  appsyncAuthorizer:
+    handler: functions/appsyncAuthorizer/index.handler
+    name: ${self:service}-${self:provider.stage}-appsync-authorizer
+    environment:
+      publicKey: ${ssm:office-maker-api-authorizer-pubkey~true}
+
   authorizer:
     handler: ${self:custom.path.authorizer.${self:provider.stage}, 'functions/authorizer/index.handler'}
     name: ${self:service}-${self:provider.stage}-authorizer

@@ -55,6 +55,11 @@ provider:
         - 'arn:aws:s3:::${self:custom.STORAGE_NAME}'
         - 'arn:aws:s3:::${self:custom.STORAGE_NAME}/*'
 
+    # These are for rotateAppSyncKey
+    - Effect: Allow
+      Action: appsync:*
+      Resource: '*'
+
 # you can add packaging information here
 package:
   exclude:
@@ -957,6 +962,17 @@ functions:
                 authorization: true
               paths:
                 prototypeId: true
+
+  rotateAppSyncKey:
+    handler: functions/rotateAppSyncKey/index.handler
+    name: ${self:service}-${self:provider.stage}-rotate-appsync-key
+    environment:
+      expirationDays: 7
+      appsyncApiName: ${self:custom.appSync.name}
+      bucketName: ${self:custom.STORAGE_NAME}
+      objectPath: appsync/${self:provider.stage}.json
+    events:
+      - schedule: rate(3 days)
 
 # you can add CloudFormation resource templates here
 resources:

@@ -97,6 +97,15 @@ function create(event) {
     });
   }
 
+  function getFloorWithoutObjects(tenantId, id, isEditFloor) {
+    var floorTableName = isEditFloor ? tableNames.editFloors : tableNames.publicFloors;
+    return getFloor(tenantId, id, floorTableName).then((floor) => {
+      if (!floor) return Promise.reject('Not Found');
+
+      return Promise.resolve(floor.objects ? floor : Object.assign(floor, { objects: [] }));
+    });
+  }
+
   function getFloorsInfo(tenantId, userId) {
     return getFloors(tenantId, tableNames.publicFloors).then(publicFloors => {
       return getFloors(tenantId, tableNames.editFloors).then(editingFloors => {
@@ -856,6 +865,7 @@ function create(event) {
 
 
   return {
+    getFloorWithoutObjects: getFloorWithoutObjects,
     getFloors: getFloors,
     getTmpFloors:getTmpFloors,
     getColors: getColors,

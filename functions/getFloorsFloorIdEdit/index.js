@@ -12,7 +12,9 @@ exports.handler = (event, context, callback) => {
   var id = event.pathParameters.floorId;
 
   const db = commonModule.db(event);
-  db.getFloorWithObjects(user.tenantId, id, true).then((data) => {
+
+  // Objects were used to be aggregated here (`db.getFloorWithObjects`) but the process is performed in the client-side now.
+  db.getFloorWithoutObjects(user.tenantId, id, true).then((data) => {
     commonModule.lambdaUtil(event).send(callback, 200, data);
   }).catch((err) => {
     if (err == 'Not Found') commonModule.lambdaUtil(event).send(callback, 404, err);

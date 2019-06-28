@@ -20,6 +20,7 @@
     "@types/mocha": "^5.2.7",
     "apollo-link-http": "^1.5.15",
     "aws-appsync": "^1.8.0",
+    "aws-sdk": "^2.484.0",
     "axios": "^0.19.0",
     "chai": "^4.2.0",
     "graphql-tag": "^2.10.1",

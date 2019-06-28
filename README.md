@@ -18,8 +18,6 @@
     - SourceIp setting
   - functions/authorizer/pubkey.pem
     - publickey which is used to decode token
-  - functions/authorizer/mobile-pubkey.pem
-    - publickey used to verify token from public mobile access
 
 3. DynamoDB Table Data
   - you can add inital data under ```migrations```

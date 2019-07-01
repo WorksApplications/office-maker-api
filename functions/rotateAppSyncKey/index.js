@@ -37,6 +37,7 @@ module.exports.handler = async () => {
       key,
       url: api.uris['GRAPHQL'],
     }),
+    ContentType: 'application/json'
   }).promise();
 };
 

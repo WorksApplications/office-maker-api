@@ -5,6 +5,7 @@ var publicKey = fs.readFileSync(__dirname+'/pubkey.pem');
 var mobilePublicKey = fs.readFileSync(__dirname+'/mobile-pubkey.pem');
 const yaml = require('js-yaml');
 
+const tenantId = process.env.tenantId;
 const sourceIp = yaml.safeLoad(fs.readFileSync('config.yml', 'utf8')).sourceIp;
 
 
@@ -52,11 +53,11 @@ function getAllowedGeneralResource(methodArn) {
 
 const guest = {
   role: 'guest',
-  tenantId: 'worksap.co.jp',
-  principalId: 'office-maker@worksap.co.jp',
+  tenantId: tenantId,
+  principalId: `office-maker@${tenantId}`,
   exp: '',
-  userId: 'office-maker@worksap.co.jp',
-  tenantDomain: 'worksap.co.jp'
+  userId: `office-maker@${tenantId}`,
+  tenantDomain: tenantId
   // token: guest_token
 };
 

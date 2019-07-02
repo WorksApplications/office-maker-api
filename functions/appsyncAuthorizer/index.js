@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const yaml = require('js-yaml');
 
+const tenantId = process.env.tenantId;
 const publicKey = process.env.publicKey;
 
 // We read from config.yml, which is ugly, since we cannot simply set a list into Lambda environment variables.
@@ -31,7 +32,7 @@ function getSelf(token) {
         console.log('error: ' + e);
         reject(e);
       } else {
-        user.tenantId = 'worksap.co.jp';
+        user.tenantId = tenantId;
         user.role = user.role.toLowerCase();
         user.token = token;
         resolve(user);

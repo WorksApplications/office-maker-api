@@ -241,6 +241,7 @@ functions:
     name: ${self:service}-${self:provider.stage}-appsync-authorizer
     environment:
       publicKey: ${ssm:office-maker-api-authorizer-pubkey~true}
+      tenantId: ${self:custom.config.tenantId}
 
   authorizer:
     handler: ${self:custom.path.authorizer.${self:provider.stage}, 'functions/authorizer/index.handler'}
@@ -249,7 +250,8 @@ functions:
       include:
         - functions/authorizer/**
         - config.yml
-    # environment:
+    environment:
+      tenantId: ${self:custom.config.tenantId}
     #   GUEST_TOKEN: ${self:custom.config.GUEST_TOKEN}
 
   batchAddCompressedObj:

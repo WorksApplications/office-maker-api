@@ -15,7 +15,7 @@ const objectPath = process.env.objectPath;
  * About URL:
  * Currently (at 2019-06-28), getApiKey returns the following data:
  * "uris": {
- *   "GRAPHQL": "https://w3hwi4eatrdcbggxf5kcofylpq.appsync-api.ap-northeast-1.amazonaws.com/graphql"
+ *   "GRAPHQL": "https://xxxxxxxxxxxx.appsync-api.ap-northeast-1.amazonaws.com/graphql"
  * }
  * 
  * So hopefully we can get the GraphQL API endpoint by picking GRAPHQL key

@@ -1,0 +1,16 @@
+{
+  "version" : "2017-02-28",
+  "operation" : "Query",
+  "query" : {
+    "expression" : "floorId = :floorId",
+
+    ## Only "ADMIN" can query
+    #if ( $context.prev.result.role != "admin" )
+      $util.qr( $util.unauthorized() )
+    #end
+
+    "expressionValues" : {
+      ":floorId" : { "S" : "${context.arguments.floorId}" }
+    }
+  }
+}

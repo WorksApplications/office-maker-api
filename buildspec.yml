@@ -19,6 +19,7 @@ phases:
       - npm i -g npm@latest
       - npm ci
       - cd functions/authorizer/ && npm ci && cd -
+      - cd functions/appsyncAuthorizer/ && npm ci && cd -
       - cd common && npm ci && cd -
       - npx sls dynamodb install
   pre_build:

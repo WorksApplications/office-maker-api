@@ -55,6 +55,11 @@ provider:
         - 'arn:aws:s3:::${self:custom.STORAGE_NAME}'
         - 'arn:aws:s3:::${self:custom.STORAGE_NAME}/*'
 
+    # These are for rotateAppSyncKey
+    - Effect: Allow
+      Action: appsync:*
+      Resource: '*'
+
 # you can add packaging information here
 package:
   exclude:
@@ -72,6 +77,8 @@ plugins:
   - serverless-offline
   - serverless-apigw-binary
   - serverless-aws-documentation
+  - serverless-appsync-plugin
+
 custom:
   config: ${file(config.yml)}
   TABLE_PREFIX: ${self:service}-map-${self:provider.stage}
@@ -174,7 +181,68 @@ custom:
     authorizer:
       test: test/fake_authorizer.handler
 
+  appSync:
+    name: ${self:service}-${self:provider.stage}-edit-sync
+    authenticationType: API_KEY
+    mappingTemplatesLocation: './vtl'
+    mappingTemplates:
+      - dataSource: EditObjects
+        type: Query
+        field: listEditObjectsOnFloor
+        request: ContextRequest.vtl
+        response: PrevResult.vtl
+        kind: PIPELINE
+        functions:
+          - authorizer
+          - listEditObjectsOnFloor
+      - dataSource: EditObjects
+        type: Mutation
+        field: addEditObject
+        request: AddEditObject.vtl
+        response: JsonObjectResponse.vtl
+      - dataSource: EditObjects
+        type: Mutation
+        field: deleteEditObject
+        request: DeleteEditObject.vtl
+        response: JsonObjectResponse.vtl
+    schema: schema.graphql
+    functionConfigurations:
+      - dataSource: authorizer
+        name: authorizer
+        request: AuthorizerRequest.vtl
+        response: AuthorizerResponse.vtl
+      - dataSource: EditObjects
+        name: listEditObjectsOnFloor
+        request: ListEditObjectsOnFloor.vtl
+        response: JsonListResponse.vtl
+    dataSources:
+      - type: AWS_LAMBDA
+        name: authorizer
+        config:
+          functionName: appsyncAuthorizer
+          iamRoleStatements:
+            - Effect: Allow
+              Action:
+                - 'lambda:invokeFunction'
+              Resource: '*'
+      - type: AMAZON_DYNAMODB
+        name: EditObjects
+        config:
+          tableName: 
+            Ref: EditObjectsTable
+        iamRoleStatements:
+          - Effect: Allow
+            Action: 'dynamodb:*'
+            Resource: '*'
+
 functions:
+  appsyncAuthorizer:
+    handler: functions/appsyncAuthorizer/index.handler
+    name: ${self:service}-${self:provider.stage}-appsync-authorizer
+    environment:
+      publicKey: ${ssm:office-maker-api-authorizer-pubkey~true}
+      tenantId: ${self:custom.config.tenantId}
+
   authorizer:
     handler: ${self:custom.path.authorizer.${self:provider.stage}, 'functions/authorizer/index.handler'}
     name: ${self:service}-${self:provider.stage}-authorizer
@@ -182,7 +250,8 @@ functions:
       include:
         - functions/authorizer/**
         - config.yml
-    # environment:
+    environment:
+      tenantId: ${self:custom.config.tenantId}
     #   GUEST_TOKEN: ${self:custom.config.GUEST_TOKEN}
 
   batchAddCompressedObj:
@@ -895,6 +964,17 @@ functions:
                 authorization: true
               paths:
                 prototypeId: true
+
+  rotateAppSyncKey:
+    handler: functions/rotateAppSyncKey/index.handler
+    name: ${self:service}-${self:provider.stage}-rotate-appsync-key
+    environment:
+      expirationDays: 7
+      appsyncApiName: ${self:custom.appSync.name}
+      bucketName: ${self:custom.STORAGE_NAME}
+      objectPath: appsync/${self:provider.stage}.json
+    events:
+      - schedule: rate(3 days)
 
 # you can add CloudFormation resource templates here
 resources:

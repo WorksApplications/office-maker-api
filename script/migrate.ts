@@ -11,11 +11,14 @@
  */
 import * as aws from 'aws-sdk';
 
+// Specify region by environment variable `REGION`. Default is `ap-northeast-1`
+const region = process.env.REGION || 'ap-northeast-1';
+
 const dynamo = new aws.DynamoDB.DocumentClient({
-  region: 'ap-northeast-1'
+  region
 });
 const s3 = new aws.S3({
-  region: 'ap-northeast-1'
+  region
 });
 
 // Split an array into smaller chunks

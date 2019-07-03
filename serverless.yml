@@ -251,6 +251,7 @@ functions:
         - functions/authorizer/**
         - config.yml
     environment:
+      publicKey: ${ssm:office-maker-api-authorizer-pubkey~true}
       tenantId: ${self:custom.config.tenantId}
     #   GUEST_TOKEN: ${self:custom.config.GUEST_TOKEN}
 

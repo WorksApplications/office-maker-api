@@ -12,5 +12,11 @@
     "expressionValues" : {
       ":floorId" : { "S" : "${context.arguments.floorId}" }
     }
+  },
+  "filter" : {
+    "expression": "deleted = :deleted",
+    "expressionValues": {
+      ":deleted": { "BOOL": false }
+    }
   }
 }

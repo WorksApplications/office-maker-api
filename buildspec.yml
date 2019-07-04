@@ -29,16 +29,18 @@ phases:
       - npx sls deploy -s ${STACK_NAME}
   build:
     commands: |
-      npm run test:integration
+      npm run test:integration && \
       echo '*** Test succeeded ***'
 
-      if [ "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/release" ]; then
-        echo 'Deploying to staging environment......'
-        ./node_modules/.bin/sls deploy -s ${stage}
+      if [ $? = 0 && "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/release" ]; \
+        then echo 'Deploying to staging environment......'; \
+        ./node_modules/.bin/sls deploy -s ${stage} \
       fi;
+
+      export BUILD_STATUS="$?"
   post_build:
     commands:
-      - npx sls remove -s ${STACK_NAME}
+      - npx sls remove -s ${STACK_NAME} && exit ${BUILD_STATUS}
 
 cache:
   paths:

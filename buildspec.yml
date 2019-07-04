@@ -30,11 +30,14 @@ phases:
   build:
     commands: |
       npm run test:integration
+      echo '*** Test succeeded ***'
 
       if [ "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/release" ]; then
+        echo 'Deploying to staging environment......'
         ./node_modules/.bin/sls deploy -s ${stage}
       fi;
   post_build:
+    commands:
       - npx sls remove -s ${STACK_NAME}
 
 cache:

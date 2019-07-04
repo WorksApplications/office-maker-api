@@ -5,7 +5,6 @@ env:
     stage: 'stg'
   parameter-store:
     config_yml: 'office-maker-api-config-stg'
-    pubkey: 'office-maker-api-authorizer-pubkey'
 
 phases:
   install:
@@ -15,10 +14,10 @@ phases:
     commands:
       - apt-get update && apt-get install -y lsof
       - echo ${config_yml} >> config.yml
-      - echo "${pubkey}" >> ./functions/authorizer/pubkey.pem
       - npm i -g npm@latest
       - npm ci
       - cd functions/authorizer/ && npm ci && cd -
+      - cd functions/appsyncAuthorizer/ && npm ci && cd -
       - cd common && npm ci && cd -
       - npx sls dynamodb install
   pre_build:

@@ -25,11 +25,11 @@ phases:
   pre_build:
     commands:
       - npm run test:start
-      - export STACK_NAME="test-$(date +%s)"
-      - npx sls deploy -s ${STACK_NAME}
+      - export STAGE_NAME="test-$(date +%s)"
+      - npx sls deploy -s ${STAGE_NAME}
   build:
     commands: |
-      npm run test:integration && \
+      STACK_NAME="office-maker-${STAGE_NAME}" npm run test:integration && \
       echo '*** Test succeeded ***'
 
       if [ $? = 0 && "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/release" ]; \
@@ -40,7 +40,7 @@ phases:
       export BUILD_STATUS="$?"
   post_build:
     commands:
-      - npx sls remove -s ${STACK_NAME} && exit ${BUILD_STATUS}
+      - npx sls remove -s ${STAGE_NAME} && exit ${BUILD_STATUS}
 
 cache:
   paths:

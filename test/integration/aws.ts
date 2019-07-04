@@ -6,6 +6,7 @@ AWS.config.update({
 });
 
 const Cfn = new AWS.CloudFormation();
+const S3 = new AWS.S3();
 
 const findPhysicalId = async (stackName: string, logicalId: string) => {
   const resource = (await Cfn.describeStackResource({
@@ -50,4 +51,13 @@ export const findAppSyncApiEndpointInformation = async (stackName: string) => {
     url: (graphqlApi.uris && graphqlApi.uris['GRAPHQL']) as string,
     apiKey: apiKey
   };
+};
+
+export const readS3Object = async (bucket: string, key: string) => {
+  const result = await S3.getObject({
+    Bucket: bucket,
+    Key: key
+  }).promise();
+
+  return result.Body as string;
 };

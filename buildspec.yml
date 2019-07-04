@@ -3,6 +3,8 @@ version: 0.2
 env:
   variables:
     stage: 'stg'
+    JWT_BUCKET: 'office-maker-account-storage-stg'
+    JWT_KEY: 'role/office-maker-stg-ap-northeast-1-lambdaRole/token'
   parameter-store:
     config_yml: 'office-maker-api-config-stg'
 
@@ -23,11 +25,17 @@ phases:
   pre_build:
     commands:
       - npm run test:start
+      - export STACK_NAME="test-$(date +%s)"
+      - npx sls deploy -s ${STACK_NAME}
+      - npm run test:integrated
   build:
     commands: |
       if [ "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/release" ]; then
         ./node_modules/.bin/sls deploy -s ${stage}
       fi;
+  post_build:
+    commands:
+      - npx sls remove -s ${STACK_NAME}
 
 cache:
   paths:

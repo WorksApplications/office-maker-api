@@ -27,14 +27,14 @@ phases:
       - npm run test:start
       - export STACK_NAME="test-$(date +%s)"
       - npx sls deploy -s ${STACK_NAME}
-      - npm run test:integrated
   build:
     commands: |
+      npm run test:integration
+
       if [ "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/release" ]; then
         ./node_modules/.bin/sls deploy -s ${stage}
       fi;
   post_build:
-    commands:
       - npx sls remove -s ${STACK_NAME}
 
 cache:

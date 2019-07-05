@@ -11,14 +11,15 @@ const sourceIpList = yaml.safeLoad(fs.readFileSync('config.yml', 'utf8')).source
 // I want to separate the "generating the result" part and "checking permission" part.
 module.exports.handler = async (event) => {
   const headers = event.request.headers;
+  const token = headers['authorization'].split('Bearer ')[1];
   const user = await getSelf(token);
+  console.log(JSON.stringify(user));
 
   // Skip IP check if the user has SYSTEM role
-  if (user.role !== 'system') {
+  if (user.role != 'system') {
     // Header does not include sourceIp?
     // I assume that the first address is what we want
     const ipAddress = headers['x-forwarded-for'].split(',')[0];
-    const token = headers['authorization'].split('Bearer ')[1];
 
     // Current sourceIpList consists of CIDR blocks; 0.0.0.0/32
     if (!sourceIpList.map(val => val.split('/32')[0]).includes(ipAddress)) {

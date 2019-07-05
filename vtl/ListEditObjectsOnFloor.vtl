@@ -4,8 +4,8 @@
   "query" : {
     "expression" : "floorId = :floorId",
 
-    ## Only "ADMIN" can query
-    #if ( $context.prev.result.role != "admin" )
+    ## Only "SYSTEM" or "ADMIN" can query
+    #if ( $context.prev.result.role != "system" && $context.prev.result.role != "admin" )
       $util.qr( $util.unauthorized() )
     #end
 

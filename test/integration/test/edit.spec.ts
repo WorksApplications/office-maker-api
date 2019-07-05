@@ -128,7 +128,7 @@ describe('Floor edit', () => {
       }
     );
 
-    expect(result.data.errors).to.equal([]);
+    expect(result.data.errors).to.be.undefined;
     expect(
       result.data.data.listEditObjectsOnFloor.find(
         object => object.id == objectId
@@ -170,7 +170,7 @@ describe('Floor edit', () => {
       }
     );
 
-    expect(result.data.errors).to.equal([]);
+    expect(result.data.errors).to.be.undefined;
     expect(
       result.data.data.listEditObjectsOnFloor.find(
         object => object.id == objectId

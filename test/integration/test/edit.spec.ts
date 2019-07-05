@@ -135,6 +135,47 @@ describe('Floor edit', () => {
     ).not.to.undefined;
   });
 
+  it('should not create show the deleted object', async () => {
+    await axios.patch(
+      `${endpoint.restApi.url}/objects`,
+      [
+        {
+          flag: 'deleted',
+          result: 'success',
+          object: {
+            id: objectId,
+            floorId: floorId
+          }
+        }
+      ],
+      {
+        headers: {
+          Authorization: `Bearer ${endpoint.systemJWT}`
+        }
+      }
+    );
+
+    const result = await axios.post(
+      `${endpoint.appsync.url}`,
+      {
+        query: `{ listEditObjectsOnFloor(floorId: "${floorId}") { id } }`
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${endpoint.systemJWT}`,
+          'x-api-key': endpoint.appsync.apiKey,
+          'Content-Type': 'application/graphql'
+        }
+      }
+    );
+
+    expect(
+      result.data.data.listEditObjectsOnFloor.find(
+        object => object.id == objectId
+      )
+    ).to.undefined;
+  });
+
   it('should delete the floor by admin user', async () => {
     await axios.delete(`${endpoint.restApi.url}/floors/${floorId}/edit`, {
       headers: {

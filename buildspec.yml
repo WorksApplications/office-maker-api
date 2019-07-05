@@ -34,10 +34,10 @@ phases:
       npm run test:integration && \
       echo '*** Test succeeded ***'
 
-      if [ $? = 0 && "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/release" ]; \
-        then echo 'Deploying to staging environment......'; \
-        ./node_modules/.bin/sls deploy -s ${stage} \
-      fi;
+      if [ $? = 0 && "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/release" ]; then
+        echo 'Deploying to staging environment......'
+        ./node_modules/.bin/sls deploy -s ${stage}
+      fi
 
       export BUILD_STATUS="$?"
   post_build:

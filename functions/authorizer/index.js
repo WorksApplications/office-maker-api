@@ -71,7 +71,9 @@ module.exports.handler = (event, context, callback) => {
     // callback('Error: Must need token');
   } else {
     getSelf(token).then(user => {
-      if (user.role == 'admin') {
+      if (user.role == 'system') {
+        callback(null, generate_policy_without_sourceip(user.userId, 'Allow', event.message, user));
+      } else if (user.role == 'admin') {
         callback(null, generate_policy(user.userId, 'Allow', event.methodArn, user));
       } else {
         callback(null, generate_policy(user.userId, 'Allow', allowedGeneralResources, user));

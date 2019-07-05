@@ -113,6 +113,28 @@ describe('Floor edit', () => {
     );
   });
 
+  it('should show the object on the floor', async () => {
+    const result = await axios.post(
+      `${endpoint.appsync.url}`,
+      {
+        query: `{ listEditObjectsOnFloor(floorId: "${floorId}") { id } }`
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${endpoint.systemJWT}`,
+          'x-api-key': endpoint.appsync.apiKey,
+          'Content-Type': 'application/graphql'
+        }
+      }
+    );
+
+    expect(
+      result.data.data.listEditObjectsOnFloor.find(
+        object => object.id == objectId
+      )
+    ).not.to.undefined;
+  });
+
   it('should delete the floor by admin user', async () => {
     await axios.delete(`${endpoint.restApi.url}/floors/${floorId}/edit`, {
       headers: {

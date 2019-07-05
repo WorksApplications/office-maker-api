@@ -26,11 +26,11 @@ phases:
     commands:
       - npm run test:start
       - export STAGE_NAME="test-$(date +%s)"
+      - export STACK_NAME="office-maker-${STAGE_NAME}"
       - npx sls deploy -s ${STAGE_NAME}
   build:
     commands: |
-      OUTPUT=$(aws cloudformation describe-stacks --stack-name office-maker-test-1562298520 --region ap-northeast-1 | jq '.Stacks[0].Outputs') \
-      STACK_NAME="office-maker-${STAGE_NAME}" \
+      OUTPUT=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --region ap-northeast-1 | jq '.Stacks[0].Outputs') \
       npm run test:integration && \
       echo '*** Test succeeded ***'
 

@@ -72,7 +72,7 @@ module.exports.handler = (event, context, callback) => {
   } else {
     getSelf(token).then(user => {
       if (user.role == 'system') {
-        callback(null, generate_policy_without_sourceip(user.userId, 'Allow', event.message, user));
+        callback(null, generate_policy_without_sourceip(user.userId, 'Allow', event.methodArn, user));
       } else if (user.role == 'admin') {
         callback(null, generate_policy(user.userId, 'Allow', event.methodArn, user));
       } else {

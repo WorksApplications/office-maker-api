@@ -72,7 +72,7 @@ module.exports.handler = (event, context, callback) => {
   } else {
     getSelf(token).then(user => {
       if (user.role == 'admin') {
-        callback(null, generate_policy(user.userId, 'Allow', event.methodArn, user, false));
+        callback(null, generate_policy(user.userId, 'Allow', event.methodArn, user));
       } else {
         callback(null, generate_policy(user.userId, 'Allow', allowedGeneralResources, user));
       }
@@ -105,23 +105,37 @@ function getSelf(token) {
   });
 }
 
-function generate_policy(principal_id, effect, resource, user, restrictSourceIp = true) {
+function generate_policy(principal_id, effect, resource, user) {
   return {
     principalId: principal_id,
     policyDocument: {
       Version: '2012-10-17',
       Statement:
       [
-        Object.assign({
+        {
           Action: 'execute-api:Invoke',
           Effect: effect,
-          Resource: resource
-        }, restrictSourceIp ? {
           Condition: {
             IpAddress: sourceIp
-          }
-        } : {})
+          },
+          Resource: resource
+        }
       ]
+    },
+    context: user
+  };
+}
+
+function generate_policy_without_sourceip(principal_id, effect, resource, user) {
+  return {
+    principalId: principal_id,
+    policyDocument: {
+      Version: '2012-10-17',
+      Statement: [{
+        Action: 'execute-api:Invoke',
+        Effect: effect,
+        Resource: resource
+      }]
     },
     context: user
   };

@@ -5,7 +5,6 @@
   "scripts": {
     "test": "bash test/startOffline.sh && mocha; bash test/stopOffline.sh",
     "test:start": "bash test/startOffline.sh && mocha",
-    "test:appsync": "npx mocha --require @babel/register test/appsync",
     "test:integration": "npx ts-node test/integration/env.ts && npx mocha --timeout 15000 -r ts-node/register test/integration/test/*.spec.ts; rm endpoint.json",
     "test-cov": "istanbul cover --print both _mocha -- test/test.js",
     "postinstall": "(cd common && npm install); (cd functions/authorizer/ && npm install);"

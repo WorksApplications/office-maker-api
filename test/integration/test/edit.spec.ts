@@ -29,7 +29,7 @@ describe('Floor edit', () => {
       axios.put(`${endpoint.restApi.url}/floors/${floorId}/edit`, {
         id: floorId
       })
-    ).to.be.rejectedWith();
+    ).to.be.rejectedWith('401');
   });
 
   it('should create a floor by admin user', async () => {
@@ -64,6 +64,53 @@ describe('Floor edit', () => {
 
     expect(result).to.be.an('array');
     expect(result.length).to.not.equal(0);
+
+    const flat = arr => [].concat(...arr);
+    expect(flat(result).find(floor => floor && floor.id == floorId)).not.to
+      .undefined;
+  });
+
+  const objectId = uuid();
+
+  it('should not create an object by guest', async () => {
+    expect(
+      axios.patch(`${endpoint.restApi.url}/objects`, [
+        {
+          flag: 'added',
+          result: 'success',
+          object: {
+            id: objectId,
+            floorId: floorId
+          }
+        }
+      ])
+    ).to.be.rejectedWith('401');
+  });
+
+  it('should create an object on the floor', async () => {
+    await axios.patch(
+      `${endpoint.restApi.url}/objects`,
+      [
+        {
+          flag: 'added',
+          result: 'success',
+          object: {
+            backgroundColor: '#eee',
+            id: objectId,
+            floorId: floorId,
+            width: 0,
+            height: 0,
+            x: 0,
+            y: 0
+          }
+        }
+      ],
+      {
+        headers: {
+          Authorization: `Bearer ${endpoint.systemJWT}`
+        }
+      }
+    );
   });
 
   it('should delete the floor by admin user', async () => {

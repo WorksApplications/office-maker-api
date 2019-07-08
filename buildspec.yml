@@ -42,6 +42,7 @@ phases:
       export BUILD_STATUS="$?"
   post_build:
     commands:
+      - npm i -g ts-node && BUCKET_NAME="office-maker-storage-${STAGE_NAME}" ts-node script/deleteVersionedS3.ts
       - npx sls remove -s ${STAGE_NAME} && exit ${BUILD_STATUS}
 
 cache:

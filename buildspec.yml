@@ -36,7 +36,7 @@ phases:
 
       if [ $? = 0 && "$CODEBUILD_WEBHOOK_TRIGGER" = "branch/release" ]; then
         echo 'Deploying to staging environment......'
-        npx sls deploy -s ${stage}
+        ./node_modules/.bin/sls deploy -s ${stage}
       fi
 
       export BUILD_STATUS="$?"

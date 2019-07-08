@@ -979,8 +979,6 @@ functions:
 
 # you can add CloudFormation resource templates here
 resources:
-  Conditions:
-    isProd: {"Fn::Equals" : ["${self:provider.stage}", "prod"]}
   Resources:
     # APIG
     ApiGatewayRestApi:
@@ -1121,11 +1119,7 @@ resources:
       Properties:
         BucketName: ${self:custom.STORAGE_NAME}
         VersioningConfiguration:
-          Status:
-            Fn::If:
-              - isProd
-              - Enabled
-              - Suspended
+          Status: Enabled
         LifecycleConfiguration:
           Rules:
             - Id: deleteEverythingInOneWeek

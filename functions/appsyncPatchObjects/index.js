@@ -6,5 +6,10 @@ module.exports.handler = async event => {
   // in db.js, event (argument) is only used for checking offline or not.
   const db = commonModule.db({});
 
-  return await db.saveObjectsChange(event.arguments.objects);
+  const objects = await db.saveObjectsChange(event.arguments.objects);
+
+  return {
+    objects,
+    updatedFloorId: objects.length > 0 ? objects[0].object.floorId : ''
+  };
 };

@@ -37,6 +37,7 @@ describe('Floor edit', () => {
           patchedObjects(updatedFloorId: "${floorId}") {
             updatedFloorId
             objects {
+              flag
               object {
                 id
               }
@@ -144,7 +145,10 @@ describe('Floor edit', () => {
           result: "success"
         }]) {
           updatedFloorId
-          objects { object { id } } }
+          objects {
+            flag
+            object { id } }
+          }
         }`
       })
     ).to.be.rejectedWith('401');
@@ -169,7 +173,10 @@ describe('Floor edit', () => {
           result: "success"
         }]) {
           updatedFloorId
-          objects { object { id } } }
+          objects {
+            flag
+            object { id } }
+          }
         }`
       },
       {
@@ -219,7 +226,10 @@ describe('Floor edit', () => {
           result: "success"
         }]) {
           updatedFloorId
-          objects { object { id } } }
+          objects {
+            flag
+            object { id } }
+          }
         }`
       },
       {
@@ -261,7 +271,7 @@ describe('Floor edit', () => {
     });
   });
 
-  it('should receives 3 objects through subscription', async () => {
+  it('should receives 2 objects through subscription', async () => {
     expect(patchedObjects.length).to.be.eq(2);
   });
 });

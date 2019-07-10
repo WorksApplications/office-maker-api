@@ -74,40 +74,49 @@ describe('Floor edit', () => {
 
   it('should not create an object by guest', async () => {
     expect(
-      axios.patch(`${endpoint.restApi.url}/objects`, [
+      axios.post(`${endpoint.appsync.url}`, {
+        query: `mutation M { patchObjects(objects: [
         {
-          flag: 'added',
-          result: 'success',
+          flag: "added",
           object: {
-            id: objectId,
-            floorId: floorId
+            id: "${objectId}"
+            floorId: "${floorId}"
+            x: 0
+            y: 0
+            width: 0
+            height: 0
+            backgroundColor: "#eee"
           }
-        }
-      ])
+          result: "success"
+        }]) { object { id } } }`
+      })
     ).to.be.rejectedWith('401');
   });
 
   it('should create an object on the floor', async () => {
-    await axios.patch(
-      `${endpoint.restApi.url}/objects`,
-      [
+    await axios.post(
+      `${endpoint.appsync.url}`,
+      {
+        query: `mutation M { patchObjects(objects: [
         {
-          flag: 'added',
-          result: 'success',
+          flag: "added",
           object: {
-            backgroundColor: '#eee',
-            id: objectId,
-            floorId: floorId,
-            width: 0,
-            height: 0,
-            x: 0,
+            id: "${objectId}"
+            floorId: "${floorId}"
+            x: 0
             y: 0
+            width: 0
+            height: 0
+            backgroundColor: "#eee"
           }
-        }
-      ],
+          result: "success"
+        }]) { object { id } } }`
+      },
       {
         headers: {
-          Authorization: `Bearer ${endpoint.systemJWT}`
+          Authorization: `Bearer ${endpoint.systemJWT}`,
+          'x-api-key': endpoint.appsync.apiKey,
+          'Content-Type': 'application/graphql'
         }
       }
     );
@@ -137,21 +146,24 @@ describe('Floor edit', () => {
   });
 
   it('should not show the deleted object', async () => {
-    await axios.patch(
-      `${endpoint.restApi.url}/objects`,
-      [
+    await axios.post(
+      `${endpoint.appsync.url}`,
+      {
+        query: `mutation M { patchObjects(objects: [
         {
-          flag: 'deleted',
-          result: 'success',
+          flag: "deleted",
           object: {
-            id: objectId,
-            floorId: floorId
+            id: "${objectId}"
+            floorId: "${floorId}"
           }
-        }
-      ],
+          result: "success"
+        }]) { object { id } } }`
+      },
       {
         headers: {
-          Authorization: `Bearer ${endpoint.systemJWT}`
+          Authorization: `Bearer ${endpoint.systemJWT}`,
+          'x-api-key': endpoint.appsync.apiKey,
+          'Content-Type': 'application/graphql'
         }
       }
     );
@@ -213,26 +225,29 @@ describe('Floor publish', () => {
       }
     );
 
-    await axios.patch(
-      `${endpoint.restApi.url}/objects`,
-      [
+    await axios.post(
+      `${endpoint.appsync.url}`,
+      {
+        query: `mutation M { patchObjects(objects: [
         {
-          flag: 'added',
-          result: 'success',
+          flag: "added",
           object: {
-            backgroundColor: '#eee',
-            id: objectId,
-            floorId: floorId,
-            width: 0,
-            height: 0,
-            x: 0,
+            id: "${objectId}"
+            floorId: "${floorId}"
+            x: 0
             y: 0
+            width: 0
+            height: 0
+            backgroundColor: "#eee"
           }
-        }
-      ],
+          result: "success"
+        }]) { object { id } } }`
+      },
       {
         headers: {
-          Authorization: `Bearer ${endpoint.systemJWT}`
+          Authorization: `Bearer ${endpoint.systemJWT}`,
+          'x-api-key': endpoint.appsync.apiKey,
+          'Content-Type': 'application/graphql'
         }
       }
     );

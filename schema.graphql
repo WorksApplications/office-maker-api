@@ -59,10 +59,18 @@ input PatchObjectInput {
 type Mutation {
   patchObjects(
     objects: [PatchObjectInput!]!
-  ): [PatchObject!]!
+  ): PatchObjectsOutput
+}
+
+type PatchObjectsOutput {
+  objects: [PatchObject!]
+
+  # This floors information enables the subscription to select only specific floor
+  # The given objects are required to belong to the same floor
+  updatedFloorId: String!
 }
 
 type Subscription {
-  patchedObjects(floorId: String!): [PatchObject!]!
+  patchedObjects(updatedFloorId: String): PatchObjectsOutput
   @aws_subscribe(mutations: ["patchObjects"])
 }

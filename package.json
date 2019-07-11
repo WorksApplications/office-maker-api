@@ -37,7 +37,7 @@
     "serverless-dynamodb-local": "0.2.37",
     "serverless-offline": "^5.0.0",
     "serverless-plugin-stage-variables": "^1.9.2",
-    "serverless-s3-local": "^0.4.4",
+    "serverless-s3-local": "^0.5.0",
     "serverless-s3-remover": "^0.6.0",
     "sinon": "^7.3.2",
     "uuid": "^3.3.2"

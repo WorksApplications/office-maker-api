@@ -3,6 +3,8 @@ import chaiAsPromised from 'chai-as-promised';
 import axios from 'axios';
 import fs from 'fs';
 const uuid = require('uuid/v4');
+(global as any).WebSocket = require('ws');
+import Paho from 'paho-mqtt';
 
 chai.use(chaiAsPromised);
 
@@ -15,14 +17,67 @@ let endpoint: {
     apiKey: string;
   };
   systemJWT: string;
-};
-
-before(() => {
-  endpoint = JSON.parse(fs.readFileSync('endpoint.json').toString());
-});
+} = JSON.parse(fs.readFileSync('endpoint.json').toString());
 
 describe('Floor edit', () => {
   const floorId = uuid();
+  let client;
+  const patchedObjects = [];
+
+  after(() => {
+    client.disconnect();
+  });
+
+  it('should connect to subscription', async () => {
+    // When using `updatedFloorId`, you need to make sure that mutation resolves updatedFloorId field in response
+    const result = await axios.post(
+      endpoint.appsync.url,
+      {
+        query: `subscription S {
+          patchedObjects(updatedFloorId: "${floorId}") {
+            updatedFloorId
+            objects {
+              flag
+              object {
+                id
+              }
+            }
+          }
+        }`
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${endpoint.systemJWT}`,
+          'x-api-key': endpoint.appsync.apiKey,
+          'Content-Type': 'application/graphql'
+        }
+      }
+    );
+
+    const sub = {
+      wssURL: result.data.extensions.subscription.mqttConnections[0].url,
+      client: result.data.extensions.subscription.mqttConnections[0].client,
+      topics: result.data.extensions.subscription.mqttConnections[0].topics[0]
+    };
+
+    client = new Paho.Client(sub.wssURL, sub.client);
+    client.onMessageArrived = message => {
+      patchedObjects.push(
+        JSON.parse(message.payloadString).data.patchedObjects.objects
+      );
+    };
+    client.connect({
+      onSuccess: ctx => {
+        client.subscribe(sub.topics);
+      },
+      useSSL: true,
+      timeout: 3,
+      mqttVersion: 4,
+      onFailure: err => {
+        throw err;
+      }
+    });
+  });
 
   it('should not create a floor by guest', async () => {
     expect(
@@ -74,40 +129,61 @@ describe('Floor edit', () => {
 
   it('should not create an object by guest', async () => {
     expect(
-      axios.patch(`${endpoint.restApi.url}/objects`, [
+      axios.post(`${endpoint.appsync.url}`, {
+        query: `mutation M { patchObjects(objects: [
         {
-          flag: 'added',
-          result: 'success',
+          flag: "added",
           object: {
-            id: objectId,
-            floorId: floorId
+            id: "${objectId}"
+            floorId: "${floorId}"
+            x: 0
+            y: 0
+            width: 0
+            height: 0
+            backgroundColor: "#eee"
           }
-        }
-      ])
+          result: "success"
+        }]) {
+          updatedFloorId
+          objects {
+            flag
+            object { id } }
+          }
+        }`
+      })
     ).to.be.rejectedWith('401');
   });
 
   it('should create an object on the floor', async () => {
-    await axios.patch(
-      `${endpoint.restApi.url}/objects`,
-      [
+    await axios.post(
+      `${endpoint.appsync.url}`,
+      {
+        query: `mutation M { patchObjects(objects: [
         {
-          flag: 'added',
-          result: 'success',
+          flag: "added",
           object: {
-            backgroundColor: '#eee',
-            id: objectId,
-            floorId: floorId,
-            width: 0,
-            height: 0,
-            x: 0,
+            id: "${objectId}"
+            floorId: "${floorId}"
+            x: 0
             y: 0
+            width: 0
+            height: 0
+            backgroundColor: "#eee"
           }
-        }
-      ],
+          result: "success"
+        }]) {
+          updatedFloorId
+          objects {
+            flag
+            object { id } }
+          }
+        }`
+      },
       {
         headers: {
-          Authorization: `Bearer ${endpoint.systemJWT}`
+          Authorization: `Bearer ${endpoint.systemJWT}`,
+          'x-api-key': endpoint.appsync.apiKey,
+          'Content-Type': 'application/graphql'
         }
       }
     );
@@ -137,21 +213,30 @@ describe('Floor edit', () => {
   });
 
   it('should not show the deleted object', async () => {
-    await axios.patch(
-      `${endpoint.restApi.url}/objects`,
-      [
+    await axios.post(
+      `${endpoint.appsync.url}`,
+      {
+        query: `mutation M { patchObjects(objects: [
         {
-          flag: 'deleted',
-          result: 'success',
+          flag: "deleted",
           object: {
-            id: objectId,
-            floorId: floorId
+            id: "${objectId}"
+            floorId: "${floorId}"
           }
-        }
-      ],
+          result: "success"
+        }]) {
+          updatedFloorId
+          objects {
+            flag
+            object { id } }
+          }
+        }`
+      },
       {
         headers: {
-          Authorization: `Bearer ${endpoint.systemJWT}`
+          Authorization: `Bearer ${endpoint.systemJWT}`,
+          'x-api-key': endpoint.appsync.apiKey,
+          'Content-Type': 'application/graphql'
         }
       }
     );
@@ -185,6 +270,10 @@ describe('Floor edit', () => {
       }
     });
   });
+
+  it('should receives 2 objects through subscription', async () => {
+    expect(patchedObjects.length).to.be.eq(2);
+  });
 });
 
 describe('Floor publish', () => {
@@ -213,26 +302,29 @@ describe('Floor publish', () => {
       }
     );
 
-    await axios.patch(
-      `${endpoint.restApi.url}/objects`,
-      [
+    await axios.post(
+      `${endpoint.appsync.url}`,
+      {
+        query: `mutation M { patchObjects(objects: [
         {
-          flag: 'added',
-          result: 'success',
+          flag: "added",
           object: {
-            backgroundColor: '#eee',
-            id: objectId,
-            floorId: floorId,
-            width: 0,
-            height: 0,
-            x: 0,
+            id: "${objectId}"
+            floorId: "${floorId}"
+            x: 0
             y: 0
+            width: 0
+            height: 0
+            backgroundColor: "#eee"
           }
-        }
-      ],
+          result: "success"
+        }]) { objects { object { id } } } }`
+      },
       {
         headers: {
-          Authorization: `Bearer ${endpoint.systemJWT}`
+          Authorization: `Bearer ${endpoint.systemJWT}`,
+          'x-api-key': endpoint.appsync.apiKey,
+          'Content-Type': 'application/graphql'
         }
       }
     );

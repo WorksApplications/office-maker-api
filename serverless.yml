@@ -197,14 +197,13 @@ custom:
           - listEditObjectsOnFloor
       - dataSource: EditObjects
         type: Mutation
-        field: addEditObject
-        request: AddEditObject.vtl
-        response: JsonObjectResponse.vtl
-      - dataSource: EditObjects
-        type: Mutation
-        field: deleteEditObject
-        request: DeleteEditObject.vtl
-        response: JsonObjectResponse.vtl
+        field: patchObjects
+        request: ContextRequest.vtl
+        response: PrevResult.vtl
+        kind: PIPELINE
+        functions:
+          - authorizer
+          - patchObjects
     schema: schema.graphql
     functionConfigurations:
       - dataSource: authorizer
@@ -215,11 +214,24 @@ custom:
         name: listEditObjectsOnFloor
         request: ListEditObjectsOnFloor.vtl
         response: JsonListResponse.vtl
+      - dataSource: patchObjects
+        name: patchObjects
+        request: AuthorizerRequest.vtl
+        response: AuthorizerResponse.vtl
     dataSources:
       - type: AWS_LAMBDA
         name: authorizer
         config:
           functionName: appsyncAuthorizer
+          iamRoleStatements:
+            - Effect: Allow
+              Action:
+                - 'lambda:invokeFunction'
+              Resource: '*'
+      - type: AWS_LAMBDA
+        name: patchObjects
+        config:
+          functionName: appsyncPatchObjects
           iamRoleStatements:
             - Effect: Allow
               Action:
@@ -242,6 +254,10 @@ functions:
     environment:
       publicKey: ${ssm:office-maker-api-authorizer-pubkey~true}
       tenantId: ${self:custom.config.tenantId}
+  appsyncPatchObjects:
+    handler: functions/appsyncPatchObjects/index.handler
+    name: ${self:service}-${self:provider.stage}-appsync-patchObjects
+    memorySize: 512
 
   authorizer:
     handler: ${self:custom.path.authorizer.${self:provider.stage}, 'functions/authorizer/index.handler'}

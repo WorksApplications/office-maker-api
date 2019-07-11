@@ -1,19 +1,22 @@
 type EditObject {
-  backgroundColor: String
-  changed: Boolean
-  deleted: Boolean
-  floorId: String!
-  height: Int
   id: String!
-  updateAt: Float
-  width: Int
+  floorId: String!
+  type: String
   x: Int
   y: Int
-  name: String
-  personId: String
-  fontSize: Int
-  type: String
+  width: Int
+  height: Int
+  backgroundColor: String
+  color: String
+  bold: Boolean
   url: String
+  shape: String
+  name: String
+  fontSize: String
+  personId: String
+  changed: Boolean
+  deleted: Boolean
+  updateAt: Float
 }
 
 type PatchObject {
@@ -33,21 +36,23 @@ type Query {
 }
 
 input EditObjectInput {
-  backgroundColor: String
-  changed: Boolean
-  deleted: Boolean
-  floorId: String!
-  height: Int
   id: String!
-  updateAt: Float
-  width: Int
+  floorId: String!
+  type: String
   x: Int
   y: Int
-  name: String
-  personId: String
-  fontSize: Int
-  type: String
+  width: Int
+  height: Int
+  backgroundColor: String
+  color: String
+  bold: Boolean
   url: String
+  shape: String
+  name: String
+  fontSize: String
+  personId: String
+  changed: Boolean
+  deleted: Boolean
 }
 
 input PatchObjectInput {

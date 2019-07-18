@@ -5,29 +5,32 @@
   "scripts": {
     "test": "bash test/startOffline.sh && mocha; bash test/stopOffline.sh",
     "test:start": "bash test/startOffline.sh && mocha",
-    "test:appsync": "npx mocha --require @babel/register test/appsync",
+    "test:integration": "npx ts-node test/integration/env.ts && npx mocha --timeout 15000 -r ts-node/register test/integration/test/*.spec.ts; rm endpoint.json",
     "test-cov": "istanbul cover --print both _mocha -- test/test.js",
     "postinstall": "(cd common && npm install); (cd functions/authorizer/ && npm install);"
   },
-  "dependencies": {
-    "node-fetch-polyfill": "^2.0.6"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "@babel/register": "^7.4.4",
+    "@types/axios": "^0.14.0",
     "@types/chai": "^4.1.7",
+    "@types/chai-as-promised": "^7.1.0",
     "@types/mocha": "^5.2.7",
+    "@types/node": "^12.0.12",
+    "@types/paho-mqtt": "^1.0.4",
     "apollo-link-http": "^1.5.15",
-    "aws-appsync": "^1.8.0",
-    "aws-sdk": "^2.484.0",
+    "aws-sdk": "^2.488.0",
     "axios": "^0.19.0",
     "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "graphql-tag": "^2.10.1",
     "istanbul": "^0.4.5",
     "lambda-tester": "^3.5.0",
     "mocha": "^6.1.4",
     "node-fetch": "^2.6.0",
+    "paho-mqtt": "^1.1.0",
     "proxyquire": "^2.1.0",
     "serverless": "^1.44.1",
     "serverless-apigw-binary": "^0.4.4",
@@ -40,6 +43,9 @@
     "serverless-s3-local": "^0.5.0",
     "serverless-s3-remover": "^0.6.0",
     "sinon": "^7.3.2",
-    "uuid": "^3.3.2"
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.2",
+    "uuid": "^3.3.2",
+    "ws": "^7.1.0"
   }
 }

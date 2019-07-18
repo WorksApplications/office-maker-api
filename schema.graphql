@@ -1,19 +1,28 @@
 type EditObject {
-  backgroundColor: String
-  changed: Boolean
-  deleted: Boolean
-  floorId: String!
-  height: Int
   id: String!
-  updateAt: Float
-  width: Int
+  floorId: String!
+  type: String
   x: Int
   y: Int
-  name: String
-  personId: String
-  fontSize: Int
-  type: String
+  width: Int
+  height: Int
+  backgroundColor: String
+  color: String
+  bold: Boolean
   url: String
+  shape: String
+  name: String
+  fontSize: Float
+  personId: String
+  changed: Boolean
+  deleted: Boolean
+  updateAt: Float
+}
+
+type PatchObject {
+  flag: String!
+  object: EditObject!
+  result: String
 }
 
 schema {
@@ -26,48 +35,47 @@ type Query {
   listEditObjectsOnFloor(floorId: String!): [EditObject!]!
 }
 
+input EditObjectInput {
+  id: String!
+  floorId: String!
+  type: String
+  x: Int
+  y: Int
+  width: Int
+  height: Int
+  backgroundColor: String
+  color: String
+  bold: Boolean
+  url: String
+  shape: String
+  name: String
+  fontSize: String
+  personId: String
+  changed: Boolean
+  deleted: Boolean
+}
+
+input PatchObjectInput {
+  flag: String!
+  object: EditObjectInput!
+  result: String
+}
+
 type Mutation {
-  addEditObject(
-    floorId: String!
-    backgroundColor: String
-    changed: Boolean
-    deleted: Boolean
-    width: Int
-    height: Int
-    x: Int
-    y: Int
-    name: String
-    personId: String
-    fontSize: Int
-    type: String
-    url: String
-  ): EditObject!
-  updateEditObject(
-    floorId: String!
-    id: String!
-    backgroundColor: String
-    changed: Boolean
-    deleted: Boolean
-    width: Int
-    height: Int
-    x: Int
-    y: Int
-    name: String
-    personId: String
-    fontSize: Int
-    type: String
-    url: String
-  ): EditObject!
-  deleteEditObject(floorId: String!, id: String!): EditObject!
+  patchObjects(
+    objects: [PatchObjectInput!]!
+  ): PatchObjectsOutput
+}
+
+type PatchObjectsOutput {
+  objects: [PatchObject!]
+
+  # This floors information enables the subscription to select only specific floor
+  # The given objects are required to belong to the same floor
+  updatedFloorId: String!
 }
 
 type Subscription {
-  addedEditObject(floorId: String!): EditObject
-  @aws_subscribe(mutations: ["addEditObject"])
-
-  updatedEditObject(floorId: String!): EditObject
-  @aws_subscribe(mutations: ["updateEditObject"])
-
-  deletedEditObject(floorId: String!): EditObject
-  @aws_subscribe(mutations: ["deleteEditObject"])
+  patchedObjects(updatedFloorId: String): PatchObjectsOutput
+  @aws_subscribe(mutations: ["patchObjects"])
 }

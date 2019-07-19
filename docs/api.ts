@@ -98,7 +98,24 @@ const DeskObject = new devkit.Component(
 );
 
 const ObjectComponent = new devkit.Component(swagger, 'Object', {
-  oneOf: [PersonObject, DeskObject]
+  oneOf: [PersonObject, DeskObject],
+  example: {
+    id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    floorId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    changed: true,
+    deleted: true,
+    updateAt: 0,
+    x: 0,
+    y: 0,
+    backgroundColor: '#eee',
+    height: 0,
+    width: 0,
+    name: 'string',
+    color: 'string',
+    bold: true,
+    url: 'string',
+    shape: 'rectangle'
+  }
 });
 
 const Objects = new devkit.Component(
@@ -126,7 +143,7 @@ swagger.addPath(
 
 const floorId = {
   name: 'floorId',
-  in: 'query',
+  in: 'path',
   description: 'floorId',
   required: true,
   schema: devkit.Schema.string({ format: 'uuid' })
@@ -221,7 +238,7 @@ swagger.addPath(
 
 const objectId = {
   name: 'objectId',
-  in: 'query',
+  in: 'path',
   description: 'objectId',
   required: true,
   schema: devkit.Schema.string({ format: 'uuid' })
@@ -290,15 +307,28 @@ swagger.addPath(
   new devkit.Path({
     operationId: 'getPeople',
     tags: ['people']
+  }).addResponse('200', {
+    description: 'Not documented yet'
   })
 );
+
+const query = {
+  name: 'query',
+  in: 'path',
+  description: 'search query',
+  required: true,
+  schema: devkit.Schema.string()
+};
 
 swagger.addPath(
   '/search/{query}',
   'get',
   new devkit.Path({
     operationId: 'getSearchQuery',
-    tags: ['search']
+    tags: ['search'],
+    parameters: [query]
+  }).addResponse('200', {
+    description: 'Not documented yet'
   })
 );
 
@@ -307,7 +337,10 @@ swagger.addPath(
   'get',
   new devkit.Path({
     operationId: 'getSearchObjectsQuery',
-    tags: ['search']
+    tags: ['search'],
+    parameters: [query]
+  }).addResponse('200', {
+    description: 'Not documented yet'
   })
 );
 
@@ -319,6 +352,8 @@ swagger.addPath(
     tags: ['self'],
     deprecated: true,
     description: 'This was used for decoding JWT and fetching the profile.'
+  }).addResponse('200', {
+    description: 'Not documented yet'
   })
 );
 
@@ -360,6 +395,8 @@ swagger.addPath(
   new devkit.Path({
     operationId: 'putColors',
     tags: ['color']
+  }).addResponse('200', {
+    description: 'Not documented yet'
   })
 );
 
@@ -368,7 +405,18 @@ swagger.addPath(
   'put',
   new devkit.Path({
     operationId: 'putColorById',
-    tags: ['color']
+    tags: ['color'],
+    parameters: [
+      {
+        name: 'id',
+        in: 'path',
+        description: 'id',
+        required: true,
+        schema: devkit.Schema.string()
+      }
+    ]
+  }).addResponse('200', {
+    description: 'Not documented yet'
   })
 );
 
@@ -418,6 +466,8 @@ swagger.addPath(
   new devkit.Path({
     operationId: 'putPrototypes',
     tags: ['prototype']
+  }).addResponse('200', {
+    description: 'Not documented yet'
   })
 );
 
@@ -427,11 +477,20 @@ swagger.addPath(
   new devkit.Path({
     summary: 'Update a prototype',
     operationId: 'putPrototypesPrototypeId',
-    tags: ['prototype']
+    tags: ['prototype'],
+    parameters: [
+      {
+        name: 'prototypeId',
+        in: 'path',
+        description: 'prototypeId',
+        required: true,
+        schema: devkit.Schema.string()
+      }
+    ]
   })
     .addParameter({
       name: 'prototypeId',
-      in: 'query',
+      in: 'path',
       required: true,
       schema: devkit.Schema.string({ format: 'uuid' })
     })
@@ -451,7 +510,18 @@ swagger.addPath(
   'put',
   new devkit.Path({
     operationId: 'putImagesImageId',
-    tags: ['image']
+    tags: ['image'],
+    parameters: [
+      {
+        name: 'imageId',
+        in: 'path',
+        description: 'imageId',
+        required: true,
+        schema: devkit.Schema.string()
+      }
+    ]
+  }).addResponse('200', {
+    description: 'Not documented yet'
   })
 );
 

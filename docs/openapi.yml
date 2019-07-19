@@ -24,7 +24,7 @@ paths:
         - floor
       parameters:
         - name: floorId
-          in: query
+          in: path
           description: floorId
           required: true
           schema:
@@ -83,7 +83,7 @@ paths:
         - floor
       parameters:
         - name: floorId
-          in: query
+          in: path
           description: floorId
           required: true
           schema:
@@ -99,7 +99,7 @@ paths:
         - floor
       parameters:
         - name: floorId
-          in: query
+          in: path
           description: floorId
           required: true
           schema:
@@ -158,7 +158,7 @@ paths:
         - floor
       parameters:
         - name: floorId
-          in: query
+          in: path
           description: floorId
           required: true
           schema:
@@ -243,7 +243,7 @@ paths:
         - object
       parameters:
         - name: objectId
-          in: query
+          in: path
           description: objectId
           required: true
           schema:
@@ -261,16 +261,39 @@ paths:
       operationId: getPeople
       tags:
         - people
+      responses:
+        '200':
+          description: Not documented yet
   '/search/{query}':
     get:
       operationId: getSearchQuery
       tags:
         - search
+      parameters:
+        - name: query
+          in: path
+          description: search query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Not documented yet
   '/search/Objects/{query}':
     get:
       operationId: getSearchObjectsQuery
       tags:
         - search
+      parameters:
+        - name: query
+          in: path
+          description: search query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Not documented yet
   /self:
     get:
       operationId: getSelf
@@ -278,6 +301,9 @@ paths:
         - self
       deprecated: true
       description: This was used for decoding JWT and fetching the profile.
+      responses:
+        '200':
+          description: Not documented yet
   /colors:
     get:
       operationId: getColors
@@ -294,11 +320,24 @@ paths:
       operationId: putColors
       tags:
         - color
+      responses:
+        '200':
+          description: Not documented yet
   '/colors/{id}':
     put:
       operationId: putColorById
       tags:
         - color
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Not documented yet
   /prototypes:
     get:
       summary: List prototypes
@@ -316,24 +355,27 @@ paths:
       operationId: putPrototypes
       tags:
         - prototype
+      responses:
+        '200':
+          description: Not documented yet
   '/prototypes/{prototypeId}':
     put:
       summary: Update a prototype
       operationId: putPrototypesPrototypeId
       tags:
         - prototype
+      parameters:
+        - name: prototypeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Object'
-      parameters:
-        - name: prototypeId
-          in: query
-          required: true
-          schema:
-            type: string
-            format: uuid
       responses:
         '200':
           description: Returns nothing?
@@ -347,6 +389,16 @@ paths:
       operationId: putImagesImageId
       tags:
         - image
+      parameters:
+        - name: imageId
+          in: path
+          description: imageId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Not documented yet
 info:
   title: office-maker-api
   description: Not completed yet
@@ -486,6 +538,22 @@ components:
       oneOf:
         - $ref: '#/components/schemas/PersonObject'
         - $ref: '#/components/schemas/DeskObject'
+      example:
+        id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        floorId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        changed: true
+        deleted: true
+        updateAt: 0
+        x: 0
+        'y': 0
+        backgroundColor: '#eee'
+        height: 0
+        width: 0
+        name: string
+        color: string
+        bold: true
+        url: string
+        shape: rectangle
     Objects:
       type: array
       items:

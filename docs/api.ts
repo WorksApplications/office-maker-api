@@ -43,43 +43,68 @@ const Floors = new devkit.Component(
   )
 );
 
-const objectProperty = {
-  backgroundColor: devkit.Schema.string({
-    format: 'color-code',
-    example: '#eee'
-  }),
-  floorId: devkit.Schema.string({ format: 'uuid' }),
-  height: devkit.Schema.int32(),
+const objectBasicProperty = {
   id: devkit.Schema.string({ format: 'uuid' }),
+  floorId: devkit.Schema.string({ format: 'uuid' }),
+  changed: devkit.Schema.boolean(),
+  deleted: devkit.Schema.boolean({
+    description: 'A deleted object will not be shown in getFloor'
+  }),
   updateAt: devkit.Schema.int64({
     format: 'timestamp',
     description: 'timestamp in milliseconds'
   }),
-  width: devkit.Schema.int32(),
   x: devkit.Schema.int32(),
-  y: devkit.Schema.int32()
+  y: devkit.Schema.int32(),
+  backgroundColor: devkit.Schema.string({
+    format: 'color-code',
+    example: '#eee'
+  }),
+  height: devkit.Schema.int32(),
+  width: devkit.Schema.int32(),
+  name: devkit.Schema.string()
 };
 
-const ObjectComponent = new devkit.Component(
+const personProperty = {
+  personId: devkit.Schema.string()
+};
+
+const deskProperty = {
+  color: devkit.Schema.string(),
+  bold: devkit.Schema.boolean(),
+  url: devkit.Schema.string(),
+  shape: devkit.Schema.string({
+    enum: ['rectangle', 'ellipse']
+  })
+};
+
+const PersonObject = new devkit.Component(
   swagger,
-  'Object',
-  devkit.Schema.object(objectProperty)
+  'PersonObject',
+  devkit.Schema.object(
+    Object.assign(
+      // hack for shallow-copy
+      JSON.parse(JSON.stringify(objectBasicProperty)),
+      personProperty
+    )
+  )
 );
+const DeskObject = new devkit.Component(
+  swagger,
+  'DeskObject',
+  devkit.Schema.object(
+    Object.assign(JSON.parse(JSON.stringify(objectBasicProperty)), deskProperty)
+  )
+);
+
+const ObjectComponent = new devkit.Component(swagger, 'Object', {
+  oneOf: [PersonObject, DeskObject]
+});
 
 const Objects = new devkit.Component(
   swagger,
   'Objects',
   devkit.Schema.array(ObjectComponent)
-);
-
-const FloorAndObjects = new devkit.Component(
-  swagger,
-  'FloorAndObjects',
-  devkit.Schema.object(
-    Object.assign(floorProperty, {
-      objects: devkit.Schema.array(devkit.Schema.object(objectProperty))
-    })
-  )
 );
 
 swagger.addPath(
@@ -88,7 +113,9 @@ swagger.addPath(
   new devkit.Path({
     summary: 'Get floors',
     operationId: 'getFloors',
-    tags: ['floor']
+    tags: ['floor'],
+    description:
+      'Listing all floors. If the user has edit floors, this will also returns those floors.'
   }).addResponse(
     '200',
     new devkit.Response({
@@ -117,7 +144,14 @@ swagger.addPath(
     '200',
     new devkit.Response({
       description: 'Returns the newly published floor and the objects'
-    }).addContent('application/json', FloorAndObjects)
+    }).addContent(
+      'application/json',
+      devkit.Schema.object(
+        Object.assign(JSON.parse(JSON.stringify(floorProperty)), {
+          objects: Objects
+        })
+      )
+    )
   )
 );
 
@@ -141,12 +175,20 @@ swagger.addPath(
     summary: 'Update an edit floor',
     operationId: 'putFloorsFloorIdEdit',
     tags: ['floor'],
-    parameters: [floorId]
+    parameters: [floorId],
+    deprecated: true
   }).addResponse(
     '200',
     new devkit.Response({
       description: 'Returns the edit floor and the objects'
-    }).addContent('application/json', FloorAndObjects)
+    }).addContent(
+      'application/json',
+      devkit.Schema.object(
+        Object.assign(JSON.parse(JSON.stringify(floorProperty)), {
+          objects: Objects
+        })
+      )
+    )
   )
 );
 
@@ -162,7 +204,18 @@ swagger.addPath(
     '200',
     new devkit.Response({
       description: 'Returns the edit floor and the objects'
-    }).addContent('application/json', FloorAndObjects)
+    }).addContent(
+      'application/json',
+      devkit.Schema.object(
+        Object.assign(JSON.parse(JSON.stringify(floorProperty)), {
+          objects: devkit.Schema.array(ObjectComponent, {
+            example: [],
+            description:
+              '(Property for backward compatibility) This is always empty. Call AppSync API for fetching objects on an edit floor.'
+          })
+        })
+      )
+    )
   )
 );
 
@@ -187,7 +240,7 @@ const ObjectModification = new devkit.Component(
         type: 'string',
         enum: ['success']
       },
-      object: devkit.Schema.object(objectProperty)
+      object: ObjectComponent
     })
   )
 );
@@ -198,7 +251,8 @@ swagger.addPath(
   new devkit.Path({
     summary: 'Update objects',
     operationId: 'patchObjects2',
-    tags: ['object']
+    tags: ['object'],
+    deprecated: true
   })
     .addRequestBody(
       new devkit.RequestBody().addContent(
@@ -226,7 +280,7 @@ swagger.addPath(
     '200',
     new devkit.Response({
       description: 'Returns the object'
-    }).addContent('application/json', Objects)
+    }).addContent('application/json', ObjectComponent)
   )
 );
 
@@ -262,7 +316,9 @@ swagger.addPath(
   'get',
   new devkit.Path({
     operationId: 'getSelf',
-    tags: ['self']
+    tags: ['self'],
+    deprecated: true,
+    description: 'This was used for decoding JWT and fetching the profile.'
   })
 );
 

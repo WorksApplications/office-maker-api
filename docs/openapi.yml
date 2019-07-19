@@ -6,6 +6,9 @@ paths:
       operationId: getFloors
       tags:
         - floor
+      description: >-
+        Listing all floors. If the user has edit floors, this will also returns
+        those floors.
       responses:
         '200':
           description: Returns floors
@@ -33,7 +36,45 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FloorAndObjects'
+                type: object
+                properties:
+                  flipImage:
+                    type: boolean
+                  height:
+                    type: integer
+                    format: int32
+                  id:
+                    type: string
+                    format: uuid
+                  image:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  ord:
+                    type: integer
+                    format: int32
+                  realHeight:
+                    type: integer
+                    format: int32
+                  realWidth:
+                    type: integer
+                    format: int32
+                  temporary:
+                    type: boolean
+                  tenantId:
+                    type: string
+                  updateAt:
+                    type: integer
+                    format: timestamp
+                    description: timestamp in milliseconds
+                  updateBy:
+                    type: string
+                  width:
+                    type: integer
+                    format: int32
+                  objects:
+                    $ref: '#/components/schemas/Objects'
   '/floors/{floorId}/edit':
     delete:
       summary: Delete an edit floor
@@ -64,13 +105,52 @@ paths:
           schema:
             type: string
             format: uuid
+      deprecated: true
       responses:
         '200':
           description: Returns the edit floor and the objects
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FloorAndObjects'
+                type: object
+                properties:
+                  flipImage:
+                    type: boolean
+                  height:
+                    type: integer
+                    format: int32
+                  id:
+                    type: string
+                    format: uuid
+                  image:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  ord:
+                    type: integer
+                    format: int32
+                  realHeight:
+                    type: integer
+                    format: int32
+                  realWidth:
+                    type: integer
+                    format: int32
+                  temporary:
+                    type: boolean
+                  tenantId:
+                    type: string
+                  updateAt:
+                    type: integer
+                    format: timestamp
+                    description: timestamp in milliseconds
+                  updateBy:
+                    type: string
+                  width:
+                    type: integer
+                    format: int32
+                  objects:
+                    $ref: '#/components/schemas/Objects'
     get:
       summary: Get an edit floor
       operationId: getFloorsFloorIdEdit
@@ -90,13 +170,59 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FloorAndObjects'
+                type: object
+                properties:
+                  flipImage:
+                    type: boolean
+                  height:
+                    type: integer
+                    format: int32
+                  id:
+                    type: string
+                    format: uuid
+                  image:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  ord:
+                    type: integer
+                    format: int32
+                  realHeight:
+                    type: integer
+                    format: int32
+                  realWidth:
+                    type: integer
+                    format: int32
+                  temporary:
+                    type: boolean
+                  tenantId:
+                    type: string
+                  updateAt:
+                    type: integer
+                    format: timestamp
+                    description: timestamp in milliseconds
+                  updateBy:
+                    type: string
+                  width:
+                    type: integer
+                    format: int32
+                  objects:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Object'
+                    example: []
+                    description: >-
+                      (Property for backward compatibility) This is always
+                      empty. Call AppSync API for fetching objects on an edit
+                      floor.
   /objects:
     patch:
       summary: Update objects
       operationId: patchObjects2
       tags:
         - object
+      deprecated: true
       requestBody:
         content:
           application/json:
@@ -129,7 +255,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Objects'
+                $ref: '#/components/schemas/Object'
   /people:
     get:
       operationId: getPeople
@@ -150,6 +276,8 @@ paths:
       operationId: getSelf
       tags:
         - self
+      deprecated: true
+      description: This was used for decoding JWT and fetching the profile.
   /colors:
     get:
       operationId: getColors
@@ -263,145 +391,105 @@ components:
         width:
           type: integer
           format: int32
-        objects:
-          type: array
-          items:
-            type: object
-            properties:
-              backgroundColor:
-                type: string
-                format: color-code
-                example: '#eee'
-              floorId:
-                type: string
-                format: uuid
-              height:
-                type: integer
-                format: int32
-              id:
-                type: string
-                format: uuid
-              updateAt:
-                type: integer
-                format: timestamp
-                description: timestamp in milliseconds
-              width:
-                type: integer
-                format: int32
-              x:
-                type: integer
-                format: int32
-              'y':
-                type: integer
-                format: int32
     Floors:
       type: array
       items:
         type: array
         items:
           $ref: '#/components/schemas/Floor'
-    Object:
+    PersonObject:
       type: object
       properties:
-        backgroundColor:
-          type: string
-          format: color-code
-          example: '#eee'
-        floorId:
-          type: string
-          format: uuid
-        height:
-          type: integer
-          format: int32
         id:
           type: string
           format: uuid
+        floorId:
+          type: string
+          format: uuid
+        changed:
+          type: boolean
+        deleted:
+          type: boolean
+          description: A deleted object will not be shown in getFloor
         updateAt:
           type: integer
           format: timestamp
           description: timestamp in milliseconds
-        width:
-          type: integer
-          format: int32
         x:
           type: integer
           format: int32
         'y':
           type: integer
           format: int32
-    Objects:
-      type: array
-      items:
-        $ref: '#/components/schemas/Object'
-    FloorAndObjects:
-      type: object
-      properties:
-        flipImage:
-          type: boolean
+        backgroundColor:
+          type: string
+          format: color-code
+          example: '#eee'
         height:
           type: integer
           format: int32
+        width:
+          type: integer
+          format: int32
+        name:
+          type: string
+        personId:
+          type: string
+    DeskObject:
+      type: object
+      properties:
         id:
           type: string
           format: uuid
-        image:
+        floorId:
           type: string
           format: uuid
-        name:
-          type: string
-        ord:
-          type: integer
-          format: int32
-        realHeight:
-          type: integer
-          format: int32
-        realWidth:
-          type: integer
-          format: int32
-        temporary:
+        changed:
           type: boolean
-        tenantId:
-          type: string
+        deleted:
+          type: boolean
+          description: A deleted object will not be shown in getFloor
         updateAt:
           type: integer
           format: timestamp
           description: timestamp in milliseconds
-        updateBy:
+        x:
+          type: integer
+          format: int32
+        'y':
+          type: integer
+          format: int32
+        backgroundColor:
           type: string
+          format: color-code
+          example: '#eee'
+        height:
+          type: integer
+          format: int32
         width:
           type: integer
           format: int32
-        objects:
-          type: array
-          items:
-            type: object
-            properties:
-              backgroundColor:
-                type: string
-                format: color-code
-                example: '#eee'
-              floorId:
-                type: string
-                format: uuid
-              height:
-                type: integer
-                format: int32
-              id:
-                type: string
-                format: uuid
-              updateAt:
-                type: integer
-                format: timestamp
-                description: timestamp in milliseconds
-              width:
-                type: integer
-                format: int32
-              x:
-                type: integer
-                format: int32
-              'y':
-                type: integer
-                format: int32
+        name:
+          type: string
+        color:
+          type: string
+        bold:
+          type: boolean
+        url:
+          type: string
+        shape:
+          type: string
+          enum:
+            - rectangle
+            - ellipse
+    Object:
+      oneOf:
+        - $ref: '#/components/schemas/PersonObject'
+        - $ref: '#/components/schemas/DeskObject'
+    Objects:
+      type: array
+      items:
+        $ref: '#/components/schemas/Object'
     ObjectModification:
       type: array
       items:
@@ -418,34 +506,7 @@ components:
             enum:
               - success
           object:
-            type: object
-            properties:
-              backgroundColor:
-                type: string
-                format: color-code
-                example: '#eee'
-              floorId:
-                type: string
-                format: uuid
-              height:
-                type: integer
-                format: int32
-              id:
-                type: string
-                format: uuid
-              updateAt:
-                type: integer
-                format: timestamp
-                description: timestamp in milliseconds
-              width:
-                type: integer
-                format: int32
-              x:
-                type: integer
-                format: int32
-              'y':
-                type: integer
-                format: int32
+            $ref: '#/components/schemas/Object'
     Color:
       type: object
       properties:

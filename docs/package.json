@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
-    "swagger-devkit": "^0.9.1"
+    "swagger-devkit": "^0.9.5"
   }
 }

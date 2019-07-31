@@ -49,7 +49,7 @@ input EditObjectInput {
   url: String
   shape: String
   name: String
-  fontSize: String
+  fontSize: Float
   personId: String
   changed: Boolean
   deleted: Boolean

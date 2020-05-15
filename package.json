@@ -32,7 +32,7 @@
     "node-fetch": "^2.6.0",
     "paho-mqtt": "^1.1.0",
     "proxyquire": "^2.1.0",
-    "serverless": "^1.44.1",
+    "serverless": "^1.71.0",
     "serverless-apigw-binary": "^0.4.4",
     "serverless-appsync-plugin": "^1.1.2",
     "serverless-aws-documentation": "^1.1.0",

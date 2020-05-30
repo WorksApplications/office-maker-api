@@ -12,7 +12,7 @@
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.10.2",
-    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-env": "^7.10.2",
     "@babel/register": "^7.4.4",
     "@types/axios": "^0.14.0",
     "@types/chai": "^4.1.7",
